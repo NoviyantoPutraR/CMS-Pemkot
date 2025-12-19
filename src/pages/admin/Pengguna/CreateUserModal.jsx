@@ -80,11 +80,11 @@ export default function CreateUserModal({ open, onOpenChange, onSuccess }) {
     if (/[^A-Za-z0-9]/.test(pwd)) strength++
 
     const levels = [
-      { label: 'Sangat Lemah', color: 'bg-red-500' },
-      { label: 'Lemah', color: 'bg-orange-500' },
-      { label: 'Sedang', color: 'bg-yellow-500' },
-      { label: 'Kuat', color: 'bg-blue-500' },
-      { label: 'Sangat Kuat', color: 'bg-green-500' },
+      { label: 'Sangat Lemah', color: 'bg-destructive' },
+      { label: 'Lemah', color: 'bg-orange-500 dark:bg-orange-600' },
+      { label: 'Sedang', color: 'bg-amber-500 dark:bg-amber-600' },
+      { label: 'Kuat', color: 'bg-primary' },
+      { label: 'Sangat Kuat', color: 'bg-emerald-500 dark:bg-emerald-600' },
     ]
 
     return {

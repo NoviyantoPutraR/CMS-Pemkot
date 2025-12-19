@@ -11,7 +11,7 @@ const Dialog = ({ open, onOpenChange, children, className, ...props }) => {
       onClick={() => onOpenChange?.(false)}
       {...props}
     >
-      <div className="fixed inset-0 bg-black/50" />
+      <div className="fixed inset-0 bg-black/50 dark:bg-black/70" />
       <div
         className={cn(
           "relative z-50 w-full max-w-lg bg-background rounded-lg shadow-lg",

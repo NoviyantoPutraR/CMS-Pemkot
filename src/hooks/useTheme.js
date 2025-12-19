@@ -9,13 +9,25 @@ export function useTheme() {
     // Check localStorage first
     const stored = localStorage.getItem(THEME_STORAGE_KEY)
     if (stored === THEME_DARK || stored === THEME_LIGHT) {
+      // Apply immediately to prevent flash
+      const root = document.documentElement
+      if (stored === THEME_DARK) {
+        root.classList.add(THEME_DARK)
+      } else {
+        root.classList.remove(THEME_DARK)
+      }
       return stored
     }
     // Fallback to system preference
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const root = document.documentElement
+    if (prefersDark) {
+      root.classList.add(THEME_DARK)
       return THEME_DARK
+    } else {
+      root.classList.remove(THEME_DARK)
+      return THEME_LIGHT
     }
-    return THEME_LIGHT
   })
 
   useEffect(() => {

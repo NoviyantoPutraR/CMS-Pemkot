@@ -325,7 +325,7 @@ export default function Dashboard() {
                       <div className="flex items-center gap-2">
                         <div className="text-3xl font-bold text-foreground">{card.value}</div>
                         {card.showWarning && (
-                          <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+                          <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800">
                             <AlertCircle className="h-3 w-3 mr-1" />
                             Draft
                           </Badge>

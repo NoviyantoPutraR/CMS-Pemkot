@@ -124,7 +124,7 @@
     overflow-x: hidden;
   }
   /* Ensure public pages always use light mode colors */
-  body:not(.dark) {
+  html:not(.dark) body {
     --background: rgb(248, 250, 252);
     --foreground: rgb(30, 41, 59);
   }
