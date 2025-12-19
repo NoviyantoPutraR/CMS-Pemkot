@@ -2,16 +2,23 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 interface ChartData {
   date: string
-  berita: number
-  artikel: number
+  [key: string]: string | number
 }
 
 interface ContentChartProps {
   data: ChartData[]
   loading?: boolean
+  dataKeys?: { key: string; name: string; color?: string }[]
 }
 
-export default function ContentChart({ data, loading = false }: ContentChartProps) {
+export default function ContentChart({ 
+  data, 
+  loading = false,
+  dataKeys = [
+    { key: 'berita', name: 'Berita' },
+    { key: 'artikel', name: 'Artikel' },
+  ]
+}: ContentChartProps) {
   // Get CSS variable values for chart colors
   const getCSSVariable = (variable: string, fallback: string): string => {
     if (typeof window !== 'undefined') {
@@ -27,13 +34,18 @@ export default function ContentChart({ data, loading = false }: ContentChartProp
     return fallback
   }
 
-  const chart1Color = getCSSVariable('--chart-1', 'rgb(99, 102, 241)')
-  const chart2Color = getCSSVariable('--chart-2', 'rgb(79, 70, 229)')
+  const chartColors = [
+    getCSSVariable('--chart-1', 'rgb(99, 102, 241)'),
+    getCSSVariable('--chart-2', 'rgb(79, 70, 229)'),
+    getCSSVariable('--chart-3', 'rgb(236, 72, 153)'),
+    getCSSVariable('--chart-4', 'rgb(34, 197, 94)'),
+    getCSSVariable('--chart-5', 'rgb(251, 191, 36)'),
+  ]
   const mutedForeground = getCSSVariable('--muted-foreground', 'rgb(107, 114, 128)')
 
   if (loading) {
     return (
-      <div className="h-[240px] w-full flex items-center justify-center">
+      <div className="h-[220px] w-full flex items-center justify-center">
         <div className="text-sm text-muted-foreground">Memuat data grafik...</div>
       </div>
     )
@@ -41,7 +53,7 @@ export default function ContentChart({ data, loading = false }: ContentChartProp
 
   if (!data || data.length === 0) {
     return (
-      <div className="h-[240px] w-full flex items-center justify-center">
+      <div className="h-[220px] w-full flex items-center justify-center">
         <div className="text-sm text-muted-foreground">Tidak ada data untuk ditampilkan</div>
       </div>
     )
@@ -73,7 +85,7 @@ export default function ContentChart({ data, loading = false }: ContentChartProp
   }
 
   return (
-    <div className="w-full" style={{ height: '240px', minHeight: '240px' }}>
+    <div className="w-full" style={{ height: '220px', minHeight: '220px', maxHeight: '220px' }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke={mutedForeground} opacity={0.3} />
@@ -91,24 +103,18 @@ export default function ContentChart({ data, loading = false }: ContentChartProp
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Line
-            type="monotone"
-            dataKey="berita"
-            stroke={chart1Color}
-            strokeWidth={2}
-            dot={{ r: 3 }}
-            activeDot={{ r: 5 }}
-            name="Berita"
-          />
-          <Line
-            type="monotone"
-            dataKey="artikel"
-            stroke={chart2Color}
-            strokeWidth={2}
-            dot={{ r: 3 }}
-            activeDot={{ r: 5 }}
-            name="Artikel"
-          />
+          {dataKeys.map((item, index) => (
+            <Line
+              key={item.key}
+              type="monotone"
+              dataKey={item.key}
+              stroke={item.color || chartColors[index % chartColors.length]}
+              strokeWidth={2}
+              dot={{ r: 3 }}
+              activeDot={{ r: 5 }}
+              name={item.name}
+            />
+          ))}
         </LineChart>
       </ResponsiveContainer>
     </div>

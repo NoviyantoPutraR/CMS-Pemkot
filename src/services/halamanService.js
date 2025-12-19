@@ -230,5 +230,78 @@ export const halamanService = {
 
     return withRetry(() => withTimeout(queryFn(), 10000))
   },
+
+  // Get stats halaman (total, published, draft) - untuk dashboard
+  async getStats() {
+    const queryFn = async () => {
+      // Halaman tidak punya status, jadi kita hitung total saja
+      // Untuk dashboard SKPD, kita anggap semua halaman adalah "published"
+      const { count, error } = await supabase
+        .from('halaman')
+        .select('id', { count: 'planned', head: true })
+      
+      if (error) throw error
+      
+      return {
+        total: count || 0,
+        published: count || 0,
+        draft: 0,
+      }
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.warn('Failed to get halaman stats:', error)
+      return { total: 0, published: 0, draft: 0 }
+    }
+  },
+
+  // Get drafts halaman (untuk dashboard SKPD)
+  // Note: Halaman tidak punya status draft, jadi return empty array
+  async getDrafts(limit = 5) {
+    // Halaman tidak punya status, jadi tidak ada draft
+    return []
+  },
+
+  // Get published content count by day (for chart)
+  // Note: Halaman tidak punya status, jadi kita hitung berdasarkan dibuat_pada
+  async getPublishedByDay(days = 30) {
+    const queryFn = async () => {
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - days)
+      const startDateISO = startDate.toISOString()
+
+      const { data, error } = await supabase
+        .from('halaman')
+        .select('dibuat_pada')
+        .gte('dibuat_pada', startDateISO)
+        .order('dibuat_pada', { ascending: true })
+
+      if (error) throw error
+
+      // Group by date
+      const grouped = {}
+      data.forEach(item => {
+        if (item.dibuat_pada) {
+          const dateKey = new Date(item.dibuat_pada).toISOString().split('T')[0]
+          grouped[dateKey] = (grouped[dateKey] || 0) + 1
+        }
+      })
+
+      // Convert to array format
+      return Object.entries(grouped).map(([date, count]) => ({
+        date,
+        count,
+      }))
+    }
+
+    try {
+      return await withTimeout(queryFn(), 5000)
+    } catch (error) {
+      console.warn('Failed to get halaman by day:', error)
+      return []
+    }
+  },
 }
 

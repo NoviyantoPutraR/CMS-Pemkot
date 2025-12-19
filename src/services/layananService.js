@@ -273,5 +273,68 @@ export const layananService = {
 
     return withRetry(() => withTimeout(queryFn(), 10000))
   },
+
+  // Get drafts layanan (untuk dashboard SKPD)
+  async getDrafts(limit = 5) {
+    const queryFn = async () => {
+      const { data, error } = await supabase
+        .from('layanan')
+        .select('id, judul, dibuat_pada, status')
+        .eq('status', 'draft')
+        .order('dibuat_pada', { ascending: true })
+        .limit(limit)
+      
+      if (error) throw error
+      return (data || []).map(item => ({ ...item, jenis: 'layanan' }))
+    }
+
+    try {
+      return await withTimeout(queryFn(), 3000)
+    } catch (error) {
+      console.warn('Failed to get layanan drafts:', error)
+      return []
+    }
+  },
+
+  // Get published content count by day (for chart)
+  async getPublishedByDay(days = 30) {
+    const queryFn = async () => {
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - days)
+      const startDateISO = startDate.toISOString()
+
+      const { data, error } = await supabase
+        .from('layanan')
+        .select('dipublikasikan_pada, dibuat_pada')
+        .eq('status', 'published')
+        .gte('dibuat_pada', startDateISO)
+        .order('dibuat_pada', { ascending: true })
+
+      if (error) throw error
+
+      // Group by date
+      const grouped = {}
+      data.forEach(item => {
+        const date = item.dipublikasikan_pada || item.dibuat_pada
+        if (date) {
+          const dateKey = new Date(date).toISOString().split('T')[0]
+          grouped[dateKey] = (grouped[dateKey] || 0) + 1
+        }
+      })
+
+      // Convert to array format
+      return Object.entries(grouped).map(([date, count]) => ({
+        date,
+        count,
+      }))
+    }
+
+    try {
+      return await withTimeout(queryFn(), 5000)
+    } catch (error) {
+      console.warn('Failed to get published by day:', error)
+      return []
+    }
+  },
 }
 

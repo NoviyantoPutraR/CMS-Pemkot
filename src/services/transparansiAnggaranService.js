@@ -151,5 +151,60 @@ export const transparansiAnggaranService = {
 
     return withRetry(() => withTimeout(queryFn(), 10000))
   },
+
+  // Get active year anggaran (tahun terbaru yang published)
+  async getActiveYear() {
+    const queryFn = async () => {
+      const { data, error } = await supabase
+        .from('transparansi_anggaran')
+        .select('tahun, status')
+        .eq('status', 'published')
+        .order('tahun', { ascending: false })
+        .limit(1)
+        .single()
+      
+      if (error) {
+        // Jika tidak ada data, return null
+        if (error.code === 'PGRST116') {
+          return null
+        }
+        throw error
+      }
+      
+      return data
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.warn('Failed to get active year:', error)
+      return null
+    }
+  },
+
+  // Get recent activity (updated_at terbaru)
+  async getRecentActivity(limit = 5) {
+    const queryFn = async () => {
+      const { data, error } = await supabase
+        .from('transparansi_anggaran')
+        .select('id, tahun, status, diperbarui_pada')
+        .order('diperbarui_pada', { ascending: false })
+        .limit(limit)
+      
+      if (error) throw error
+      return (data || []).map(item => ({ 
+        ...item, 
+        jenis: 'transparansi',
+        judul: `Anggaran ${item.tahun}`
+      }))
+    }
+
+    try {
+      return await withTimeout(queryFn(), 3000)
+    } catch (error) {
+      console.warn('Failed to get recent activity:', error)
+      return []
+    }
+  },
 }
 

@@ -12,6 +12,8 @@ import { agendaKotaService } from '../../services/agendaKotaService'
 import { layananService } from '../../services/layananService'
 import { pengumumanService } from '../../services/pengumumanService'
 import { penggunaService } from '../../services/penggunaService'
+import DashboardSKPD from './DashboardSKPD'
+import useAuthStore from '../../store/useAuthStore'
 import { 
   Newspaper, 
   BookOpen, 
@@ -26,6 +28,12 @@ import { formatDate, formatDateTime } from '../../utils/formatters'
 import { ROLES } from '../../utils/constants'
 
 export default function Dashboard() {
+  const { profile } = useAuthStore()
+  
+  // Conditional rendering: admin_skpd → DashboardSKPD, superadmin → existing dashboard
+  if (profile?.peran === ROLES.ADMIN_SKPD) {
+    return <DashboardSKPD />
+  }
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
@@ -285,6 +293,7 @@ export default function Dashboard() {
     },
   ], [stats])
 
+  // Superadmin dashboard
   return (
     <RoleGuard allowedRoles={[ROLES.SUPERADMIN]} redirectTo="/admin">
       <div className="space-y-6">
