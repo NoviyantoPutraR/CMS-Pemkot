@@ -1,0 +1,244 @@
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { halamanService } from '../../services/halamanService'
+import Loading from '../../components/shared/Loading'
+import Breadcrumb from '../../components/shared/Breadcrumb'
+import { STATIC_PAGES } from '../../utils/constants'
+import { formatDate } from '../../utils/formatters'
+
+export default function Tentang() {
+  const [halaman, setHalaman] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadHalaman()
+  }, [])
+
+  const loadHalaman = async () => {
+    try {
+      setLoading(true)
+      const data = await halamanService.getBySlug(STATIC_PAGES.TENTANG)
+      setHalaman(data)
+    } catch (error) {
+      console.error('Error loading halaman:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Breadcrumb items: Beranda / Profil / Tentang Kami
+  const breadcrumbItems = [
+    { label: 'Beranda', href: '/' },
+    { label: 'Profil', href: '#' },
+    { label: 'Tentang Kami', href: '/tentang', current: true }
+  ]
+
+  if (loading) {
+    return <Loading />
+  }
+
+  if (!halaman) {
+    return (
+      <div className="py-12 text-center">
+        <p className="text-muted-foreground">Halaman tidak ditemukan</p>
+      </div>
+    )
+  }
+
+  // Sample data untuk tugas dan fungsi (dapat diambil dari database atau didefinisikan di sini)
+  const tugasDanFungsi = [
+    'Melaksanakan urusan pemerintahan daerah provinsi sesuai dengan peraturan perundang-undangan',
+    'Menyelenggarakan urusan pemerintahan umum di daerah provinsi',
+    'Melaksanakan pembinaan dan koordinasi atas penyelenggaraan pemerintahan daerah kabupaten/kota',
+    'Melaksanakan pembinaan dan pengawasan penyelenggaraan pemerintahan desa',
+    'Meningkatkan kualitas pelayanan publik di wilayah provinsi',
+    'Mendorong peningkatan kesejahteraan masyarakat melalui program pembangunan daerah'
+  ]
+
+  return (
+    <div className="min-h-screen bg-[#F8F9FA]">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-b from-[#0052FF] to-[#0039CC] py-20 overflow-hidden">
+        {/* Decorative wave at bottom */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg
+            className="w-full h-16"
+            viewBox="0 0 1440 80"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,64 C240,48 480,32 720,40 C960,48 1200,56 1440,48 L1440,80 L0,80 Z"
+              fill="#F8F9FA"
+            />
+          </svg>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb */}
+          <motion.div
+            className="mb-8 [&_a]:text-white/90 [&_a:hover]:text-white [&_span]:text-white/80 [&_svg]:text-white/70"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <Breadcrumb items={breadcrumbItems} homeHref="/" />
+          </motion.div>
+
+          <div className="max-w-4xl mx-auto text-center text-white">
+            <motion.h1
+              className="text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            >
+              Tentang Kami
+            </motion.h1>
+            <motion.p
+              className="text-xl lg:text-2xl mb-8 text-white/90 leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+            >
+              Profil dan Peran Pemerintah Provinsi Jawa Timur dalam melayani masyarakat dan membangun daerah
+            </motion.p>
+
+            {/* Hero Card */}
+            <motion.div
+              className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+            >
+              <p className="text-[#0052FF] font-medium text-lg">
+                Profil dan Peran Pemerintah Provinsi Jawa Timur
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Content Sections */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Section: Profil Singkat */}
+        <section className="mb-20">
+          <motion.h2
+            className="text-3xl lg:text-4xl font-bold mb-8 text-[#333333]"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            Profil Singkat
+          </motion.h2>
+          <motion.div
+            className="bg-white rounded-lg shadow-md p-8 lg:p-10"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <div className="prose prose-lg max-w-none prose-p:text-[#333333] prose-p:leading-relaxed prose-p:text-base">
+              {halaman.konten ? (
+                <div dangerouslySetInnerHTML={{ __html: halaman.konten }} />
+              ) : (
+                <>
+                  <p className="text-base leading-relaxed text-[#333333] mb-4">
+                    Pemerintah Provinsi Jawa Timur merupakan lembaga eksekutif di tingkat provinsi yang bertanggung jawab
+                    atas penyelenggaraan pemerintahan daerah. Sebagai salah satu provinsi terbesar di Indonesia,
+                    Jawa Timur memiliki peran strategis dalam pembangunan nasional.
+                  </p>
+                  <p className="text-base leading-relaxed text-[#333333]">
+                    Pemerintah Provinsi Jawa Timur berkedudukan sebagai instansi vertikal yang melaksanakan tugas
+                    pemerintahan daerah sesuai dengan otonomi daerah dan tugas pembantuan. Kami berkomitmen untuk
+                    memberikan pelayanan terbaik kepada masyarakat dan mendorong pembangunan yang berkelanjutan di seluruh
+                    wilayah Jawa Timur.
+                  </p>
+                </>
+              )}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Section: Tugas & Fungsi */}
+        <section className="mb-20">
+          <motion.h2
+            className="text-3xl lg:text-4xl font-bold mb-8 text-[#333333]"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            Tugas dan Fungsi
+          </motion.h2>
+          <motion.div
+            className="bg-white rounded-lg shadow-md p-8 lg:p-10"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <ul className="space-y-6">
+              {tugasDanFungsi.map((item, index) => (
+                <motion.li
+                  key={index}
+                  className="flex items-start"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.1,
+                    ease: "easeOut"
+                  }}
+                >
+                  <div className="flex-shrink-0 w-2 h-2 rounded-full bg-[#0052FF] mt-2 mr-4"></div>
+                  <p className="text-base leading-relaxed text-[#333333] flex-1">
+                    {item}
+                  </p>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+        </section>
+
+        {/* Section: Struktur Organisasi (Optional - dapat ditampilkan jika ada data) */}
+        {/* 
+        <section className="mb-20">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-8 text-[#333333]">
+            Struktur Organisasi
+          </h2>
+          <div className="bg-white rounded-lg shadow-md p-8 lg:p-10">
+            <p className="text-base leading-relaxed text-[#333333] mb-4">
+              Struktur organisasi Pemerintah Provinsi Jawa Timur terdiri dari berbagai perangkat daerah
+              yang bertugas melaksanakan fungsi pemerintahan sesuai dengan bidang masing-masing.
+            </p>
+            <p className="text-sm text-gray-600 italic">
+              Informasi struktur organisasi lengkap dapat diakses melalui menu Struktur Organisasi.
+            </p>
+          </div>
+        </section>
+        */}
+      </div>
+
+      {/* Metadata Section */}
+      {halaman.diperbarui_pada && (
+        <motion.div
+          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <div className="border-t border-gray-200 pt-8">
+            <p className="text-sm text-gray-600 text-center">
+              Terakhir diperbarui: <span className="font-medium">{formatDate(halaman.diperbarui_pada)}</span>
+            </p>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  )
+}
+
