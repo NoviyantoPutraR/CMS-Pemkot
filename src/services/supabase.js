@@ -1,51 +1,52 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Read environment variables dengan fallback untuk development
-// Fallback values untuk membantu jika .env tidak terbaca
-const FALLBACK_URL = 'https://hhzmoiypplyrjpydgnkb.supabase.co'
-const FALLBACK_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhoem1vaXlwcGx5cmpweWRnbmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNDU2NjcsImV4cCI6MjA4MDkyMTY2N30.b9Y60sf2ic820f-jb2ofrV_b8Th4iHSCXDGYSTC--dY'
-
 // Baca dari import.meta.env (Vite environment variables)
 const envUrl = import.meta.env.VITE_SUPABASE_URL
 const envKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 const envServiceRoleKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 
-// Gunakan env vars jika ada, jika tidak gunakan fallback untuk development
-const supabaseUrl = envUrl || (import.meta.env.DEV ? FALLBACK_URL : null)
-const supabaseAnonKey = envKey || (import.meta.env.DEV ? FALLBACK_KEY : null)
-
-// Debug logging (development only)
-if (import.meta.env.DEV) {
-  const usingFallback = !envUrl || !envKey
+// Validate environment variables
+// Di production, environment variables HARUS diset, tidak ada fallback
+if (!envUrl || !envKey) {
+  const isProduction = import.meta.env.PROD
   
-  if (usingFallback) {
-    console.warn('⚠️ Using Supabase fallback values. Check .env file.')
-  }
-}
-
-// Validate - harus ada URL dan Key (baik dari .env atau fallback)
-if (!supabaseUrl || !supabaseAnonKey) {
   const errorMsg = `
 ❌ Missing Supabase environment variables!
 
-Please check your .env file in the root directory:
+Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}
 - VITE_SUPABASE_URL=${envUrl ? '✓ Set' : '✗ Missing'}
 - VITE_SUPABASE_ANON_KEY=${envKey ? '✓ Set' : '✗ Missing'}
 
-Make sure:
-1. File .env exists in the root directory (same level as package.json)
-2. Variables start with VITE_
-3. No spaces around the = sign
-4. Restart the dev server after creating/updating .env file
-5. Clear Vite cache: Remove node_modules/.vite folder
+${isProduction 
+  ? `⚠️ PRODUCTION MODE: Environment variables must be set in Vercel Dashboard!
+  
+  Setup steps:
+  1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+  2. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+  3. Redeploy the application`
+  : `Development setup:
+  1. Copy .env.example to .env in the root directory
+  2. Fill in your Supabase credentials
+  3. Restart the dev server
+  4. Clear Vite cache if needed: Remove node_modules/.vite folder`}
   `
+  
   console.error(errorMsg)
   throw new Error('Missing Supabase environment variables. Check console for details.')
 }
 
-// Trim whitespace if any
-const cleanUrl = supabaseUrl.trim()
-const cleanKey = supabaseAnonKey.trim()
+// Trim whitespace
+const cleanUrl = envUrl.trim()
+const cleanKey = envKey.trim()
+
+// Validate format
+if (!cleanUrl.startsWith('https://')) {
+  throw new Error('VITE_SUPABASE_URL must be a valid HTTPS URL')
+}
+
+if (cleanKey.length < 100) {
+  console.warn('⚠️ VITE_SUPABASE_ANON_KEY seems invalid (too short)')
+}
 
 if (!cleanUrl || !cleanKey) {
   throw new Error('Supabase environment variables are empty after trimming whitespace.')

@@ -79,9 +79,29 @@ src/
   hooks/           # Custom hooks
 ```
 
+## Deployment
+
+### Deploy ke Vercel
+
+Project ini sudah dikonfigurasi untuk deployment ke Vercel. Lihat [DEPLOYMENT.md](./DEPLOYMENT.md) untuk panduan lengkap.
+
+**Quick Start:**
+1. Push code ke GitHub
+2. Import project di [Vercel](https://vercel.com)
+3. Setup environment variables:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_SUPABASE_SERVICE_ROLE_KEY` (optional)
+4. Deploy!
+
+**Environment Variables:**
+Copy `.env.example` ke `.env` dan isi dengan credentials Supabase Anda.
+
 ## Dokumentasi
 
-Lihat `PRD.md` untuk dokumentasi lengkap tentang spesifikasi dan requirements.
+- **PRD.md** - Product Requirement Document lengkap
+- **DEPLOYMENT.md** - Panduan deployment ke Vercel
+- **DATABASE-DESIGN.md** - Desain database dan schema
 
 ## License
 

@@ -20,7 +20,7 @@ export default function PerangkatDaerahSearchFilter({
               placeholder="Cari perangkat daerah atau kata kunci…"
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-12 pr-4 h-12 rounded-full border-gray-300 focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20 transition-all"
+              className="pl-12 pr-4 h-12 rounded-full border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20 transition-all"
             />
           </div>
 
@@ -29,7 +29,7 @@ export default function PerangkatDaerahSearchFilter({
             <Select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value)}
-              className="h-12 rounded-full min-w-[150px]"
+              className="h-12 rounded-full min-w-[150px] bg-white text-gray-900 border-gray-300"
             >
               <option value="urutan">Urutan</option>
               <option value="nama">Nama</option>

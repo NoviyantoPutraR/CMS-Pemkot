@@ -1,13 +1,26 @@
-import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ChevronDown } from 'lucide-react'
 
 export default function Header() {
   const location = useLocation()
+  const navigate = useNavigate()
   const isHomePage = location.pathname === '/'
   const [isOpen, setIsOpen] = useState(false)
   const [profilDropdownOpen, setProfilDropdownOpen] = useState(false)
   const [beritaDropdownOpen, setBeritaDropdownOpen] = useState(false)
+
+  // Scroll to hero when hash is present
+  useEffect(() => {
+    if (location.pathname === '/' && (location.hash === '#hero' || window.location.hash === '#hero')) {
+      setTimeout(() => {
+        const element = document.getElementById('hero')
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 300)
+    }
+  }, [location])
 
   const handleVisiMisiClick = (e) => {
     if (isHomePage) {
@@ -42,13 +55,15 @@ export default function Header() {
   const handleHeroClick = (e) => {
     if (isHomePage) {
       e.preventDefault()
+      // Scroll langsung ke hero
       const element = document.getElementById('hero')
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
     } else {
-      // Jika tidak di homepage, redirect ke homepage
-      window.location.href = '/'
+      // Set flag untuk memberitahu Home component bahwa ini navigasi dari halaman lain
+      sessionStorage.setItem('navigateToHome', 'true')
+      // Link akan handle navigasi ke "/"
     }
   }
 
@@ -75,8 +90,8 @@ export default function Header() {
         <nav className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <a 
-              href={isHomePage ? "#hero" : "/"} 
+            <Link 
+              to="/"
               onClick={handleHeroClick}
               className="flex items-center space-x-3 group cursor-pointer"
             >
@@ -87,7 +102,7 @@ export default function Header() {
                 </h1>
                 <p className="text-xs text-black mb-0">Jatim Bangkit, Tanpa Mendu</p>
               </div>
-            </a>
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">

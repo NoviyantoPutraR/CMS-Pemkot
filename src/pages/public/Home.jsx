@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import Header from '../../components/public/landing/Header'
 import HeroSection from '../../components/public/landing/HeroSection'
 import HighlightNewsSection from '../../components/public/landing/HighlightNewsSection'
@@ -10,7 +11,32 @@ import QuickAccessSection from '../../components/public/landing/QuickAccessSecti
 import Footer from '../../components/public/landing/Footer'
 
 export default function Home() {
+  const location = useLocation()
   const [activeTab, setActiveTab] = useState('layanan')
+
+  // Scroll to hero when navigating from other pages
+  useEffect(() => {
+    // Check if we came from another page (not initial load)
+    const fromOtherPage = sessionStorage.getItem('navigateToHome')
+    
+    if (fromOtherPage === 'true') {
+      // Clear the flag
+      sessionStorage.removeItem('navigateToHome')
+      
+      // Scroll to top first
+      window.scrollTo({ top: 0, behavior: 'instant' })
+      
+      // Then scroll to hero
+      const timer = setTimeout(() => {
+        const element = document.getElementById('hero')
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 200)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [location.pathname])
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
