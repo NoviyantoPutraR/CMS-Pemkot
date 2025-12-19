@@ -86,4 +86,3 @@ Lihat `PRD.md` untuk dokumentasi lengkap tentang spesifikasi dan requirements.
 ## License
 
 MIT
-
