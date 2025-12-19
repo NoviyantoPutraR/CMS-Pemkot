@@ -213,5 +213,57 @@ export const agendaKotaService = {
       return []
     }
   },
+
+  // Get active count by author (for penulis dashboard)
+  async getActiveCountByAuthor(authorId) {
+    const queryFn = async () => {
+      // RLS will handle filtering by author
+      const { count, error } = await supabase
+        .from('agenda_kota')
+        .select('id', { count: 'planned', head: true })
+        .eq('status', 'published')
+
+      if (error) throw error
+      return count || 0
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.warn('Failed to get active agenda count by author:', error)
+      return 0
+    }
+  },
+
+  // Get stats by author (published and draft)
+  async getStatsByAuthor(authorId) {
+    const queryFn = async () => {
+      // Build base query - shows all data from all authors
+      const buildQuery = (statusFilter = null) => {
+        let query = supabase.from('agenda_kota').select('id', { count: 'planned', head: true })
+        if (statusFilter) {
+          query = query.eq('status', statusFilter)
+        }
+        return query
+      }
+
+      const [publishedResult, draftResult] = await Promise.all([
+        buildQuery('published'),
+        buildQuery('draft'),
+      ])
+
+      return {
+        published: publishedResult.count || 0,
+        draft: draftResult.count || 0,
+      }
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.warn('Failed to get agenda stats by author:', error)
+      return { published: 0, draft: 0 }
+    }
+  },
 }
 

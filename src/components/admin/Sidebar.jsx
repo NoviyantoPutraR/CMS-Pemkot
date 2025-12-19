@@ -42,9 +42,10 @@ const menuItems = [
 
 export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }) {
   const location = useLocation()
-  const { hasPermission, profile } = useAuthStore()
+  const { hasPermission, profile, user } = useAuthStore()
   
   const isSuperadmin = profile?.peran === 'superadmin'
+  const profilePath = `/admin/pengguna/edit/${user?.id}`
   
   // Filter menu berdasarkan permission
   const visibleMenuItems = menuItems.filter(item => {
@@ -121,8 +122,11 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
         }`}>
           {visibleMenuItems.map((item) => {
             const Icon = item.icon
+            // Exclude profile path from Pengguna menu active state
             const isActive = location.pathname === item.path || 
-              (item.path !== '/admin' && location.pathname.startsWith(item.path))
+              (item.path !== '/admin' && 
+               location.pathname.startsWith(item.path) && 
+               location.pathname !== profilePath)
             
             return (
               <Link

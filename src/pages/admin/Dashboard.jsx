@@ -13,6 +13,7 @@ import { layananService } from '../../services/layananService'
 import { pengumumanService } from '../../services/pengumumanService'
 import { penggunaService } from '../../services/penggunaService'
 import DashboardSKPD from './DashboardSKPD'
+import DashboardPenulis from './DashboardPenulis'
 import useAuthStore from '../../store/useAuthStore'
 import { 
   Newspaper, 
@@ -30,7 +31,11 @@ import { ROLES } from '../../utils/constants'
 export default function Dashboard() {
   const { profile } = useAuthStore()
   
-  // Conditional rendering: admin_skpd → DashboardSKPD, superadmin → existing dashboard
+  // Conditional rendering: penulis → DashboardPenulis, admin_skpd → DashboardSKPD, superadmin → existing dashboard
+  if (profile?.peran === ROLES.PENULIS) {
+    return <DashboardPenulis />
+  }
+  
   if (profile?.peran === ROLES.ADMIN_SKPD) {
     return <DashboardSKPD />
   }

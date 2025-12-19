@@ -230,5 +230,35 @@ export const wisataService = {
 
     return withRetry(() => withTimeout(queryFn(), 10000))
   },
+
+  // Get active count by author (for penulis dashboard)
+  async getActiveCountByAuthor(authorId) {
+    const queryFn = async () => {
+      let query = supabase
+        .from('wisata')
+        .select('id', { count: 'planned', head: true })
+        .eq('status', 'published')
+
+      try {
+        const { data: testData } = await supabase.from('wisata').select('author_id').limit(1)
+        if (testData && testData.length > 0 && testData[0].hasOwnProperty('author_id')) {
+          query = query.eq('author_id', authorId)
+        }
+      } catch (e) {
+        // Column doesn't exist, rely on RLS
+      }
+
+      const { count, error } = await query
+      if (error) throw error
+      return count || 0
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.warn('Failed to get active wisata count by author:', error)
+      return 0
+    }
+  },
 }
 

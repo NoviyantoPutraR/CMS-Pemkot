@@ -5,7 +5,6 @@ import { Badge } from '../../components/ui/badge'
 import { Skeleton } from '../../components/ui/skeleton'
 import ContentChart from '../../components/admin/ContentChart'
 import ContentStatus from '../../components/admin/ContentStatus'
-import BudgetSummary from '../../components/admin/BudgetSummary'
 import RecentActivity from '../../components/admin/RecentActivity'
 import { halamanService } from '../../services/halamanService'
 import { layananService } from '../../services/layananService'
@@ -32,9 +31,6 @@ export default function DashboardSKPD() {
   const [drafts, setDrafts] = useState([])
   const [chartData, setChartData] = useState([])
   const [chartLoading, setChartLoading] = useState(false)
-  const [activeYear, setActiveYear] = useState(null)
-  const [totalAnggaran, setTotalAnggaran] = useState(0)
-  const [itemCount, setItemCount] = useState(0)
   const [recentActivities, setRecentActivities] = useState([])
 
   // Generate dummy chart data helper
@@ -73,16 +69,12 @@ export default function DashboardSKPD() {
         halamanStats,
         layananStats,
         perangkatCount,
-        anggaranActiveYear,
-        anggaranAll,
         halamanDrafts,
         layananDrafts,
       ] = await Promise.all([
         halamanService.getStats(),
         layananService.getStats(),
         perangkatDaerahService.getCount(),
-        transparansiAnggaranService.getActiveYear(),
-        transparansiAnggaranService.getAll(),
         halamanService.getDrafts(5),
         layananService.getDrafts(5),
       ])
@@ -98,7 +90,7 @@ export default function DashboardSKPD() {
           draft: layananStats.draft || 0,
         },
         perangkatDaerah: perangkatCount || 0,
-        anggaran: anggaranActiveYear || { tahun: null, status: null },
+        anggaran: { tahun: null, status: null },
       })
 
       // Combine drafts
@@ -106,15 +98,6 @@ export default function DashboardSKPD() {
         .sort((a, b) => new Date(a.dibuat_pada) - new Date(b.dibuat_pada))
         .slice(0, 5)
       setDrafts(allDrafts)
-
-      // Set active year
-      setActiveYear(anggaranActiveYear)
-      
-      // Calculate total anggaran (dummy - karena tidak ada field total di DB)
-      // In real implementation, this would come from the Excel/PDF file
-      // Untuk sekarang, kita set ke 0 atau bisa dihitung dari jumlah item
-      setTotalAnggaran(0)
-      setItemCount(anggaranAll?.length || 0)
 
       // Load recent activities
       await loadRecentActivities()
@@ -145,28 +128,37 @@ export default function DashboardSKPD() {
           id: item.id,
           jenis: 'halaman',
           judul: item.judul,
+          dibuat_pada: item.dibuat_pada,
           diperbarui_pada: item.diperbarui_pada,
         })),
         ...(layananAll.data || []).map(item => ({
           id: item.id,
           jenis: 'layanan',
           judul: item.judul,
+          dibuat_pada: item.dibuat_pada,
           diperbarui_pada: item.diperbarui_pada,
         })),
         ...(perangkatAll.data || []).map(item => ({
           id: item.id,
           jenis: 'perangkat_daerah',
           judul: item.nama_perangkat,
+          dibuat_pada: item.dibuat_pada,
           diperbarui_pada: item.diperbarui_pada,
         })),
         ...transparansiActivity.map(item => ({
           id: item.id,
           jenis: 'transparansi',
           judul: item.judul,
+          dibuat_pada: item.dibuat_pada,
           diperbarui_pada: item.diperbarui_pada,
         })),
       ]
-        .sort((a, b) => new Date(b.diperbarui_pada) - new Date(a.diperbarui_pada))
+        .sort((a, b) => {
+          // Gunakan diperbarui_pada jika ada, jika tidak gunakan dibuat_pada
+          const dateA = new Date(a.diperbarui_pada || a.dibuat_pada || 0)
+          const dateB = new Date(b.diperbarui_pada || b.dibuat_pada || 0)
+          return dateB - dateA // Descending: terbaru di atas
+        })
         .slice(0, 5)
 
       setRecentActivities(activities)
@@ -276,8 +268,8 @@ export default function DashboardSKPD() {
         </p>
       </div>
 
-      {/* Stat Cards - 4 items, Grid 2x2 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Stat Cards - 4 items, Grid 1 baris */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card) => {
           const Icon = card.icon
           return (
@@ -340,22 +332,14 @@ export default function DashboardSKPD() {
         </CardContent>
       </Card>
 
-      {/* Status Konten + Anggaran - Grid 2 columns */}
+      {/* Status Konten + Aktivitas Terakhir - Grid 2 columns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Content Status */}
         <ContentStatus drafts={drafts} loading={loading} />
 
-        {/* Budget Summary */}
-        <BudgetSummary 
-          activeYear={activeYear}
-          totalAnggaran={totalAnggaran}
-          itemCount={itemCount}
-          loading={loading}
-        />
+        {/* Recent Activity */}
+        <RecentActivity activities={recentActivities} loading={loading} />
       </div>
-
-      {/* Recent Activity */}
-      <RecentActivity activities={recentActivities} loading={loading} />
     </div>
   )
 }

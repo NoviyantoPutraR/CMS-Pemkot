@@ -16,6 +16,7 @@ import {
 import { transparansiAnggaranService } from '../../../services/transparansiAnggaranService'
 import { useDebounce } from '../../../hooks/useDebounce'
 import Loading from '../../../components/shared/Loading'
+import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Edit, Trash2, Eye, EyeOff, FileSpreadsheet, FileText, Download, Search } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
@@ -27,6 +28,8 @@ export default function TransparansiList() {
   const [toggling, setToggling] = useState(null)
   const [expandedRowId, setExpandedRowId] = useState(null)
   const [existingYears, setExistingYears] = useState([])
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
   const debouncedSearch = useDebounce(search, 500)
 
   useEffect(() => {
@@ -89,15 +92,24 @@ export default function TransparansiList() {
     }
   }
 
-  const handleDelete = async (id) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus anggaran ini?')) return
-    
+  const handleDelete = (id, tahun) => {
+    setItemToDelete({ id, tahun })
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return
+
     try {
-      await transparansiAnggaranService.delete(id)
+      await transparansiAnggaranService.delete(itemToDelete.id)
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
       loadAnggaran()
     } catch (error) {
       console.error('Error deleting anggaran:', error)
       alert('Gagal menghapus anggaran')
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
     }
   }
 
@@ -294,7 +306,7 @@ export default function TransparansiList() {
                                 size="icon"
                                 onClick={(e) => {
                                   e.stopPropagation()
-                                  handleDelete(item.id)
+                                  handleDelete(item.id, item.tahun)
                                 }}
                                 className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                               >
@@ -382,6 +394,13 @@ export default function TransparansiList() {
           )}
         </CardContent>
       </Card>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={confirmDelete}
+        itemName={itemToDelete?.tahun ? `Anggaran Tahun ${itemToDelete.tahun}` : null}
+      />
     </div>
   )
 }

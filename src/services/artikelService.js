@@ -391,5 +391,110 @@ export const artikelService = {
       return []
     }
   },
+
+  // Get stats by author (for penulis dashboard)
+  async getStatsByAuthor(authorId) {
+    const queryFn = async () => {
+      // Build base query - shows all data from all authors
+      const buildQuery = (statusFilter = null) => {
+        let query = supabase.from('artikel').select('id', { count: 'planned', head: true })
+        if (statusFilter) {
+          query = query.eq('status', statusFilter)
+        }
+        return query
+      }
+
+      const [totalResult, publishedResult, draftResult] = await Promise.all([
+        buildQuery(),
+        buildQuery('published'),
+        buildQuery('draft'),
+      ])
+
+      return {
+        total: totalResult.count || 0,
+        published: publishedResult.count || 0,
+        draft: draftResult.count || 0,
+      }
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.warn('Failed to get artikel stats by author:', error)
+      return { total: 0, published: 0, draft: 0 }
+    }
+  },
+
+  // Get drafts by author
+  async getDraftsByAuthor(authorId, limit = 6) {
+    const queryFn = async () => {
+      const { data, error } = await supabase
+        .from('artikel')
+        .select('id, judul, dibuat_pada, status')
+        .eq('status', 'draft')
+        .order('dibuat_pada', { ascending: true })
+        .limit(limit)
+
+      if (error) throw error
+      return (data || []).map(item => ({ ...item, jenis: 'artikel' }))
+    }
+
+    try {
+      return await withTimeout(queryFn(), 3000)
+    } catch (error) {
+      console.warn('Failed to get drafts by author:', error)
+      return []
+    }
+  },
+
+  // Get published by day by author (for chart)
+  async getPublishedByDayByAuthor(authorId, days = 30) {
+    const queryFn = async () => {
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - days)
+      const startDateISO = startDate.toISOString()
+
+      const { data, error } = await supabase
+        .from('artikel')
+        .select('dipublikasikan_pada')
+        .eq('status', 'published')
+        .gte('dipublikasikan_pada', startDateISO)
+        .order('dipublikasikan_pada', { ascending: true })
+
+      if (error) throw error
+
+      // Group by date
+      const grouped = {}
+      const now = new Date()
+      
+      for (let i = days - 1; i >= 0; i--) {
+        const date = new Date(now)
+        date.setDate(date.getDate() - i)
+        const dateKey = date.toISOString().split('T')[0]
+        grouped[dateKey] = 0
+      }
+
+      ;(data || []).forEach(item => {
+        if (item.dipublikasikan_pada) {
+          const dateKey = item.dipublikasikan_pada.split('T')[0]
+          if (grouped[dateKey] !== undefined) {
+            grouped[dateKey] = (grouped[dateKey] || 0) + 1
+          }
+        }
+      })
+
+      return Object.entries(grouped).map(([date, count]) => ({
+        date,
+        count,
+      }))
+    }
+
+    try {
+      return await withTimeout(queryFn(), 5000)
+    } catch (error) {
+      console.warn('Failed to get published by day by author:', error)
+      return []
+    }
+  },
 }
 

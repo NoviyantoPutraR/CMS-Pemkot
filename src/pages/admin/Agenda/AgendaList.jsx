@@ -16,6 +16,7 @@ import {
 import { agendaKotaService } from '../../../services/agendaKotaService'
 import { useDebounce } from '../../../hooks/useDebounce'
 import Loading from '../../../components/shared/Loading'
+import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Search, Edit, Trash2, Eye, EyeOff, Plus } from 'lucide-react'
 import { formatDateTime } from '../../../utils/formatters'
 import { AGENDA_STATUS } from '../../../utils/constants'
@@ -28,6 +29,8 @@ export default function AgendaList() {
   const [sortOrder, setSortOrder] = useState('asc')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
   const debouncedSearch = useDebounce(search, 500)
 
   useEffect(() => {
@@ -63,15 +66,24 @@ export default function AgendaList() {
     }
   }
 
-  const handleDelete = async (id) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus agenda ini?')) return
-    
+  const handleDelete = (id, judul) => {
+    setItemToDelete({ id, judul })
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return
+
     try {
-      await agendaKotaService.delete(id)
+      await agendaKotaService.delete(itemToDelete.id)
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
       loadAgenda()
     } catch (error) {
       console.error('Error deleting agenda:', error)
       alert('Gagal menghapus agenda')
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
     }
   }
 
@@ -266,7 +278,7 @@ export default function AgendaList() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => handleDelete(item.id)}
+                              onClick={() => handleDelete(item.id, item.judul)}
                               className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -308,6 +320,13 @@ export default function AgendaList() {
           )}
         </CardContent>
       </Card>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={confirmDelete}
+        itemName={itemToDelete?.judul}
+      />
     </div>
   )
 }

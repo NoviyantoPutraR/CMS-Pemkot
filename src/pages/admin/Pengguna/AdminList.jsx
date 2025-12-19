@@ -24,6 +24,7 @@ import {
 import { penggunaService } from '../../../services/penggunaService'
 import { useDebounce } from '../../../hooks/useDebounce'
 import Loading from '../../../components/shared/Loading'
+import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Edit, Trash2, Users, Search, Shield, User, Key, ChevronDown, ChevronUp, UserCog, FileEdit } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 import useAuthStore from '../../../store/useAuthStore'
@@ -44,6 +45,8 @@ export default function AdminList() {
   const [resetPasswordValue, setResetPasswordValue] = useState('')
   const [savingId, setSavingId] = useState(null)
   const [userPermissionsMap, setUserPermissionsMap] = useState({}) // Map userId -> permissions array
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
   
   const { user, profile } = useAuthStore()
   const debouncedSearch = useDebounce(search, 500)
@@ -129,22 +132,29 @@ export default function AdminList() {
   }
 
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id, email) => {
     if (id === user?.id) {
       alert('Anda tidak dapat menghapus akun sendiri')
       return
     }
     
-    if (!confirm('Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.')) {
-      return
-    }
-    
+    setItemToDelete({ id, email })
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return
+
     try {
-      await penggunaService.delete(id)
+      await penggunaService.delete(itemToDelete.id)
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
       loadPengguna()
     } catch (error) {
       console.error('Error deleting pengguna:', error)
       alert('Gagal menghapus pengguna')
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
     }
   }
 
@@ -366,7 +376,7 @@ export default function AdminList() {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => handleDelete(item.id)}
+                                    onClick={() => handleDelete(item.id, item.email)}
                                     className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                                     title="Hapus"
                                   >
@@ -520,6 +530,14 @@ export default function AdminList() {
           </Button>
         </DialogFooter>
       </Dialog>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={confirmDelete}
+        itemName={itemToDelete?.email}
+        description="Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan."
+      />
     </div>
   )
 }

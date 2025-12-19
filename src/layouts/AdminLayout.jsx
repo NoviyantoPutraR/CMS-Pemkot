@@ -4,12 +4,28 @@ import Sidebar from '../components/admin/Sidebar'
 import Navbar from '../components/admin/Navbar'
 import Breadcrumb from '../components/shared/Breadcrumb'
 import { generateBreadcrumbFromRoute } from '../utils/breadcrumbHelper'
+import useAuthStore from '../store/useAuthStore'
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const location = useLocation()
-  const breadcrumbItems = generateBreadcrumbFromRoute(location.pathname, true)
+  const { user } = useAuthStore()
+  
+  // Check if current path is user's own profile page
+  const profilePath = `/admin/pengguna/edit/${user?.id}`
+  const isOwnProfile = location.pathname === profilePath
+  
+  // Check if pathname contains "edit" or "tambah" (only show breadcrumb on edit/add pages)
+  const isEditOrTambahPage = location.pathname.includes('/edit/') || location.pathname.includes('/tambah')
+  
+  // Generate breadcrumb - use custom for profile page
+  const breadcrumbItems = isOwnProfile 
+    ? [{ label: 'Profil Saya', href: profilePath, current: true }]
+    : generateBreadcrumbFromRoute(location.pathname, true)
+  
+  // Only show breadcrumb on edit/tambah pages, but not on profile page
+  const shouldShowBreadcrumb = isEditOrTambahPage && !isOwnProfile && breadcrumbItems.length > 0
 
   // Load collapse state from localStorage
   useEffect(() => {
@@ -39,7 +55,7 @@ export default function AdminLayout({ children }) {
       <div className={`transition-all duration-300 ease-in-out ${isCollapsed ? 'lg:pl-20' : 'lg:pl-64'}`}>
         <Navbar onMenuClick={() => setSidebarOpen(true)} />
         <main className="p-6 bg-background">
-          {breadcrumbItems.length > 1 && (
+          {shouldShowBreadcrumb && (
             <Breadcrumb items={breadcrumbItems} homeHref="/admin" />
           )}
           {children}

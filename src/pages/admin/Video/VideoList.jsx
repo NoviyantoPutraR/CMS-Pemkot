@@ -16,6 +16,7 @@ import {
 import { videoService } from '../../../services/videoService'
 import { useDebounce } from '../../../hooks/useDebounce'
 import Loading from '../../../components/shared/Loading'
+import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
@@ -26,6 +27,8 @@ export default function VideoList() {
   const [selectedStatus, setSelectedStatus] = useState('')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
   const debouncedSearch = useDebounce(search, 500)
 
   useEffect(() => {
@@ -60,15 +63,24 @@ export default function VideoList() {
     }
   }
 
-  const handleDelete = async (id) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus video ini?')) return
-    
+  const handleDelete = (id, judul) => {
+    setItemToDelete({ id, judul })
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return
+
     try {
-      await videoService.delete(id)
+      await videoService.delete(itemToDelete.id)
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
       loadVideos()
     } catch (error) {
       console.error('Error deleting video:', error)
       alert('Gagal menghapus video')
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
     }
   }
 
@@ -217,7 +229,7 @@ export default function VideoList() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => handleDelete(item.id)}
+                              onClick={() => handleDelete(item.id, item.judul)}
                               className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -259,6 +271,13 @@ export default function VideoList() {
           )}
         </CardContent>
       </Card>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={confirmDelete}
+        itemName={itemToDelete?.judul}
+      />
     </div>
   )
 }

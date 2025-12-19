@@ -210,5 +210,60 @@ export const videoService = {
 
     return withRetry(() => withTimeout(queryFn(), 10000))
   },
+
+  // Get stats by author (for penulis dashboard)
+  async getStatsByAuthor(authorId) {
+    const queryFn = async () => {
+      // Build base query - shows all data from all authors
+      const buildQuery = (statusFilter = null) => {
+        let query = supabase.from('video').select('id', { count: 'planned', head: true })
+        if (statusFilter) {
+          query = query.eq('status', statusFilter)
+        }
+        return query
+      }
+
+      const [totalResult, publishedResult, draftResult] = await Promise.all([
+        buildQuery(),
+        buildQuery('published'),
+        buildQuery('draft'),
+      ])
+
+      return {
+        total: totalResult.count || 0,
+        published: publishedResult.count || 0,
+        draft: draftResult.count || 0,
+      }
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.warn('Failed to get video stats by author:', error)
+      return { total: 0, published: 0, draft: 0 }
+    }
+  },
+
+  // Get drafts by author
+  async getDraftsByAuthor(authorId, limit = 6) {
+    const queryFn = async () => {
+      const { data, error } = await supabase
+        .from('video')
+        .select('id, judul, dibuat_pada, status')
+        .eq('status', 'draft')
+        .order('dibuat_pada', { ascending: true })
+        .limit(limit)
+
+      if (error) throw error
+      return (data || []).map(item => ({ ...item, jenis: 'video' }))
+    }
+
+    try {
+      return await withTimeout(queryFn(), 3000)
+    } catch (error) {
+      console.warn('Failed to get drafts by author:', error)
+      return []
+    }
+  },
 }
 
