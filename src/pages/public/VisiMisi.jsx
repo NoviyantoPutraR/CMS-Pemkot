@@ -142,29 +142,21 @@ export default function VisiMisi() {
   ]
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-[#0052FF] to-[#0039CC] py-20 overflow-hidden">
-        {/* Wave decoration di bagian bawah */}
-        <div className="absolute bottom-0 left-0 right-0 -mb-px">
-          <svg
-            viewBox="0 0 1440 120"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-16 text-white"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-              fill="white"
-            />
-          </svg>
-        </div>
+    <div className="relative min-h-screen overflow-x-hidden">
+      {/* Background Gradient (sama seperti halaman transparansi) */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-200 via-blue-50 to-[#F8F9FA]"></div>
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-l from-blue-200 via-blue-100 to-transparent rounded-full blur-3xl opacity-40"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-[800px] h-full bg-gradient-to-l from-blue-200 via-blue-100 to-transparent rounded-full blur-3xl opacity-30 -translate-x-1/4"></div>
+      </div>
 
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <section className="relative py-16 lg:py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Breadcrumb */}
           <motion.div
-            className="mb-8 [&_a]:text-white/80 [&_a:hover]:text-white [&_span]:text-white/60 [&_svg]:text-white/60"
+            className="mb-8"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -175,7 +167,7 @@ export default function VisiMisi() {
           {/* Hero Content */}
           <div className="max-w-4xl">
             <motion.h1
-              className="font-poppins text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight"
+              className="font-poppins text-4xl lg:text-5xl font-bold text-primary-blue mb-6 leading-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
@@ -183,7 +175,7 @@ export default function VisiMisi() {
               Visi & Misi
             </motion.h1>
             <motion.p
-              className="text-lg text-white/90 mb-8 leading-relaxed"
+              className="text-lg text-gray-700 mb-8 leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
@@ -288,6 +280,7 @@ export default function VisiMisi() {
           </div>
         </motion.section>
       )}
+      </div>
     </div>
   )
 }

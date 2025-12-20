@@ -30,12 +30,12 @@ export const agendaKotaService = {
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999)
 
       const [totalResult, publishedResult, draftResult, thisMonthResult] = await Promise.all([
-        supabase.from('agenda_kota').select('id', { count: 'planned', head: true }),
-        supabase.from('agenda_kota').select('id', { count: 'planned', head: true }).eq('status', 'published'),
-        supabase.from('agenda_kota').select('id', { count: 'planned', head: true }).eq('status', 'draft'),
+        supabase.from('agenda_kota').select('id', { count: 'exact', head: true }),
+        supabase.from('agenda_kota').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('agenda_kota').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
         supabase
           .from('agenda_kota')
-          .select('id', { count: 'planned', head: true })
+          .select('id', { count: 'exact', head: true })
           .eq('status', 'published')
           .gte('tanggal_mulai', startOfMonth.toISOString())
           .lte('tanggal_mulai', endOfMonth.toISOString()),

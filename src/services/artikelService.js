@@ -33,10 +33,10 @@ export const artikelService = {
       const startOfMonthISO = startOfMonth.toISOString()
 
       const [totalResult, publishedResult, draftResult, thisMonthResult] = await Promise.all([
-        supabase.from('artikel').select('id', { count: 'planned', head: true }),
-        supabase.from('artikel').select('id', { count: 'planned', head: true }).eq('status', 'published'),
-        supabase.from('artikel').select('id', { count: 'planned', head: true }).eq('status', 'draft'),
-        supabase.from('artikel').select('id', { count: 'planned', head: true })
+        supabase.from('artikel').select('id', { count: 'exact', head: true }),
+        supabase.from('artikel').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('artikel').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
+        supabase.from('artikel').select('id', { count: 'exact', head: true })
           .eq('status', 'published')
           .gte('dibuat_pada', startOfMonthISO),
       ])

@@ -280,8 +280,8 @@ export const penggunaService = {
   async getAdminStats() {
     const queryFn = async () => {
       const [totalResult, nonaktifResult] = await Promise.all([
-        supabase.from('pengguna').select('id', { count: 'planned', head: true }),
-        supabase.from('pengguna').select('id', { count: 'planned', head: true }).eq('aktif', false),
+        supabase.from('pengguna').select('id', { count: 'exact', head: true }),
+        supabase.from('pengguna').select('id', { count: 'exact', head: true }).eq('aktif', false),
       ])
 
       return {

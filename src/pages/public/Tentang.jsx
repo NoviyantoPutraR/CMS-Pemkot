@@ -56,29 +56,23 @@ export default function Tentang() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA]">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-[#0052FF] to-[#0039CC] py-20 overflow-hidden">
-        {/* Decorative wave at bottom */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg
-            className="w-full h-16"
-            viewBox="0 0 1440 80"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0,64 C240,48 480,32 720,40 C960,48 1200,56 1440,48 L1440,80 L0,80 Z"
-              fill="#F8F9FA"
-            />
-          </svg>
+      <section className="relative overflow-hidden">
+        {/* Background Gradient dengan Decorative Blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+          {/* Gradasi utama dari atas ke bawah */}
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-200 via-blue-50 to-[#F8F9FA]"></div>
+          {/* Dekorasi lingkaran kiri */}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-l from-blue-200 via-blue-100 to-transparent rounded-full blur-3xl opacity-40"></div>
+          {/* Dekorasi lingkaran kanan */}
+          <div className="absolute right-0 top-0 bottom-0 w-[800px] h-full bg-gradient-to-l from-blue-200 via-blue-100 to-transparent rounded-full blur-3xl opacity-30 -translate-x-1/4"></div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
           {/* Breadcrumb */}
           <motion.div
-            className="mb-8 [&_a]:text-white/90 [&_a:hover]:text-white [&_span]:text-white/80 [&_svg]:text-white/70"
+            className="mb-8"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -86,9 +80,9 @@ export default function Tentang() {
             <Breadcrumb items={breadcrumbItems} homeHref="/" />
           </motion.div>
 
-          <div className="max-w-4xl mx-auto text-center text-white">
+          <div className="max-w-4xl mx-auto text-center">
             <motion.h1
-              className="text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+              className="text-5xl lg:text-6xl font-bold mb-6 leading-tight text-primary-blue"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
@@ -96,7 +90,7 @@ export default function Tentang() {
               Tentang Kami
             </motion.h1>
             <motion.p
-              className="text-xl lg:text-2xl mb-8 text-white/90 leading-relaxed"
+              className="text-xl lg:text-2xl mb-8 text-gray-700 leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
