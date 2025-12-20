@@ -238,7 +238,7 @@ export const halamanService = {
       // Untuk dashboard SKPD, kita anggap semua halaman adalah "published"
       const { count, error } = await supabase
         .from('halaman')
-        .select('id', { count: 'planned', head: true })
+        .select('id', { count: 'exact', head: true })
       
       if (error) throw error
       

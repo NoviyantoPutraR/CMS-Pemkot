@@ -40,7 +40,7 @@ const menuItems = [
   { path: '/admin/pengaturan', label: 'Pengaturan', icon: Settings, permission: PAGE_CODES.PENGATURAN, group: 'pengaturan' },
 ]
 
-export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }) {
+export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, showLogoutConfirm }) {
   const location = useLocation()
   const { hasPermission, profile, user } = useAuthStore()
   
@@ -79,6 +79,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
         w-64
+        ${showLogoutConfirm ? 'opacity-50' : 'opacity-100'}
       `}>
         {/* Header - Fixed di atas */}
         <div className={`flex-shrink-0 h-[68px] flex items-center transition-all duration-300 ease-in-out ${

@@ -26,7 +26,7 @@ export default function DashboardSKPD() {
     halaman: { published: 0, draft: 0 },
     layanan: { published: 0, draft: 0 },
     perangkatDaerah: 0,
-    anggaran: { tahun: null, status: null },
+    anggaran: 0,
   })
   const [drafts, setDrafts] = useState([])
   const [chartData, setChartData] = useState([])
@@ -69,12 +69,14 @@ export default function DashboardSKPD() {
         halamanStats,
         layananStats,
         perangkatCount,
+        anggaranCount,
         halamanDrafts,
         layananDrafts,
       ] = await Promise.all([
         halamanService.getStats(),
         layananService.getStats(),
         perangkatDaerahService.getCount(),
+        transparansiAnggaranService.getCount(),
         halamanService.getDrafts(5),
         layananService.getDrafts(5),
       ])
@@ -90,7 +92,7 @@ export default function DashboardSKPD() {
           draft: layananStats.draft || 0,
         },
         perangkatDaerah: perangkatCount || 0,
-        anggaran: { tahun: null, status: null },
+        anggaran: anggaranCount || 0,
       })
 
       // Combine drafts
@@ -250,8 +252,7 @@ export default function DashboardSKPD() {
     },
     {
       title: 'Anggaran',
-      value: stats.anggaran.tahun || '-',
-      description: stats.anggaran.tahun ? `Tahun ${stats.anggaran.tahun}` : 'Belum ada tahun aktif',
+      value: stats.anggaran,
       icon: FileSpreadsheet,
       color: 'text-chart-4',
       href: '/admin/transparansi',
@@ -294,18 +295,7 @@ export default function DashboardSKPD() {
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center gap-2">
-                      <div className="text-3xl font-bold text-foreground">{card.value}</div>
-                      {card.showWarning && (
-                        <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800">
-                          <AlertCircle className="h-3 w-3 mr-1" />
-                          Draft
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {card.description}
-                    </p>
+                    <div className="text-3xl font-bold text-foreground">{card.value}</div>
                   </>
                 )}
               </CardContent>

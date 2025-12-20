@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import useAuthStore from '../../store/useAuthStore'
 import { Button } from '../ui/button'
@@ -8,11 +7,10 @@ import { LogOut, User, Menu, Moon, Sun, AlertTriangle, Shield, UserCog, FileEdit
 import { useTheme } from '../../hooks/useTheme'
 import { ROLES, ROLE_LABELS } from '../../utils/constants'
 
-export default function Navbar({ onMenuClick }) {
+export default function Navbar({ onMenuClick, showLogoutConfirm, setShowLogoutConfirm }) {
   const { profile, signOut } = useAuthStore()
   const navigate = useNavigate()
   const { isDark, toggleTheme } = useTheme()
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
 
   const handleLogout = async () => {
     await signOut()

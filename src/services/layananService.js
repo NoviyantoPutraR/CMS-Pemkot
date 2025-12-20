@@ -50,9 +50,9 @@ export const layananService = {
   async getStats() {
     const queryFn = async () => {
       const [totalResult, publishedResult, draftResult] = await Promise.all([
-        supabase.from('layanan').select('id', { count: 'planned', head: true }),
-        supabase.from('layanan').select('id', { count: 'planned', head: true }).eq('status', 'published'),
-        supabase.from('layanan').select('id', { count: 'planned', head: true }).eq('status', 'draft'),
+        supabase.from('layanan').select('id', { count: 'exact', head: true }),
+        supabase.from('layanan').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('layanan').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
       ])
 
       return {

@@ -27,7 +27,7 @@ export const transparansiAnggaranService = {
     const queryFn = async () => {
       const { count, error } = await supabase
         .from('transparansi_anggaran')
-        .select('id', { count: 'planned', head: true })
+        .select('id', { count: 'exact', head: true })
       
       if (error) throw error
       return count || 0

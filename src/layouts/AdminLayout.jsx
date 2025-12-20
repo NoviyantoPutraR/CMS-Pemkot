@@ -9,6 +9,7 @@ import useAuthStore from '../store/useAuthStore'
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const location = useLocation()
   const { user } = useAuthStore()
   
@@ -51,9 +52,14 @@ export default function AdminLayout({ children }) {
         onClose={() => setSidebarOpen(false)}
         isCollapsed={isCollapsed}
         onToggleCollapse={toggleCollapse}
+        showLogoutConfirm={showLogoutConfirm}
       />
       <div className={`transition-all duration-300 ease-in-out ${isCollapsed ? 'lg:pl-20' : 'lg:pl-64'}`}>
-        <Navbar onMenuClick={() => setSidebarOpen(true)} />
+        <Navbar 
+          onMenuClick={() => setSidebarOpen(true)} 
+          showLogoutConfirm={showLogoutConfirm}
+          setShowLogoutConfirm={setShowLogoutConfirm}
+        />
         <main className="p-6 bg-background">
           {shouldShowBreadcrumb && (
             <Breadcrumb items={breadcrumbItems} homeHref="/admin" />
