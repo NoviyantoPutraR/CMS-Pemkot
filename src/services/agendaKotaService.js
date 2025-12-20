@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase, supabaseAdmin } from './supabase'
 
 async function withTimeout(promise, timeoutMs = 10000) {
   const timeout = new Promise((_, reject) => {
@@ -53,6 +53,67 @@ export const agendaKotaService = {
       return await withTimeout(queryFn(), 2000)
     } catch (error) {
       console.warn('Failed to get agenda stats:', error)
+      return { total: 0, published: 0, draft: 0, thisMonth: 0 }
+    }
+  },
+
+  // Get stats agenda dengan admin client (bypass RLS) - untuk dashboard penulis
+  async getStatsAdmin() {
+    if (!supabaseAdmin) {
+      console.warn('⚠️ supabaseAdmin not available, falling back to regular getStats()')
+      console.warn('⚠️ Make sure VITE_SUPABASE_SERVICE_ROLE_KEY is set in .env file')
+      return this.getStats()
+    }
+
+    console.log('✅ Using supabaseAdmin for agenda stats (bypassing RLS)')
+
+    const queryFn = async () => {
+      const now = new Date()
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999)
+
+      const [totalResult, publishedResult, draftResult, thisMonthResult] = await Promise.all([
+        supabaseAdmin.from('agenda_kota').select('id', { count: 'exact', head: true }),
+        supabaseAdmin.from('agenda_kota').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        supabaseAdmin.from('agenda_kota').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
+        supabaseAdmin
+          .from('agenda_kota')
+          .select('id', { count: 'exact', head: true })
+          .eq('status', 'published')
+          .gte('tanggal_mulai', startOfMonth.toISOString())
+          .lte('tanggal_mulai', endOfMonth.toISOString()),
+      ])
+
+      // Log errors if any
+      if (totalResult.error) {
+        console.error('❌ Error getting total agenda count:', totalResult.error)
+      }
+      if (publishedResult.error) {
+        console.error('❌ Error getting published agenda count:', publishedResult.error)
+      }
+      if (draftResult.error) {
+        console.error('❌ Error getting draft agenda count:', draftResult.error)
+      }
+      if (thisMonthResult.error) {
+        console.error('❌ Error getting this month agenda count:', thisMonthResult.error)
+      }
+
+      const stats = {
+        total: totalResult.count || 0,
+        published: publishedResult.count || 0,
+        draft: draftResult.count || 0,
+        thisMonth: thisMonthResult.count || 0,
+      }
+
+      console.log('📊 Agenda stats from database:', stats)
+      return stats
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.error('❌ Failed to get agenda stats (admin):', error)
+      console.error('❌ Error details:', error.message, error.stack)
       return { total: 0, published: 0, draft: 0, thisMonth: 0 }
     }
   },

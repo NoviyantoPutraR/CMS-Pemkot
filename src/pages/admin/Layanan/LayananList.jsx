@@ -15,12 +15,14 @@ import {
 } from '../../../components/ui/table'
 import { layananService } from '../../../services/layananService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
 export default function LayananList() {
+  const { toastSuccess, toastError } = useToast()
   const [layanan, setLayanan] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -59,10 +61,11 @@ export default function LayananList() {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       await layananService.toggleStatus(id, currentStatus)
+      toastSuccess('TOGGLE_STATUS')
       loadLayanan()
     } catch (error) {
       console.error('Error toggling status:', error)
-      alert('Gagal mengubah status layanan')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status layanan')
     }
   }
 
@@ -76,12 +79,13 @@ export default function LayananList() {
 
     try {
       await layananService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadLayanan()
     } catch (error) {
       console.error('Error deleting layanan:', error)
-      alert('Gagal menghapus layanan')
+      toastError('DELETE', error.message || 'Gagal menghapus layanan')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

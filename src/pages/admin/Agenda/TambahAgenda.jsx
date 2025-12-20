@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { agendaSchema } from '../../../utils/validators'
 import { agendaKotaService } from '../../../services/agendaKotaService'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -15,6 +16,7 @@ import { AGENDA_STATUS } from '../../../utils/constants'
 export default function TambahAgenda() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -47,10 +49,11 @@ export default function TambahAgenda() {
 
       await agendaKotaService.create(agendaData)
 
+      toastSuccess('CREATE')
       navigate('/admin/agenda')
     } catch (error) {
       console.error('Error creating agenda:', error)
-      alert('Gagal menambah agenda: ' + (error.message || 'Terjadi kesalahan'))
+      toastError('CREATE', error.message || 'Gagal menambah agenda')
     } finally {
       setLoading(false)
     }

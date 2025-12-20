@@ -15,12 +15,14 @@ import {
 } from '../../../components/ui/table'
 import { perangkatDaerahService } from '../../../services/perangkatDaerahService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff, Grid3x3, List } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
 export default function PerangkatDaerahList() {
+  const { toastSuccess, toastError } = useToast()
   const [perangkat, setPerangkat] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -49,7 +51,7 @@ export default function PerangkatDaerahList() {
       setTotalPages(result.totalPages)
     } catch (error) {
       console.error('Error loading perangkat daerah:', error)
-      alert('Gagal memuat data perangkat daerah')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data perangkat daerah')
     } finally {
       setLoading(false)
     }
@@ -58,10 +60,11 @@ export default function PerangkatDaerahList() {
   const handleToggleAktif = async (id, currentAktif) => {
     try {
       await perangkatDaerahService.toggleAktif(id, currentAktif)
+      toastSuccess('TOGGLE_STATUS')
       loadPerangkat()
     } catch (error) {
       console.error('Error toggling aktif:', error)
-      alert('Gagal mengubah status perangkat daerah')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status perangkat daerah')
     }
   }
 
@@ -75,12 +78,13 @@ export default function PerangkatDaerahList() {
 
     try {
       await perangkatDaerahService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadPerangkat()
     } catch (error) {
       console.error('Error deleting perangkat daerah:', error)
-      alert('Gagal menghapus perangkat daerah')
+      toastError('DELETE', error.message || 'Gagal menghapus perangkat daerah')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

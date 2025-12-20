@@ -15,12 +15,14 @@ import {
 } from '../../../components/ui/table'
 import { transparansiAnggaranService } from '../../../services/transparansiAnggaranService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Edit, Trash2, Eye, EyeOff, FileSpreadsheet, FileText, Download, Search } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
 export default function TransparansiList() {
+  const { toastSuccess, toastError } = useToast()
   const [anggaran, setAnggaran] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -63,7 +65,7 @@ export default function TransparansiList() {
       setAnggaran(filteredData)
     } catch (error) {
       console.error('Error loading transparansi anggaran:', error)
-      alert('Gagal memuat data transparansi anggaran')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data transparansi anggaran')
     } finally {
       setLoading(false)
     }
@@ -83,10 +85,11 @@ export default function TransparansiList() {
     try {
       setToggling(id)
       await transparansiAnggaranService.toggleStatus(id, currentStatus)
+      toastSuccess('TOGGLE_STATUS')
       loadAnggaran()
     } catch (error) {
       console.error('Error toggling status:', error)
-      alert('Gagal mengubah status anggaran')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status anggaran')
     } finally {
       setToggling(null)
     }
@@ -102,12 +105,13 @@ export default function TransparansiList() {
 
     try {
       await transparansiAnggaranService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadAnggaran()
     } catch (error) {
       console.error('Error deleting anggaran:', error)
-      alert('Gagal menghapus anggaran')
+      toastError('DELETE', error.message || 'Gagal menghapus anggaran')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

@@ -6,6 +6,7 @@ import { layananSchema } from '../../../utils/validators'
 import { layananService } from '../../../services/layananService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -19,6 +20,7 @@ export default function TambahLayanan() {
   const [iconFile, setIconFile] = useState(null)
   const [iconPreview, setIconPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -52,7 +54,7 @@ export default function TambahLayanan() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -82,10 +84,11 @@ export default function TambahLayanan() {
         icon_url: iconUrl,
       })
 
+      toastSuccess('CREATE')
       navigate('/admin/layanan')
     } catch (error) {
       console.error('Error creating layanan:', error)
-      alert('Gagal menambah layanan: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah layanan')
     } finally {
       setLoading(false)
     }

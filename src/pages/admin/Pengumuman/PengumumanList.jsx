@@ -15,12 +15,14 @@ import {
 } from '../../../components/ui/table'
 import { pengumumanService } from '../../../services/pengumumanService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff, FileText } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
 export default function PengumumanList() {
+  const { toastSuccess, toastError } = useToast()
   const [pengumuman, setPengumuman] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -56,10 +58,11 @@ export default function PengumumanList() {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       await pengumumanService.toggleStatus(id, currentStatus)
+      toastSuccess('TOGGLE_STATUS')
       loadPengumuman()
     } catch (error) {
       console.error('Error toggling status:', error)
-      alert('Gagal mengubah status')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status')
     }
   }
 
@@ -73,12 +76,13 @@ export default function PengumumanList() {
 
     try {
       await pengumumanService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadPengumuman()
     } catch (error) {
       console.error('Error deleting pengumuman:', error)
-      alert('Gagal menghapus pengumuman')
+      toastError('DELETE', error.message || 'Gagal menghapus pengumuman')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

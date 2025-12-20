@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { transparansiAnggaranSchema } from '../../../utils/validators'
 import { transparansiAnggaranService } from '../../../services/transparansiAnggaranService'
 import { storageService } from '../../../services/storageService'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -18,6 +19,7 @@ export default function TambahTransparansi() {
   const [excelFile, setExcelFile] = useState(null)
   const [pdfFile, setPdfFile] = useState(null)
   const navigate = useNavigate()
+  const { toastSuccess, toastError, toastWarning } = useToast()
 
   const {
     register,
@@ -42,7 +44,7 @@ export default function TambahTransparansi() {
         storageService.validateExcelFile(file)
         setExcelFile(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
         e.target.value = ''
       }
     }
@@ -55,7 +57,7 @@ export default function TambahTransparansi() {
         storageService.validatePdfFile(file)
         setPdfFile(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
         e.target.value = ''
       }
     }
@@ -75,7 +77,8 @@ export default function TambahTransparansi() {
 
       // Validasi file Excel wajib
       if (!excelFile) {
-        alert('File Excel wajib diupload')
+        toastError('VALIDATION', 'File Excel wajib diupload')
+        setLoading(false)
         return
       }
 
@@ -83,7 +86,7 @@ export default function TambahTransparansi() {
       try {
         const existing = await transparansiAnggaranService.getByTahun(data.tahun)
         if (existing) {
-          alert(`Anggaran untuk tahun ${data.tahun} sudah ada`)
+          toastWarning('IRREVERSIBLE', `Anggaran untuk tahun ${data.tahun} sudah ada`)
           setLoading(false)
           return
         }
@@ -127,10 +130,11 @@ export default function TambahTransparansi() {
       // Create anggaran
       await transparansiAnggaranService.create(anggaranData)
 
+      toastSuccess('CREATE')
       navigate('/admin/transparansi')
     } catch (error) {
       console.error('Error creating transparansi anggaran:', error)
-      alert('Gagal menambah transparansi anggaran: ' + (error.message || 'Terjadi kesalahan'))
+      toastError('CREATE', error.message || 'Gagal menambah transparansi anggaran')
     } finally {
       setLoading(false)
     }

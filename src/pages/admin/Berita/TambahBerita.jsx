@@ -6,6 +6,7 @@ import { beritaSchema } from '../../../utils/validators'
 import { beritaService } from '../../../services/beritaService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -20,6 +21,7 @@ export default function TambahBerita() {
   const [thumbnailFile, setThumbnailFile] = useState(null)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -56,7 +58,7 @@ export default function TambahBerita() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -81,10 +83,11 @@ export default function TambahBerita() {
         thumbnail_url: thumbnailUrl,
       })
 
+      toastSuccess('CREATE')
       navigate('/admin/berita')
     } catch (error) {
       console.error('Error creating berita:', error)
-      alert('Gagal menambah berita: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah berita')
     } finally {
       setLoading(false)
     }

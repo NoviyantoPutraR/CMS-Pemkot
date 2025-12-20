@@ -23,6 +23,7 @@ import {
 } from '../../../components/ui/dialog'
 import { penggunaService } from '../../../services/penggunaService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Edit, Trash2, Users, Search, Shield, User, Key, ChevronDown, ChevronUp, UserCog, FileEdit } from 'lucide-react'
@@ -33,6 +34,7 @@ import { ROLES, ROLE_LABELS } from '../../../utils/constants'
 import { canManageUsers } from '../../../utils/permissionHelper'
 
 export default function AdminList() {
+  const { toastSuccess, toastError, toastWarning } = useToast()
   const [pengguna, setPengguna] = useState([])
   const [filteredPengguna, setFilteredPengguna] = useState([])
   const [loading, setLoading] = useState(true)
@@ -100,7 +102,7 @@ export default function AdminList() {
       setUserPermissionsMap(permissionsMap)
     } catch (error) {
       console.error('Error loading pengguna:', error)
-      alert('Gagal memuat data pengguna: ' + error.message)
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data pengguna')
     } finally {
       setLoading(false)
     }
@@ -134,7 +136,7 @@ export default function AdminList() {
 
   const handleDelete = (id, email) => {
     if (id === user?.id) {
-      alert('Anda tidak dapat menghapus akun sendiri')
+      toastWarning('IRREVERSIBLE', 'Anda tidak dapat menghapus akun sendiri')
       return
     }
     
@@ -147,12 +149,13 @@ export default function AdminList() {
 
     try {
       await penggunaService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadPengguna()
     } catch (error) {
       console.error('Error deleting pengguna:', error)
-      alert('Gagal menghapus pengguna')
+      toastError('DELETE', error.message || 'Gagal menghapus pengguna')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }
@@ -166,20 +169,20 @@ export default function AdminList() {
 
   const submitResetPassword = async () => {
     if (!resetPasswordValue || resetPasswordValue.length < 8) {
-      alert('Password harus minimal 8 karakter')
+      toastError('VALIDATION', 'Password harus minimal 8 karakter')
       return
     }
 
     try {
       setSavingId(resetPasswordUserId)
       await penggunaService.updatePassword(resetPasswordUserId, resetPasswordValue)
+      toastSuccess('RESET_PASSWORD')
       setShowResetPasswordModal(false)
       setResetPasswordUserId(null)
       setResetPasswordValue('')
-      alert('Password berhasil direset')
     } catch (error) {
       console.error('Error resetting password:', error)
-      alert('Gagal mereset password: ' + error.message)
+      toastError('RESET_PASSWORD', error.message || 'Gagal mereset password')
     } finally {
       setSavingId(null)
     }

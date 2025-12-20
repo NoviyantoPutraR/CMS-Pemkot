@@ -6,6 +6,7 @@ import { beritaSchema } from '../../../utils/validators'
 import { beritaService } from '../../../services/beritaService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -24,6 +25,7 @@ export default function EditBerita() {
   const [thumbnailFile, setThumbnailFile] = useState(null)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -59,7 +61,7 @@ export default function EditBerita() {
       }
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Gagal memuat data berita')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data berita')
     } finally {
       setLoading(false)
     }
@@ -85,7 +87,7 @@ export default function EditBerita() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -110,10 +112,11 @@ export default function EditBerita() {
         thumbnail_url: thumbnailUrl,
       })
 
+      toastSuccess('UPDATE')
       navigate('/admin/berita')
     } catch (error) {
       console.error('Error updating berita:', error)
-      alert('Gagal mengupdate berita: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate berita')
     } finally {
       setSaving(false)
     }

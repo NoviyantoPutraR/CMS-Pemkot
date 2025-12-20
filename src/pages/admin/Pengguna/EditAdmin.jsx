@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { penggunaService } from '../../../services/penggunaService'
 import { hakAksesService } from '../../../services/hakAksesService'
+import { useToast } from '../../../hooks/useToast'
 import useAuthStore from '../../../store/useAuthStore'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
@@ -27,6 +28,7 @@ export default function EditAdmin() {
   const [userPermissions, setUserPermissions] = useState([])
   const [selectedPermissions, setSelectedPermissions] = useState([])
   const navigate = useNavigate()
+  const { toastSuccess, toastError, toastWarning } = useToast()
 
   const isOwnProfile = user?.id === id
   const isSuperAdmin = isSuperadmin(profile?.peran)
@@ -48,10 +50,10 @@ export default function EditAdmin() {
   // Redirect jika tidak punya akses
   useEffect(() => {
     if (!loading && admin && !canEdit) {
-      alert('Anda tidak memiliki akses untuk mengedit profil ini')
+      toastWarning('ACCESS_DENIED', 'Anda tidak memiliki akses untuk mengedit profil ini')
       navigate('/admin/pengguna')
     }
-  }, [loading, admin, canEdit, navigate])
+  }, [loading, admin, canEdit, navigate, toastWarning])
 
   // Schema untuk edit (password optional dan bisa empty string)
   const editAdminSchema = z.object({
@@ -113,7 +115,7 @@ export default function EditAdmin() {
       }
     } catch (error) {
       console.error('Error loading admin:', error)
-      alert('Gagal memuat data pengguna')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data pengguna')
     } finally {
       setLoading(false)
     }
@@ -172,15 +174,14 @@ export default function EditAdmin() {
       // Update profile
       await penggunaService.update(id, updates)
       
+      toastSuccess('UPDATE')
       // Redirect based on role
       if (isSuperAdmin) {
         navigate('/admin/pengguna')
-      } else {
-        alert('Profil berhasil diperbarui')
       }
     } catch (error) {
       console.error('Error updating admin:', error)
-      alert('Gagal mengupdate pengguna: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate pengguna')
     } finally {
       setSaving(false)
     }

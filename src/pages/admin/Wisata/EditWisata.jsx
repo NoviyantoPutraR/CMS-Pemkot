@@ -6,6 +6,7 @@ import { wisataSchema } from '../../../utils/validators'
 import { wisataService } from '../../../services/wisataService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -24,6 +25,7 @@ export default function EditWisata() {
   const [gambarFile, setGambarFile] = useState(null)
   const [gambarPreview, setGambarPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -62,7 +64,7 @@ export default function EditWisata() {
       }
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Gagal memuat data wisata')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data wisata')
     } finally {
       setLoading(false)
     }
@@ -88,7 +90,7 @@ export default function EditWisata() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -117,10 +119,11 @@ export default function EditWisata() {
 
       await wisataService.update(id, wisataData)
 
+      toastSuccess('UPDATE')
       navigate('/admin/wisata')
     } catch (error) {
       console.error('Error updating wisata:', error)
-      alert('Gagal mengupdate wisata: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate wisata')
     } finally {
       setSaving(false)
     }

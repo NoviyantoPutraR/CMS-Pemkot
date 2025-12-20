@@ -15,12 +15,14 @@ import {
 } from '../../../components/ui/table'
 import { videoService } from '../../../services/videoService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
 export default function VideoList() {
+  const { toastSuccess, toastError } = useToast()
   const [videos, setVideos] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -56,10 +58,11 @@ export default function VideoList() {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       await videoService.toggleStatus(id, currentStatus)
+      toastSuccess('TOGGLE_STATUS')
       loadVideos()
     } catch (error) {
       console.error('Error toggling status:', error)
-      alert('Gagal mengubah status')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status')
     }
   }
 
@@ -73,12 +76,13 @@ export default function VideoList() {
 
     try {
       await videoService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadVideos()
     } catch (error) {
       console.error('Error deleting video:', error)
-      alert('Gagal menghapus video')
+      toastError('DELETE', error.message || 'Gagal menghapus video')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

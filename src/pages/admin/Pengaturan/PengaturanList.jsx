@@ -16,11 +16,13 @@ import {
 } from '../../../components/ui/table'
 import { pengaturanSitusService } from '../../../services/pengaturanSitusService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import { Search, Edit, Save, X, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
 export default function PengaturanList() {
+  const { toastSuccess, toastError } = useToast()
   const [pengaturan, setPengaturan] = useState({})
   const [allPengaturan, setAllPengaturan] = useState([])
   const [loading, setLoading] = useState(true)
@@ -53,7 +55,7 @@ export default function PengaturanList() {
       setExpandedGroups(new Set(groups))
     } catch (error) {
       console.error('Error loading pengaturan:', error)
-      alert('Gagal memuat pengaturan')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat pengaturan')
     } finally {
       setLoading(false)
     }
@@ -114,11 +116,12 @@ export default function PengaturanList() {
       setSavingId(item.id)
       await pengaturanSitusService.update(item.id, { nilai: editValue })
       await loadPengaturan()
+      toastSuccess('UPDATE')
       setEditingId(null)
       setEditValue('')
     } catch (error) {
       console.error('Error updating pengaturan:', error)
-      alert('Gagal mengupdate pengaturan: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate pengaturan')
     } finally {
       setSavingId(null)
     }
@@ -130,9 +133,10 @@ export default function PengaturanList() {
       setSavingId(item.id)
       await pengaturanSitusService.update(item.id, { nilai: newValue })
       await loadPengaturan()
+      toastSuccess('UPDATE')
     } catch (error) {
       console.error('Error updating pengaturan:', error)
-      alert('Gagal mengupdate pengaturan: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate pengaturan')
     } finally {
       setSavingId(null)
     }

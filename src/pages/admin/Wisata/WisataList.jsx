@@ -15,12 +15,14 @@ import {
 } from '../../../components/ui/table'
 import { wisataService } from '../../../services/wisataService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
 export default function WisataList() {
+  const { toastSuccess, toastError } = useToast()
   const [wisata, setWisata] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -56,10 +58,11 @@ export default function WisataList() {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       await wisataService.toggleStatus(id, currentStatus)
+      toastSuccess('TOGGLE_STATUS')
       loadWisata()
     } catch (error) {
       console.error('Error toggling status:', error)
-      alert('Gagal mengubah status')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status')
     }
   }
 
@@ -73,12 +76,13 @@ export default function WisataList() {
 
     try {
       await wisataService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadWisata()
     } catch (error) {
       console.error('Error deleting wisata:', error)
-      alert('Gagal menghapus wisata')
+      toastError('DELETE', error.message || 'Gagal menghapus wisata')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

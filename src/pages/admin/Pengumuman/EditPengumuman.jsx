@@ -6,6 +6,7 @@ import { pengumumanSchema } from '../../../utils/validators'
 import { pengumumanService } from '../../../services/pengumumanService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -22,6 +23,7 @@ export default function EditPengumuman() {
   const [saving, setSaving] = useState(false)
   const [lampiranFile, setLampiranFile] = useState(null)
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -53,7 +55,7 @@ export default function EditPengumuman() {
       setValue('tanggal_berlaku_selesai', pengumumanData.tanggal_berlaku_selesai || '')
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Gagal memuat data pengumuman')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data pengumuman')
     } finally {
       setLoading(false)
     }
@@ -74,7 +76,7 @@ export default function EditPengumuman() {
         storageService.validateDocumentFile(file)
         setLampiranFile(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -102,10 +104,11 @@ export default function EditPengumuman() {
 
       await pengumumanService.update(id, pengumumanData)
 
+      toastSuccess('UPDATE')
       navigate('/admin/pengumuman')
     } catch (error) {
       console.error('Error updating pengumuman:', error)
-      alert('Gagal mengupdate pengumuman: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate pengumuman')
     } finally {
       setSaving(false)
     }

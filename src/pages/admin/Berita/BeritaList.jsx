@@ -15,6 +15,7 @@ import {
 } from '../../../components/ui/table'
 import { beritaService } from '../../../services/beritaService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff } from 'lucide-react'
@@ -22,6 +23,7 @@ import { formatDate } from '../../../utils/formatters'
 import { BERITA_STATUS } from '../../../utils/constants'
 
 export default function BeritaList() {
+  const { toastSuccess, toastError } = useToast()
   const [berita, setBerita] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -57,10 +59,11 @@ export default function BeritaList() {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       await beritaService.toggleStatus(id, currentStatus)
+      toastSuccess('TOGGLE_STATUS')
       loadBerita()
     } catch (error) {
       console.error('Error toggling status:', error)
-      alert('Gagal mengubah status berita')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status berita')
     }
   }
 
@@ -74,12 +77,13 @@ export default function BeritaList() {
 
     try {
       await beritaService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadBerita()
     } catch (error) {
       console.error('Error deleting berita:', error)
-      alert('Gagal menghapus berita')
+      toastError('DELETE', error.message || 'Gagal menghapus berita')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { layananSchema } from '../../../utils/validators'
 import { layananService } from '../../../services/layananService'
 import { storageService } from '../../../services/storageService'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -22,6 +23,7 @@ export default function EditLayanan() {
   const [iconFile, setIconFile] = useState(null)
   const [iconPreview, setIconPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -53,7 +55,7 @@ export default function EditLayanan() {
       }
     } catch (error) {
       console.error('Error loading layanan:', error)
-      alert('Gagal memuat data layanan')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data layanan')
     } finally {
       setLoading(false)
     }
@@ -71,7 +73,7 @@ export default function EditLayanan() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -93,10 +95,11 @@ export default function EditLayanan() {
         icon_url: iconUrl,
       })
 
+      toastSuccess('UPDATE')
       navigate('/admin/layanan')
     } catch (error) {
       console.error('Error updating layanan:', error)
-      alert('Gagal mengupdate layanan: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate layanan')
     } finally {
       setSaving(false)
     }

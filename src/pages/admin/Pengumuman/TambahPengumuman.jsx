@@ -6,6 +6,7 @@ import { pengumumanSchema } from '../../../utils/validators'
 import { pengumumanService } from '../../../services/pengumumanService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -18,6 +19,7 @@ export default function TambahPengumuman() {
   const [loading, setLoading] = useState(false)
   const [lampiranFile, setLampiranFile] = useState(null)
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -49,7 +51,7 @@ export default function TambahPengumuman() {
         storageService.validateDocumentFile(file)
         setLampiranFile(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -77,10 +79,11 @@ export default function TambahPengumuman() {
 
       await pengumumanService.create(pengumumanData)
 
+      toastSuccess('CREATE')
       navigate('/admin/pengumuman')
     } catch (error) {
       console.error('Error creating pengumuman:', error)
-      alert('Gagal menambah pengumuman: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah pengumuman')
     } finally {
       setLoading(false)
     }

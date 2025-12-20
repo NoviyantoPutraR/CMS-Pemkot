@@ -6,6 +6,7 @@ import { wisataSchema } from '../../../utils/validators'
 import { wisataService } from '../../../services/wisataService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -20,6 +21,7 @@ export default function TambahWisata() {
   const [gambarFile, setGambarFile] = useState(null)
   const [gambarPreview, setGambarPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -56,7 +58,7 @@ export default function TambahWisata() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -85,10 +87,11 @@ export default function TambahWisata() {
 
       await wisataService.create(wisataData)
 
+      toastSuccess('CREATE')
       navigate('/admin/wisata')
     } catch (error) {
       console.error('Error creating wisata:', error)
-      alert('Gagal menambah wisata: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah wisata')
     } finally {
       setLoading(false)
     }

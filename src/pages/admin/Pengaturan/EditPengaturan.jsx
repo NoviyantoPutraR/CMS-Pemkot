@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { pengaturanSitusSchema } from '../../../utils/validators'
 import { pengaturanSitusService } from '../../../services/pengaturanSitusService'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -17,6 +18,7 @@ export default function EditPengaturan() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -43,7 +45,7 @@ export default function EditPengaturan() {
       setValue('nilai', data.nilai)
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Gagal memuat data pengaturan')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data pengaturan')
     } finally {
       setLoading(false)
     }
@@ -55,10 +57,11 @@ export default function EditPengaturan() {
 
       await pengaturanSitusService.update(id, data)
 
+      toastSuccess('UPDATE')
       navigate('/admin/pengaturan')
     } catch (error) {
       console.error('Error updating pengaturan:', error)
-      alert('Gagal mengupdate pengaturan: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate pengaturan')
     } finally {
       setSaving(false)
     }

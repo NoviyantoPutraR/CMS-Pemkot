@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { adminSchema } from '../../../utils/validators'
 import { penggunaService } from '../../../services/penggunaService'
 import { hakAksesService } from '../../../services/hakAksesService'
+import { useToast } from '../../../hooks/useToast'
 import useAuthStore from '../../../store/useAuthStore'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
@@ -28,6 +29,7 @@ export default function CreateUserModal({ open, onOpenChange, onSuccess }) {
   const [availablePermissions, setAvailablePermissions] = useState([])
   const [selectedPermissions, setSelectedPermissions] = useState([])
   const { profile } = useAuthStore()
+  const { toastSuccess, toastError } = useToast()
 
   const creatableRoles = getCreatableRoles(profile?.peran)
   const defaultRole = creatableRoles[0] || ROLES.PENULIS
@@ -121,13 +123,14 @@ export default function CreateUserModal({ open, onOpenChange, onSuccess }) {
         await penggunaService.assignPermissions(newUser.id, selectedPermissions)
       }
       
+      toastSuccess('CREATE')
       reset()
       setSelectedPermissions([])
       onOpenChange(false)
       onSuccess?.()
     } catch (error) {
       console.error('Error creating user:', error)
-      alert('Gagal menambah pengguna: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah pengguna')
     } finally {
       setLoading(false)
     }

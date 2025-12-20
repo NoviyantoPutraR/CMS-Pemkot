@@ -6,6 +6,7 @@ import { perangkatDaerahSchema } from '../../../utils/validators'
 import { perangkatDaerahService } from '../../../services/perangkatDaerahService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -17,6 +18,7 @@ export default function TambahPerangkatDaerah() {
   const [fotoFile, setFotoFile] = useState(null)
   const [fotoPreview, setFotoPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -54,7 +56,7 @@ export default function TambahPerangkatDaerah() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -95,10 +97,11 @@ export default function TambahPerangkatDaerah() {
       // Create perangkat daerah
       await perangkatDaerahService.create(perangkatData)
 
+      toastSuccess('CREATE')
       navigate('/admin/perangkat-daerah')
     } catch (error) {
       console.error('Error creating perangkat daerah:', error)
-      alert('Gagal menambah perangkat daerah: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah perangkat daerah')
     } finally {
       setLoading(false)
     }

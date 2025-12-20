@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { sosialMediaSchema } from '../../../utils/validators'
 import { sosialMediaService } from '../../../services/sosialMediaService'
 import { storageService } from '../../../services/storageService'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -27,6 +28,7 @@ export default function EditSosialMedia() {
   const [ikonFile, setIkonFile] = useState(null)
   const [ikonPreview, setIkonPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -59,7 +61,7 @@ export default function EditSosialMedia() {
       }
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Gagal memuat data sosial media')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data sosial media')
     } finally {
       setLoading(false)
     }
@@ -77,7 +79,7 @@ export default function EditSosialMedia() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -104,10 +106,11 @@ export default function EditSosialMedia() {
 
       await sosialMediaService.update(id, sosialMediaData)
 
+      toastSuccess('UPDATE')
       navigate('/admin/sosial-media')
     } catch (error) {
       console.error('Error updating sosial media:', error)
-      alert('Gagal mengupdate sosial media: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate sosial media')
     } finally {
       setSaving(false)
     }

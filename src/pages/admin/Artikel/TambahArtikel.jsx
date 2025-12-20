@@ -6,6 +6,7 @@ import { artikelSchema } from '../../../utils/validators'
 import { artikelService } from '../../../services/artikelService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -20,6 +21,7 @@ export default function TambahArtikel() {
   const [thumbnailFile, setThumbnailFile] = useState(null)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -56,7 +58,7 @@ export default function TambahArtikel() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -81,10 +83,11 @@ export default function TambahArtikel() {
         thumbnail_url: thumbnailUrl,
       })
 
+      toastSuccess('CREATE')
       navigate('/admin/artikel')
     } catch (error) {
       console.error('Error creating artikel:', error)
-      alert('Gagal menambah artikel: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah artikel')
     } finally {
       setLoading(false)
     }

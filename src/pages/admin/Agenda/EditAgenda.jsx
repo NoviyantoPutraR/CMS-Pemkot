@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { agendaSchema } from '../../../utils/validators'
 import { agendaKotaService } from '../../../services/agendaKotaService'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -19,6 +20,7 @@ export default function EditAgenda() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -74,7 +76,7 @@ export default function EditAgenda() {
       }
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Gagal memuat data agenda')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data agenda')
     } finally {
       setLoading(false)
     }
@@ -97,10 +99,11 @@ export default function EditAgenda() {
 
       await agendaKotaService.update(id, agendaData)
 
+      toastSuccess('UPDATE')
       navigate('/admin/agenda')
     } catch (error) {
       console.error('Error updating agenda:', error)
-      alert('Gagal mengupdate agenda: ' + (error.message || 'Terjadi kesalahan'))
+      toastError('UPDATE', error.message || 'Gagal mengupdate agenda')
     } finally {
       setSaving(false)
     }

@@ -12,6 +12,7 @@ import {
   TableRow,
 } from '../../../components/ui/table'
 import { sosialMediaService } from '../../../services/sosialMediaService'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import { Edit, CheckCircle, XCircle } from 'lucide-react'
 
@@ -26,6 +27,7 @@ const PLATFORM_NAMES = {
 export default function SosialMediaList() {
   const [sosialMedia, setSosialMedia] = useState([])
   const [loading, setLoading] = useState(true)
+  const { toastError } = useToast()
 
   useEffect(() => {
     loadSosialMedia()
@@ -38,7 +40,7 @@ export default function SosialMediaList() {
       setSosialMedia(data)
     } catch (error) {
       console.error('Error loading sosial media:', error)
-      alert('Gagal memuat sosial media')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat sosial media')
     } finally {
       setLoading(false)
     }

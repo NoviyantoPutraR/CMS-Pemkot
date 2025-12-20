@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase, supabaseAdmin } from './supabase'
 
 async function withTimeout(promise, timeoutMs = 10000) {
   const timeout = new Promise((_, reject) => {
@@ -61,6 +61,53 @@ export const videoService = {
       return await withTimeout(queryFn(), 2000)
     } catch (error) {
       console.warn('Failed to get video stats:', error)
+      return { total: 0, published: 0, draft: 0 }
+    }
+  },
+
+  // Get stats video dengan admin client (bypass RLS) - untuk dashboard penulis
+  async getStatsAdmin() {
+    if (!supabaseAdmin) {
+      console.warn('⚠️ supabaseAdmin not available, falling back to regular getStats()')
+      console.warn('⚠️ Make sure VITE_SUPABASE_SERVICE_ROLE_KEY is set in .env file')
+      return this.getStats()
+    }
+
+    console.log('✅ Using supabaseAdmin for video stats (bypassing RLS)')
+
+    const queryFn = async () => {
+      const [totalResult, publishedResult, draftResult] = await Promise.all([
+        supabaseAdmin.from('video').select('id', { count: 'exact', head: true }),
+        supabaseAdmin.from('video').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        supabaseAdmin.from('video').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
+      ])
+
+      // Log errors if any
+      if (totalResult.error) {
+        console.error('❌ Error getting total video count:', totalResult.error)
+      }
+      if (publishedResult.error) {
+        console.error('❌ Error getting published video count:', publishedResult.error)
+      }
+      if (draftResult.error) {
+        console.error('❌ Error getting draft video count:', draftResult.error)
+      }
+
+      const stats = {
+        total: totalResult.count || 0,
+        published: publishedResult.count || 0,
+        draft: draftResult.count || 0,
+      }
+
+      console.log('📊 Video stats from database:', stats)
+      return stats
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.error('❌ Failed to get video stats (admin):', error)
+      console.error('❌ Error details:', error.message, error.stack)
       return { total: 0, published: 0, draft: 0 }
     }
   },

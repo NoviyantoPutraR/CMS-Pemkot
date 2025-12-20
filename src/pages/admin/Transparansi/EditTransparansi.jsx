@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { transparansiAnggaranSchema } from '../../../utils/validators'
 import { transparansiAnggaranService } from '../../../services/transparansiAnggaranService'
 import { storageService } from '../../../services/storageService'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -22,6 +23,7 @@ export default function EditTransparansi() {
   const [excelFile, setExcelFile] = useState(null)
   const [pdfFile, setPdfFile] = useState(null)
   const navigate = useNavigate()
+  const { toastSuccess, toastError, toastWarning } = useToast()
 
   const {
     register,
@@ -53,7 +55,7 @@ export default function EditTransparansi() {
       setValue('file_pdf_url', data.file_pdf_url || '')
     } catch (error) {
       console.error('Error loading transparansi anggaran:', error)
-      alert('Gagal memuat data transparansi anggaran')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data transparansi anggaran')
     } finally {
       setLoading(false)
     }
@@ -66,7 +68,7 @@ export default function EditTransparansi() {
         storageService.validateExcelFile(file)
         setExcelFile(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
         e.target.value = ''
       }
     }
@@ -79,7 +81,7 @@ export default function EditTransparansi() {
         storageService.validatePdfFile(file)
         setPdfFile(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
         e.target.value = ''
       }
     }
@@ -119,7 +121,8 @@ export default function EditTransparansi() {
 
       // Validasi: jika tidak ada file Excel existing dan tidak ada file baru
       if (!excelUrl) {
-        alert('File Excel wajib ada. Silakan upload file Excel.')
+        toastError('VALIDATION', 'File Excel wajib ada. Silakan upload file Excel.')
+        setSaving(false)
         return
       }
 
@@ -135,10 +138,11 @@ export default function EditTransparansi() {
       // Update anggaran
       await transparansiAnggaranService.update(id, anggaranData)
 
+      toastSuccess('UPDATE')
       navigate('/admin/transparansi')
     } catch (error) {
       console.error('Error updating transparansi anggaran:', error)
-      alert('Gagal mengupdate transparansi anggaran: ' + (error.message || 'Terjadi kesalahan'))
+      toastError('UPDATE', error.message || 'Gagal mengupdate transparansi anggaran')
     } finally {
       setSaving(false)
     }

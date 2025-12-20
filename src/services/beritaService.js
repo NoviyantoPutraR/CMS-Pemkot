@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase, supabaseAdmin } from './supabase'
 
 // Helper untuk timeout query
 async function withTimeout(promise, timeoutMs = 10000) {
@@ -57,6 +57,64 @@ export const beritaService = {
     } catch (error) {
       // Jika gagal, return default values untuk tidak block UI
       console.warn('Failed to get berita stats:', error)
+      return { total: 0, published: 0, draft: 0, thisMonth: 0 }
+    }
+  },
+
+  // Get stats berita dengan admin client (bypass RLS) - untuk dashboard penulis
+  async getStatsAdmin() {
+    if (!supabaseAdmin) {
+      console.warn('⚠️ supabaseAdmin not available, falling back to regular getStats()')
+      console.warn('⚠️ Make sure VITE_SUPABASE_SERVICE_ROLE_KEY is set in .env file')
+      return this.getStats()
+    }
+
+    console.log('✅ Using supabaseAdmin for berita stats (bypassing RLS)')
+
+    const queryFn = async () => {
+      const now = new Date()
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+      const startOfMonthISO = startOfMonth.toISOString()
+
+      const [totalResult, publishedResult, draftResult, thisMonthResult] = await Promise.all([
+        supabaseAdmin.from('berita').select('id', { count: 'exact', head: true }),
+        supabaseAdmin.from('berita').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        supabaseAdmin.from('berita').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
+        supabaseAdmin.from('berita').select('id', { count: 'exact', head: true })
+          .eq('status', 'published')
+          .gte('dibuat_pada', startOfMonthISO),
+      ])
+
+      // Log errors if any
+      if (totalResult.error) {
+        console.error('❌ Error getting total berita count:', totalResult.error)
+      }
+      if (publishedResult.error) {
+        console.error('❌ Error getting published berita count:', publishedResult.error)
+      }
+      if (draftResult.error) {
+        console.error('❌ Error getting draft berita count:', draftResult.error)
+      }
+      if (thisMonthResult.error) {
+        console.error('❌ Error getting this month berita count:', thisMonthResult.error)
+      }
+
+      const stats = {
+        total: totalResult.count || 0,
+        published: publishedResult.count || 0,
+        draft: draftResult.count || 0,
+        thisMonth: thisMonthResult.count || 0,
+      }
+
+      console.log('📊 Berita stats from database:', stats)
+      return stats
+    }
+
+    try {
+      return await withTimeout(queryFn(), 2000)
+    } catch (error) {
+      console.error('❌ Failed to get berita stats (admin):', error)
+      console.error('❌ Error details:', error.message, error.stack)
       return { total: 0, published: 0, draft: 0, thisMonth: 0 }
     }
   },

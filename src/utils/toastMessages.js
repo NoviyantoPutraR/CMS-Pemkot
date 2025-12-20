@@ -13,6 +13,8 @@ export const TOAST_MESSAGES = {
     LOGOUT: "Berhasil keluar dari sistem",
     UPLOAD: "Berhasil mengunggah file",
     PROCESS: "Berhasil memproses transaksi",
+    TOGGLE_STATUS: "Berhasil mengubah status",
+    RESET_PASSWORD: "Berhasil mereset password",
   },
 
   ERROR: {
@@ -24,6 +26,9 @@ export const TOAST_MESSAGES = {
     CONNECTION: "Koneksi terputus, silakan coba lagi",
     ACCESS_DENIED: "Akses ditolak, Anda tidak memiliki izin",
     VALIDATION: "Validasi gagal, periksa kembali data yang dimasukkan",
+    LOAD_DATA: "Gagal memuat data",
+    TOGGLE_STATUS: "Gagal mengubah status",
+    RESET_PASSWORD: "Gagal mereset password",
   },
 
   WARNING: {

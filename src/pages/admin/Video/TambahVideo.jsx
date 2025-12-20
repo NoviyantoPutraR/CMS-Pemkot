@@ -6,6 +6,7 @@ import { videoSchema } from '../../../utils/validators'
 import { videoService } from '../../../services/videoService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -18,6 +19,7 @@ export default function TambahVideo() {
   const [thumbnailFile, setThumbnailFile] = useState(null)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -51,7 +53,7 @@ export default function TambahVideo() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -78,10 +80,11 @@ export default function TambahVideo() {
 
       await videoService.create(videoData)
 
+      toastSuccess('CREATE')
       navigate('/admin/video')
     } catch (error) {
       console.error('Error creating video:', error)
-      alert('Gagal menambah video: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah video')
     } finally {
       setLoading(false)
     }

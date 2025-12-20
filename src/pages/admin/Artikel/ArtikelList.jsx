@@ -15,6 +15,7 @@ import {
 } from '../../../components/ui/table'
 import { artikelService } from '../../../services/artikelService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff } from 'lucide-react'
@@ -22,6 +23,7 @@ import { formatDate } from '../../../utils/formatters'
 import { BERITA_STATUS } from '../../../utils/constants'
 
 export default function ArtikelList() {
+  const { toastSuccess, toastError } = useToast()
   const [artikel, setArtikel] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -57,10 +59,11 @@ export default function ArtikelList() {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       await artikelService.toggleStatus(id, currentStatus)
+      toastSuccess('TOGGLE_STATUS')
       loadArtikel()
     } catch (error) {
       console.error('Error toggling status:', error)
-      alert('Gagal mengubah status artikel')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status artikel')
     }
   }
 
@@ -74,12 +77,13 @@ export default function ArtikelList() {
 
     try {
       await artikelService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadArtikel()
     } catch (error) {
       console.error('Error deleting artikel:', error)
-      alert('Gagal menghapus artikel')
+      toastError('DELETE', error.message || 'Gagal menghapus artikel')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

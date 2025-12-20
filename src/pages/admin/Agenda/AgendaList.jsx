@@ -15,6 +15,7 @@ import {
 } from '../../../components/ui/table'
 import { agendaKotaService } from '../../../services/agendaKotaService'
 import { useDebounce } from '../../../hooks/useDebounce'
+import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
 import DeleteConfirmDialog from '../../../components/shared/DeleteConfirmDialog'
 import { Search, Edit, Trash2, Eye, EyeOff, Plus } from 'lucide-react'
@@ -22,6 +23,7 @@ import { formatDateTime } from '../../../utils/formatters'
 import { AGENDA_STATUS } from '../../../utils/constants'
 
 export default function AgendaList() {
+  const { toastSuccess, toastError } = useToast()
   const [agenda, setAgenda] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -59,10 +61,11 @@ export default function AgendaList() {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       await agendaKotaService.toggleStatus(id, currentStatus)
+      toastSuccess('TOGGLE_STATUS')
       loadAgenda()
     } catch (error) {
       console.error('Error toggling status:', error)
-      alert('Gagal mengubah status agenda')
+      toastError('TOGGLE_STATUS', error.message || 'Gagal mengubah status agenda')
     }
   }
 
@@ -76,12 +79,13 @@ export default function AgendaList() {
 
     try {
       await agendaKotaService.delete(itemToDelete.id)
+      toastSuccess('DELETE')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       loadAgenda()
     } catch (error) {
       console.error('Error deleting agenda:', error)
-      alert('Gagal menghapus agenda')
+      toastError('DELETE', error.message || 'Gagal menghapus agenda')
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     }

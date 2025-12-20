@@ -6,6 +6,7 @@ import { videoSchema } from '../../../utils/validators'
 import { videoService } from '../../../services/videoService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -22,6 +23,7 @@ export default function EditVideo() {
   const [thumbnailFile, setThumbnailFile] = useState(null)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -54,7 +56,7 @@ export default function EditVideo() {
       }
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Gagal memuat data video')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data video')
     } finally {
       setLoading(false)
     }
@@ -80,7 +82,7 @@ export default function EditVideo() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -107,10 +109,11 @@ export default function EditVideo() {
 
       await videoService.update(id, videoData)
 
+      toastSuccess('UPDATE')
       navigate('/admin/video')
     } catch (error) {
       console.error('Error updating video:', error)
-      alert('Gagal mengupdate video: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate video')
     } finally {
       setSaving(false)
     }

@@ -6,6 +6,7 @@ import { perangkatDaerahSchema } from '../../../utils/validators'
 import { perangkatDaerahService } from '../../../services/perangkatDaerahService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -21,6 +22,7 @@ export default function EditPerangkatDaerah() {
   const [fotoFile, setFotoFile] = useState(null)
   const [fotoPreview, setFotoPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -61,7 +63,7 @@ export default function EditPerangkatDaerah() {
       }
     } catch (error) {
       console.error('Error loading perangkat daerah:', error)
-      alert('Gagal memuat data perangkat daerah')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data perangkat daerah')
     } finally {
       setLoading(false)
     }
@@ -87,7 +89,7 @@ export default function EditPerangkatDaerah() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -123,10 +125,11 @@ export default function EditPerangkatDaerah() {
       // Update perangkat daerah
       await perangkatDaerahService.update(id, perangkatData)
 
+      toastSuccess('UPDATE')
       navigate('/admin/perangkat-daerah')
     } catch (error) {
       console.error('Error updating perangkat daerah:', error)
-      alert('Gagal mengupdate perangkat daerah: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate perangkat daerah')
     } finally {
       setSaving(false)
     }

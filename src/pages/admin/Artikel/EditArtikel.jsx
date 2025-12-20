@@ -6,6 +6,7 @@ import { artikelSchema } from '../../../utils/validators'
 import { artikelService } from '../../../services/artikelService'
 import { storageService } from '../../../services/storageService'
 import { generateSlug } from '../../../utils/formatters'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -24,6 +25,7 @@ export default function EditArtikel() {
   const [thumbnailFile, setThumbnailFile] = useState(null)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -59,7 +61,7 @@ export default function EditArtikel() {
       }
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Gagal memuat data artikel')
+      toastError('LOAD_DATA', error.message || 'Gagal memuat data artikel')
     } finally {
       setLoading(false)
     }
@@ -85,7 +87,7 @@ export default function EditArtikel() {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        alert(error.message)
+        toastError('VALIDATION', error.message)
       }
     }
   }
@@ -110,10 +112,11 @@ export default function EditArtikel() {
         thumbnail_url: thumbnailUrl,
       })
 
+      toastSuccess('UPDATE')
       navigate('/admin/artikel')
     } catch (error) {
       console.error('Error updating artikel:', error)
-      alert('Gagal mengupdate artikel: ' + error.message)
+      toastError('UPDATE', error.message || 'Gagal mengupdate artikel')
     } finally {
       setSaving(false)
     }

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { adminSchema } from '../../../utils/validators'
 import { penggunaService } from '../../../services/penggunaService'
+import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
@@ -12,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui
 export default function TambahAdmin() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { toastSuccess, toastError } = useToast()
 
   const {
     register,
@@ -25,10 +27,11 @@ export default function TambahAdmin() {
     try {
       setLoading(true)
       await penggunaService.create(data)
+      toastSuccess('CREATE')
       navigate('/admin/pengguna')
     } catch (error) {
       console.error('Error creating admin:', error)
-      alert('Gagal menambah admin: ' + error.message)
+      toastError('CREATE', error.message || 'Gagal menambah admin')
     } finally {
       setLoading(false)
     }
