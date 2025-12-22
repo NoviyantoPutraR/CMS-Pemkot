@@ -291,16 +291,16 @@ Database dirancang dengan prinsip normalisasi 5NF, ACID compliance, dan penamaan
 | Kolom | Tipe | Deskripsi |
 |-------|------|-----------|
 | id | uuid | Primary key |
-| kunci | text | Key pengaturan (unique) |
+| kunci | text | Key pengaturan (unique per grup) |
 | nilai | text | Value pengaturan |
 | tipe | text | 'text', 'url', 'email', 'phone', 'number', 'boolean' |
 | deskripsi | text | Deskripsi pengaturan |
-| grup | text | Pengelompokan (contoh: 'kontak', 'umum') |
+| grup | text | Pengelompokan (contoh: 'footer', 'hero') |
 | urutan | integer | Untuk sorting |
 | dibuat_pada | timestamp | Waktu dibuat |
 | diperbarui_pada | timestamp | Waktu diperbarui |
 
-**Deskripsi**: Pengaturan umum situs menggunakan key-value pattern (alamat, whatsapp, email, telepon, nama_situs, deskripsi_situs).
+**Deskripsi**: Pengaturan umum situs menggunakan key-value pattern dengan constraint UNIQUE (kunci, grup) untuk memungkinkan kunci yang sama di grup berbeda. Grup 'footer' berisi: nama_situs, deskripsi_situs, alamat, email, telepon. Grup 'hero' berisi: nama_situs, deskripsi_situs.
 
 #### 5.17 Tabel: `hak_akses`
 | Kolom | Tipe | Deskripsi |

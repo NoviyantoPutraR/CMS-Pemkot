@@ -107,12 +107,81 @@ export const pengaturanSitusService = {
       
       if (error) throw error
       
+      // Invalidate all related caches
       cacheService.delete('pengaturan_situs:all')
+      cacheService.delete('pengaturan_situs:footer')
+      cacheService.delete('pengaturan_situs:hero')
       
       return data
     }
 
     return withRetry(() => withTimeout(queryFn(), 10000))
+  },
+
+  // Helper function untuk mendapatkan data grup footer
+  async getFooterData() {
+    const cacheKey = 'pengaturan_situs:footer'
+    
+    const cached = cacheService.get(cacheKey)
+    if (cached) {
+      return cached
+    }
+
+    try {
+      const data = await this.getByGrup('footer')
+      
+      // Convert array ke object dengan key-value mapping
+      const result = {
+        nama_situs: data.find(item => item.kunci === 'nama_situs')?.nilai || '',
+        deskripsi_situs: data.find(item => item.kunci === 'deskripsi_situs')?.nilai || '',
+        alamat: data.find(item => item.kunci === 'alamat')?.nilai || '',
+        email: data.find(item => item.kunci === 'email')?.nilai || '',
+        telepon: data.find(item => item.kunci === 'telepon')?.nilai || '',
+      }
+      
+      cacheService.set(cacheKey, result, 300)
+      return result
+    } catch (error) {
+      console.error('Error getting footer data:', error)
+      // Return empty object jika error
+      return {
+        nama_situs: '',
+        deskripsi_situs: '',
+        alamat: '',
+        email: '',
+        telepon: '',
+      }
+    }
+  },
+
+  // Helper function untuk mendapatkan data grup hero
+  async getHeroData() {
+    const cacheKey = 'pengaturan_situs:hero'
+    
+    const cached = cacheService.get(cacheKey)
+    if (cached) {
+      return cached
+    }
+
+    try {
+      const data = await this.getByGrup('hero')
+      
+      // Convert array ke object dengan key-value mapping
+      const result = {
+        nama_situs: data.find(item => item.kunci === 'nama_situs')?.nilai || '',
+        deskripsi_situs: data.find(item => item.kunci === 'deskripsi_situs')?.nilai || '',
+      }
+      
+      cacheService.set(cacheKey, result, 300)
+      return result
+    } catch (error) {
+      console.error('Error getting hero data:', error)
+      // Return empty object jika error
+      return {
+        nama_situs: '',
+        deskripsi_situs: '',
+      }
+    }
   },
 }
 

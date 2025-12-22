@@ -1,7 +1,25 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import GalleryContainer from './Gallery'
+import { pengaturanSitusService } from '../../../services/pengaturanSitusService'
 
 export default function HeroSection() {
+  const [heroData, setHeroData] = useState({
+    nama_situs: '',
+    deskripsi_situs: '',
+  })
+
+  useEffect(() => {
+    const loadHeroData = async () => {
+      try {
+        const data = await pengaturanSitusService.getHeroData()
+        setHeroData(data)
+      } catch (error) {
+        console.error('Error loading hero data:', error)
+      }
+    }
+    loadHeroData()
+  }, [])
   const photos = [
     {
       id: '1',
@@ -71,25 +89,36 @@ export default function HeroSection() {
             >
               Selamat Datang Di
             </motion.p>
-            <motion.h2 
-              className="font-poppins text-4xl lg:text-5xl font-bold mb-4 leading-tight text-black"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-            >
-              Portal Resmi<br />
-              Pemerintah Provinsi<br />
-              Jawa Timur
-            </motion.h2>
-            <motion.p 
-              className="font-poppins text-base mb-6 text-gray-600"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            >
-              Optimis Jatim Bangkit, Kobarkan semangat Jer Basuki Mawa Beya -<br />
-              setiap kesejahteraan memerlukan pengorbanan.
-            </motion.p>
+            {heroData.nama_situs && (
+              <motion.h2 
+                className="font-poppins text-4xl lg:text-5xl font-bold mb-4 leading-tight text-black"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+              >
+                {heroData.nama_situs.split('\n').map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    {index < heroData.nama_situs.split('\n').length - 1 && <br />}
+                  </span>
+                ))}
+              </motion.h2>
+            )}
+            {heroData.deskripsi_situs && (
+              <motion.p 
+                className="font-poppins text-base mb-6 text-gray-600"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              >
+                {heroData.deskripsi_situs.split('\n').map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    {index < heroData.deskripsi_situs.split('\n').length - 1 && <br />}
+                  </span>
+                ))}
+              </motion.p>
+            )}
             
             {/* Search Box */}
             <motion.div 

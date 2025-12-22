@@ -195,17 +195,18 @@ CREATE TABLE IF NOT EXISTS sosial_media (
 );
 
 -- 15. Tabel: pengaturan_situs
--- Deskripsi: Pengaturan umum situs (alamat, WhatsApp, email, dll)
+-- Deskripsi: Pengaturan umum situs (alamat, email, telepon, dll)
 CREATE TABLE IF NOT EXISTS pengaturan_situs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  kunci TEXT NOT NULL UNIQUE,
+  kunci TEXT NOT NULL,
   nilai TEXT NOT NULL,
   tipe TEXT NOT NULL DEFAULT 'text' CHECK (tipe IN ('text', 'url', 'email', 'phone', 'number', 'boolean')),
   deskripsi TEXT,
   grup TEXT, -- Untuk mengelompokkan pengaturan
   urutan INTEGER DEFAULT 0,
   dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  CONSTRAINT pengaturan_situs_kunci_grup_unique UNIQUE (kunci, grup)
 );
 
 -- ============================================
@@ -662,14 +663,17 @@ INSERT INTO halaman (slug, judul, konten) VALUES
 ON CONFLICT (slug) DO NOTHING;
 
 -- Insert pengaturan situs default
-INSERT INTO pengaturan_situs (kunci, nilai, tipe, deskripsi, grup) VALUES
-  ('alamat', 'Jl. Contoh No. 123, Kota Contoh', 'text', 'Alamat Pemerintah Kota', 'kontak'),
-  ('whatsapp', '6281234567890', 'phone', 'Nomor WhatsApp', 'kontak'),
-  ('email', 'info@pemerintahkota.go.id', 'email', 'Email Kontak', 'kontak'),
-  ('telepon', '(021) 1234-5678', 'phone', 'Nomor Telepon', 'kontak'),
-  ('nama_situs', 'Portal Pemerintah Kota', 'text', 'Nama Situs', 'umum'),
-  ('deskripsi_situs', 'Portal informasi resmi pemerintah kota', 'text', 'Deskripsi Situs', 'umum')
-ON CONFLICT (kunci) DO NOTHING;
+INSERT INTO pengaturan_situs (kunci, nilai, tipe, deskripsi, grup, urutan) VALUES
+  -- Grup Footer
+  ('nama_situs', 'Portal Pemerintah Kota', 'text', 'Nama Situs (Footer)', 'footer', 1),
+  ('deskripsi_situs', 'Portal informasi resmi pemerintah kota untuk melayani masyarakat', 'text', 'Deskripsi Situs (Footer)', 'footer', 2),
+  ('alamat', 'Jl. Contoh No. 123, Kota Contoh', 'text', 'Alamat Pemerintah Kota', 'footer', 3),
+  ('email', 'info@pemerintahkota.go.id', 'email', 'Email Kontak', 'footer', 4),
+  ('telepon', '(021) 1234-5678', 'phone', 'Nomor Telepon', 'footer', 5),
+  -- Grup Hero
+  ('nama_situs', 'Portal Resmi Pemerintah Provinsi Jawa Timur', 'text', 'Nama Situs (Hero)', 'hero', 1),
+  ('deskripsi_situs', 'Optimis Jatim Bangkit, Kobarkan semangat Jer Basuki Mawa Beya - setiap kesejahteraan memerlukan pengorbanan.', 'text', 'Deskripsi Situs (Hero)', 'hero', 2)
+ON CONFLICT (kunci, grup) DO NOTHING;
 
 -- Insert sosial media default (inactive)
 INSERT INTO sosial_media (platform, url, aktif) VALUES

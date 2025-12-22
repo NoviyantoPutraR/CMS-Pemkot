@@ -1,4 +1,61 @@
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { pengaturanSitusService } from '../../../services/pengaturanSitusService'
+import { layananService } from '../../../services/layananService'
+import { transparansiAnggaranService } from '../../../services/transparansiAnggaranService'
+
 export default function Footer() {
+  const [footerData, setFooterData] = useState({
+    nama_situs: '',
+    deskripsi_situs: '',
+    alamat: '',
+    email: '',
+    telepon: '',
+  })
+  const [layananList, setLayananList] = useState([])
+  const [transparansiList, setTransparansiList] = useState([])
+
+  useEffect(() => {
+    const loadFooterData = async () => {
+      try {
+        const data = await pengaturanSitusService.getFooterData()
+        setFooterData(data)
+      } catch (error) {
+        console.error('Error loading footer data:', error)
+      }
+    }
+    loadFooterData()
+  }, [])
+
+  useEffect(() => {
+    const loadLayanan = async () => {
+      try {
+        const result = await layananService.getAll({
+          page: 1,
+          limit: 10,
+          publishedOnly: true,
+          sortBy: 'terbaru'
+        })
+        setLayananList(result.data || [])
+      } catch (error) {
+        console.error('Error loading layanan:', error)
+      }
+    }
+    loadLayanan()
+  }, [])
+
+  useEffect(() => {
+    const loadTransparansi = async () => {
+      try {
+        const data = await transparansiAnggaranService.getAll({ publishedOnly: true })
+        setTransparansiList(data || [])
+      } catch (error) {
+        console.error('Error loading transparansi:', error)
+      }
+    }
+    loadTransparansi()
+  }, [])
+
   return (
     <footer className="relative mt-16 bg-blue-900">
       <svg className="absolute top-0 w-full h-6 -mt-5 sm:-mt-10 sm:h-16 text-blue-900" preserveAspectRatio="none" viewBox="0 0 1440 54">
@@ -15,15 +72,21 @@ export default function Footer() {
                 <rect x="14" y="1" width="7" height="6"></rect>
                 <rect x="14" y="11" width="7" height="12"></rect>
               </svg>
-              <span className="ml-2 text-xl font-bold tracking-wide text-gray-100 uppercase">Portal Resmi JatimProv</span>
+              {footerData.nama_situs && (
+                <span className="ml-2 text-xl font-bold tracking-wide text-gray-100 uppercase">{footerData.nama_situs}</span>
+              )}
             </a>
             <div className="mt-4 lg:max-w-sm">
-              <p className="text-sm text-blue-50">
-                Kantor Gubernur Republik Indonesia
-              </p>
-              <p className="mt-4 text-sm text-blue-50">
-                Gedung KPRI "Karya", Jl. Pahlawan No. 110, Miji, Kec. Prajurit Kulon, Kota Mojokerto, Jawa Timur 61314
-              </p>
+              {footerData.deskripsi_situs && (
+                <p className="text-sm text-blue-50">
+                  {footerData.deskripsi_situs}
+                </p>
+              )}
+              {footerData.alamat && (
+                <p className="mt-4 text-sm text-blue-50">
+                  {footerData.alamat}
+                </p>
+              )}
             </div>
           </div>
           
@@ -34,9 +97,16 @@ export default function Footer() {
                 Kontak
               </p>
               <ul className="mt-2 space-y-2">
-                <li>
-                  <p className="transition-colors duration-300 text-blue-50">📧 info@jatimprov.go.id</p>
-                </li>
+                {footerData.email && (
+                  <li>
+                    <p className="transition-colors duration-300 text-blue-50">📧 {footerData.email}</p>
+                  </li>
+                )}
+                {footerData.telepon && (
+                  <li>
+                    <p className="transition-colors duration-300 text-blue-50">📞 {footerData.telepon}</p>
+                  </li>
+                )}
               </ul>
             </div>
             <div>
@@ -44,18 +114,27 @@ export default function Footer() {
                 Layanan
               </p>
               <ul className="mt-2 space-y-2">
-                <li>
-                  <a href="/layanan" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Layanan Publik</a>
-                </li>
-                <li>
-                  <a href="/layanan" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Pengaduan Online</a>
-                </li>
-                <li>
-                  <a href="/layanan" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Perizinan</a>
-                </li>
-                <li>
-                  <a href="/layanan" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Informasi Umum</a>
-                </li>
+                {layananList.length > 0 ? (
+                  layananList.map((layanan) => (
+                    <li key={layanan.id}>
+                      <Link 
+                        to={`/layanan/${layanan.slug}`} 
+                        className="transition-colors duration-300 text-blue-50 hover:text-blue-400"
+                      >
+                        {layanan.judul}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <li>
+                    <Link 
+                      to="/layanan" 
+                      className="transition-colors duration-300 text-blue-50 hover:text-blue-400"
+                    >
+                      Lihat Semua Layanan
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
             <div>
@@ -63,21 +142,27 @@ export default function Footer() {
                 Transparansi
               </p>
               <ul className="mt-2 space-y-2">
-                <li>
-                  <a href="/transparansi" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Laporan Keuangan</a>
-                </li>
-                <li>
-                  <a href="/transparansi-anggaran" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Anggaran Daerah</a>
-                </li>
-                <li>
-                  <a href="/transparansi" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Kinerja Instansi</a>
-                </li>
-                <li>
-                  <a href="/transparansi" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Publikasi Dokumen</a>
-                </li>
-                <li>
-                  <a href="/sosial-media" className="transition-colors duration-300 text-blue-50 hover:text-blue-400">Media Sosial</a>
-                </li>
+                {transparansiList.length > 0 ? (
+                  transparansiList.map((transparansi) => (
+                    <li key={transparansi.id}>
+                      <Link 
+                        to="/transparansi-anggaran" 
+                        className="transition-colors duration-300 text-blue-50 hover:text-blue-400"
+                      >
+                        Anggaran {transparansi.tahun}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <li>
+                    <Link 
+                      to="/transparansi-anggaran" 
+                      className="transition-colors duration-300 text-blue-50 hover:text-blue-400"
+                    >
+                      Anggaran Daerah
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -86,7 +171,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col justify-between pt-5 pb-10 border-t border-blue-700 sm:flex-row">
           <p className="text-sm text-gray-100">
-            © Copyright 2024 Portal Resmi Provinsi Jawa Timur. All rights reserved.
+            © Copyright {new Date().getFullYear()} {footerData.nama_situs || 'Portal Resmi'}. All rights reserved.
           </p>
           <div className="flex items-center mt-4 space-x-4 sm:mt-0">
             <a href="/" className="transition-colors duration-300 text-blue-100 hover:text-blue-400">
