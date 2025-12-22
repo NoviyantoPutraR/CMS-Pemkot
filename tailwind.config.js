@@ -109,6 +109,7 @@ export default {
         mono: ["var(--font-mono)"],
         // Legacy support
         poppins: ['Poppins', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",
