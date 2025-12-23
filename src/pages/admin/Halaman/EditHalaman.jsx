@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui
 import Loading from '../../../components/shared/Loading'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { AlertCircle, CheckCircle2 } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Plus, Trash2 } from 'lucide-react'
 
 export default function EditHalaman() {
   const { id } = useParams()
@@ -23,6 +23,9 @@ export default function EditHalaman() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
+  const [tugasDanFungsi, setTugasDanFungsi] = useState([''])
+  const [visi, setVisi] = useState('')
+  const [misi, setMisi] = useState([''])
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const { toastSuccess, toastError } = useToast()
@@ -64,6 +67,23 @@ export default function EditHalaman() {
       setValue('konten', data.konten || '')
       setValue('meta_description', data.meta_description || '')
       setValue('meta_keywords', data.meta_keywords || '')
+      
+      // Load tugas_dan_fungsi dari database
+      if (data.tugas_dan_fungsi && Array.isArray(data.tugas_dan_fungsi) && data.tugas_dan_fungsi.length > 0) {
+        setTugasDanFungsi(data.tugas_dan_fungsi)
+      } else {
+        setTugasDanFungsi([''])
+      }
+      
+      // Load visi dan misi dari database (untuk halaman visi-misi)
+      if (data.slug === 'visi-misi') {
+        setVisi(data.visi || '')
+        if (data.misi && Array.isArray(data.misi) && data.misi.length > 0) {
+          setMisi(data.misi)
+        } else {
+          setMisi([''])
+        }
+      }
     } catch (error) {
       console.error('Error loading halaman:', error)
       setError(
@@ -89,11 +109,52 @@ export default function EditHalaman() {
         return
       }
 
+      // Validasi tugas_dan_fungsi (hanya untuk halaman tentang)
+      if (data.slug === 'tentang') {
+        const filteredTugasDanFungsi = tugasDanFungsi.filter(item => item.trim() !== '')
+        if (filteredTugasDanFungsi.length === 0) {
+          setError('Minimal harus ada 1 item tugas dan fungsi')
+          toastError('VALIDATION', 'Minimal harus ada 1 item tugas dan fungsi')
+          setSaving(false)
+          return
+        }
+      }
+
+      // Validasi visi dan misi (untuk halaman visi-misi)
+      if (data.slug === 'visi-misi') {
+        if (!visi || visi.trim().length < 10) {
+          setError('Visi harus diisi minimal 10 karakter')
+          toastError('VALIDATION', 'Visi harus diisi minimal 10 karakter')
+          setSaving(false)
+          return
+        }
+        
+        const filteredMisi = misi.filter(item => item.trim() !== '')
+        if (filteredMisi.length === 0) {
+          setError('Minimal harus ada 1 item misi')
+          toastError('VALIDATION', 'Minimal harus ada 1 item misi')
+          setSaving(false)
+          return
+        }
+      }
+
       // Siapkan data update
       const updateData = {
         ...data,
         meta_description: data.meta_description || null,
         meta_keywords: data.meta_keywords || null,
+      }
+      
+      // Tambahkan tugas_dan_fungsi jika slug = tentang
+      if (data.slug === 'tentang') {
+        const filteredTugasDanFungsi = tugasDanFungsi.filter(item => item.trim() !== '')
+        updateData.tugas_dan_fungsi = filteredTugasDanFungsi
+      }
+      
+      // Tambahkan visi dan misi jika slug = visi-misi
+      if (data.slug === 'visi-misi') {
+        updateData.visi = visi.trim()
+        updateData.misi = misi.filter(item => item.trim() !== '')
       }
 
       await halamanService.update(id, updateData)
@@ -233,6 +294,118 @@ export default function EditHalaman() {
                 </p>
               )}
             </div>
+
+            {/* Form Tugas dan Fungsi (hanya untuk halaman tentang) */}
+            {halaman?.slug === 'tentang' && (
+            <div className="space-y-2">
+              <Label>Tugas dan Fungsi</Label>
+              <div className="space-y-3">
+                {tugasDanFungsi.map((item, index) => (
+                  <div key={index} className="flex gap-2 items-start">
+                    <Input
+                      value={item}
+                      onChange={(e) => {
+                        const newItems = [...tugasDanFungsi]
+                        newItems[index] = e.target.value
+                        setTugasDanFungsi(newItems)
+                      }}
+                      placeholder="Masukkan tugas dan fungsi"
+                      className="flex-1"
+                    />
+                    {tugasDanFungsi.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          const newItems = tugasDanFungsi.filter((_, i) => i !== index)
+                          setTugasDanFungsi(newItems.length > 0 ? newItems : [''])
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setTugasDanFungsi([...tugasDanFungsi, ''])}
+                  className="w-full"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Tambah Item
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Daftar tugas dan fungsi yang akan ditampilkan di halaman. Minimal 1 item.
+              </p>
+            </div>
+            )}
+
+            {/* Form Visi & Misi (hanya untuk halaman visi-misi) */}
+            {halaman?.slug === 'visi-misi' && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="visi">Visi *</Label>
+                  <Textarea
+                    id="visi"
+                    value={visi}
+                    onChange={(e) => setVisi(e.target.value)}
+                    placeholder="Masukkan visi"
+                    rows={4}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Visi harus minimal 10 karakter
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Misi *</Label>
+                  <div className="space-y-3">
+                    {misi.map((item, index) => (
+                      <div key={index} className="flex gap-2 items-start">
+                        <Input
+                          value={item}
+                          onChange={(e) => {
+                            const newItems = [...misi]
+                            newItems[index] = e.target.value
+                            setMisi(newItems)
+                          }}
+                          placeholder="Masukkan misi"
+                          className="flex-1"
+                        />
+                        {misi.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              const newItems = misi.filter((_, i) => i !== index)
+                              setMisi(newItems.length > 0 ? newItems : [''])
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setMisi([...misi, ''])}
+                      className="w-full"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Item
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Daftar misi yang akan ditampilkan di halaman. Minimal 1 item.
+                  </p>
+                </div>
+              </>
+            )}
 
             <div className="flex gap-4">
               <Button type="submit" disabled={saving}>

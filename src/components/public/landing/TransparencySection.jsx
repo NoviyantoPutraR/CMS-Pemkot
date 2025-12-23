@@ -2,40 +2,42 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Download } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { transparansiAnggaranService } from '../../../services/transparansiAnggaranService'
 
 export default function TransparencySection() {
-  const reports = [
-    {
-      title: 'Rencana Kerja Pemerintah Daerah (RKPD) Jatim Tahun 2024 - Part 1-4',
-      description: 'Dokumen perencanaan pembangunan tahunan',
-    },
-    {
-      title: 'Pergub Penjabaran Perubahan APBD Provinsi Jawa Timur Tahun 2024',
-      description: 'Peraturan Gubernur terkait anggaran daerah',
-    },
-    {
-      title: 'Laporan Keuangan BUMD Provinsi Jawa Timur Tahun 2023',
-      description: 'Dokumen informasi keuangan Badan Usaha Milik Daerah',
-    },
-    {
-      title: 'Laporan Realisasi Anggaran APBD Provinsi Jawa Timur Tahun 2024',
-      description: 'Dokumen realisasi anggaran pendapatan dan belanja daerah',
-    },
-    {
-      title: 'Laporan Kinerja Instansi Pemerintah (LKIP) Tahun 2024',
-      description: 'Dokumen evaluasi kinerja instansi pemerintah daerah',
-    },
-    {
-      title: 'Laporan Pertanggungjawaban Kepala Daerah Tahun 2024',
-      description: 'Dokumen pertanggungjawaban pelaksanaan tugas kepala daerah',
-    },
-  ]
-
+  const [reports, setReports] = useState([])
+  const [loading, setLoading] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [visibleCards, setVisibleCards] = useState(3)
   const trackRef = useRef(null)
   const autoSlideIntervalRef = useRef(null)
   const carouselRef = useRef(null)
+
+  // Fetch data from database
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        const data = await transparansiAnggaranService.getAll({ publishedOnly: true })
+        // Map data to reports format
+        const mappedReports = data.map((item) => ({
+          id: item.id,
+          title: item.deskripsi || `Transparansi Anggaran Tahun ${item.tahun}`,
+          description: `Dokumen transparansi anggaran tahun ${item.tahun}`,
+          downloadUrl: item.file_excel_url || item.file_pdf_url,
+          tahun: item.tahun,
+        }))
+        setReports(mappedReports)
+      } catch (error) {
+        console.error('Error fetching transparansi anggaran:', error)
+        setReports([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   // Calculate visible cards based on screen size
   useEffect(() => {
@@ -76,6 +78,10 @@ export default function TransparencySection() {
 
   // Auto slide function
   const startAutoSlide = () => {
+    if (reports.length === 0) return
+    if (autoSlideIntervalRef.current) {
+      clearInterval(autoSlideIntervalRef.current)
+    }
     autoSlideIntervalRef.current = setInterval(() => {
       setCurrentIndex((prev) => {
         const maxIndex = Math.max(0, reports.length - visibleCards)
@@ -94,13 +100,15 @@ export default function TransparencySection() {
 
   // Initialize auto slide
   useEffect(() => {
-    startAutoSlide()
+    if (reports.length > 0) {
+      startAutoSlide()
+    }
     return () => {
       if (autoSlideIntervalRef.current) {
         clearInterval(autoSlideIntervalRef.current)
       }
     }
-  }, [visibleCards])
+  }, [visibleCards, reports.length])
 
   // Pause on hover
   useEffect(() => {
@@ -178,7 +186,7 @@ export default function TransparencySection() {
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
               Transparansi Laporan Pemerintah<br />
-              Provinsi Jawa Timur
+              Provinsi Kerja Baik
             </motion.h2>
             <motion.p 
               className="text-sm text-blue-100"
@@ -264,43 +272,60 @@ export default function TransparencySection() {
 
           {/* Carousel Track */}
           <div className="overflow-hidden relative py-2">
-            <div
-              ref={trackRef}
-              className="flex gap-6 transition-transform duration-500 ease-in-out"
-            >
-          {reports.map((report, index) => (
-                <motion.div
-                  key={index}
-                  className="flex-shrink-0 w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ 
-                    duration: 0.6, 
-                    ease: "easeOut", 
-                    delay: index * 0.1 
-                  }}
-                >
-                  <div className="bg-white rounded-xl overflow-hidden shadow-lg h-full border border-gray-100 flex flex-col transition-all duration-300 hover:translate-y-[-5px] hover:shadow-xl">
-                    <div className="p-6 flex-1 flex flex-col">
-              <div className="flex items-start space-x-3 mb-4">
-                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-red-600">📄</span>
-                </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-sm mb-1 line-clamp-3">{report.title}</h3>
-                  <p className="text-xs text-gray-600">{report.description}</p>
-                </div>
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="text-white">Memuat data...</div>
               </div>
-                      <div className="flex items-center space-x-2 text-xs text-blue-800 mt-auto">
-                <Download className="w-4 h-4" />
-                <span>Unduh Dokumen</span>
+            ) : reports.length === 0 ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="text-white">Tidak ada data transparansi anggaran</div>
               </div>
+            ) : (
+              <div
+                ref={trackRef}
+                className="flex gap-6 transition-transform duration-500 ease-in-out"
+              >
+                {reports.map((report, index) => (
+                  <motion.div
+                    key={report.id || index}
+                    className="flex-shrink-0 w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ 
+                      duration: 0.6, 
+                      ease: "easeOut", 
+                      delay: index * 0.1 
+                    }}
+                  >
+                    <div className="bg-white rounded-xl overflow-hidden shadow-lg h-full border border-gray-100 flex flex-col transition-all duration-300 hover:translate-y-[-5px] hover:shadow-xl">
+                      <div className="p-6 flex-1 flex flex-col">
+                        <div className="flex items-start space-x-3 mb-4">
+                          <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span className="text-red-600">📄</span>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-sm mb-1 line-clamp-3">{report.title}</h3>
+                            <p className="text-xs text-gray-600">{report.description}</p>
+                          </div>
+                        </div>
+                        {report.downloadUrl && (
+                          <a
+                            href={report.downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center space-x-2 text-xs text-blue-800 mt-auto hover:text-blue-600 transition-colors"
+                          >
+                            <Download className="w-4 h-4" />
+                            <span>Unduh Dokumen</span>
+                          </a>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Indicators */}

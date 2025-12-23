@@ -173,8 +173,6 @@ export default function EditTransparansi() {
                 id="tahun"
                 type="number"
                 {...register('tahun', { valueAsNumber: true })}
-                min="2021"
-                max="2026"
                 disabled
               />
               {errors.tahun && (

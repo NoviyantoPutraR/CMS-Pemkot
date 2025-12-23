@@ -154,6 +154,18 @@ export const halamanSchema = z.object({
     .max(255, 'Meta keywords maksimal 255 karakter')
     .optional()
     .or(z.literal('')),
+  tugas_dan_fungsi: z
+    .array(z.string().min(1, 'Item tugas dan fungsi tidak boleh kosong'))
+    .min(1, 'Minimal harus ada 1 item tugas dan fungsi')
+    .optional(),
+  visi: z
+    .string()
+    .min(10, 'Visi harus minimal 10 karakter')
+    .optional(),
+  misi: z
+    .array(z.string().min(1, 'Item misi tidak boleh kosong'))
+    .min(1, 'Minimal harus ada 1 item misi')
+    .optional(),
 })
 
 // Schema validasi untuk Admin Pengguna
@@ -294,8 +306,7 @@ export const transparansiAnggaranSchema = z.object({
   tahun: z
     .number()
     .int('Tahun harus bilangan bulat')
-    .min(2021, 'Tahun minimal 2021')
-    .max(2026, 'Tahun maksimal 2026'),
+    .positive('Tahun harus positif'),
   deskripsi: z
     .string()
     .max(500, 'Deskripsi maksimal 500 karakter')

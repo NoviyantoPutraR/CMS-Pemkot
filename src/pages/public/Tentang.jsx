@@ -45,15 +45,10 @@ export default function Tentang() {
     )
   }
 
-  // Sample data untuk tugas dan fungsi (dapat diambil dari database atau didefinisikan di sini)
-  const tugasDanFungsi = [
-    'Melaksanakan urusan pemerintahan daerah provinsi sesuai dengan peraturan perundang-undangan',
-    'Menyelenggarakan urusan pemerintahan umum di daerah provinsi',
-    'Melaksanakan pembinaan dan koordinasi atas penyelenggaraan pemerintahan daerah kabupaten/kota',
-    'Melaksanakan pembinaan dan pengawasan penyelenggaraan pemerintahan desa',
-    'Meningkatkan kualitas pelayanan publik di wilayah provinsi',
-    'Mendorong peningkatan kesejahteraan masyarakat melalui program pembangunan daerah'
-  ]
+  // Ambil tugas dan fungsi dari database
+  const tugasDanFungsi = halaman?.tugas_dan_fungsi && Array.isArray(halaman.tugas_dan_fungsi) 
+    ? halaman.tugas_dan_fungsi 
+    : []
 
   return (
     <div className="min-h-screen bg-white">
@@ -95,7 +90,7 @@ export default function Tentang() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             >
-              Profil dan Peran Pemerintah Provinsi Jawa Timur dalam melayani masyarakat dan membangun daerah
+              Profil dan Peran Pemerintah Provinsi Kerja Baik dalam melayani masyarakat dan membangun daerah
             </motion.p>
 
             {/* Hero Card */}
@@ -106,7 +101,7 @@ export default function Tentang() {
               transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
             >
               <p className="text-[#0052FF] font-medium text-lg">
-                Profil dan Peran Pemerintah Provinsi Jawa Timur
+                Profil dan Peran Pemerintah Provinsi Kerja Baik
               </p>
             </motion.div>
           </div>
@@ -133,17 +128,17 @@ export default function Tentang() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="prose prose-lg max-w-none prose-p:text-[#333333] prose-p:leading-relaxed prose-p:text-base">
+            <div className="prose prose-lg max-w-none prose-p:text-[#333333] prose-p:leading-relaxed prose-p:text-base prose-p:text-justify">
               {halaman.konten ? (
-                <div dangerouslySetInnerHTML={{ __html: halaman.konten }} />
+                <div dangerouslySetInnerHTML={{ __html: halaman.konten }} className="[&_p]:text-justify" />
               ) : (
                 <>
-                  <p className="text-base leading-relaxed text-[#333333] mb-4">
+                  <p className="text-base leading-relaxed text-[#333333] text-justify mb-4">
                     Pemerintah Provinsi Jawa Timur merupakan lembaga eksekutif di tingkat provinsi yang bertanggung jawab
                     atas penyelenggaraan pemerintahan daerah. Sebagai salah satu provinsi terbesar di Indonesia,
                     Jawa Timur memiliki peran strategis dalam pembangunan nasional.
                   </p>
-                  <p className="text-base leading-relaxed text-[#333333]">
+                  <p className="text-base leading-relaxed text-[#333333] text-justify">
                     Pemerintah Provinsi Jawa Timur berkedudukan sebagai instansi vertikal yang melaksanakan tugas
                     pemerintahan daerah sesuai dengan otonomi daerah dan tugas pembantuan. Kami berkomitmen untuk
                     memberikan pelayanan terbaik kepada masyarakat dan mendorong pembangunan yang berkelanjutan di seluruh
@@ -156,46 +151,48 @@ export default function Tentang() {
         </section>
 
         {/* Section: Tugas & Fungsi */}
-        <section className="mb-20">
-          <motion.h2
-            className="text-3xl lg:text-4xl font-bold mb-8 text-[#333333]"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            Tugas dan Fungsi
-          </motion.h2>
-          <motion.div
-            className="bg-white rounded-lg shadow-md p-8 lg:p-10"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <ul className="space-y-6">
-              {tugasDanFungsi.map((item, index) => (
-                <motion.li
-                  key={index}
-                  className="flex items-start"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.1,
-                    ease: "easeOut"
-                  }}
-                >
-                  <div className="flex-shrink-0 w-2 h-2 rounded-full bg-[#0052FF] mt-2 mr-4"></div>
-                  <p className="text-base leading-relaxed text-[#333333] flex-1">
-                    {item}
-                  </p>
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
-        </section>
+        {tugasDanFungsi.length > 0 && (
+          <section className="mb-20">
+            <motion.h2
+              className="text-3xl lg:text-4xl font-bold mb-8 text-[#333333]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              Tugas dan Fungsi
+            </motion.h2>
+            <motion.div
+              className="bg-white rounded-lg shadow-md p-8 lg:p-10"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <ul className="space-y-6">
+                {tugasDanFungsi.map((item, index) => (
+                  <motion.li
+                    key={index}
+                    className="flex items-start"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.1,
+                      ease: "easeOut"
+                    }}
+                  >
+                    <div className="flex-shrink-0 w-2 h-2 rounded-full bg-[#0052FF] mt-2 mr-4"></div>
+                    <p className="text-base leading-relaxed text-[#333333] flex-1">
+                      {item}
+                    </p>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          </section>
+        )}
 
         {/* Section: Struktur Organisasi (Optional - dapat ditampilkan jika ada data) */}
         {/* 

@@ -41,7 +41,7 @@ export default function VisionSection() {
                 transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
                 onClick={() => navigate('/visi-misi')}
               >
-                Lihat Visi Misi Jawa Timur
+                Lihat Visi Misi Provinsi
               </motion.button>
             </div>
             
@@ -55,7 +55,7 @@ export default function VisionSection() {
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                 >
-                  Visi Pembangunan Provinsi Jawa Timur
+                  Visi Pembangunan Provinsi Kerja Baik
                 </motion.h2>
                 <motion.p 
                   className="text-gray-600 mb-6"
@@ -64,7 +64,7 @@ export default function VisionSection() {
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
                 >
-                  Terwujudnya masyarakat Jawa Timur yang adil, sejahtera, unggul, dan berdaulat dengan tata kelola pemerintahan yang partisipatif inklusif melalui kerja bersama dan semangat gotong royong.
+                  Terwujudnya masyarakat Kerja Baik yang adil, sejahtera, unggul, dan berdaulat dengan tata kelola pemerintahan yang partisipatif inklusif melalui kerja bersama dan semangat gotong royong.
                 </motion.p>
               </div>
             </div>

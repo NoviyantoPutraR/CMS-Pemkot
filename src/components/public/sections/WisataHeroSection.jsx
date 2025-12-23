@@ -47,10 +47,10 @@ export default function WisataHeroSection({ stats }) {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <h1 className="font-poppins text-4xl lg:text-5xl font-bold mb-4 leading-tight text-primary-blue">
-              Wisata Jawa Timur
+              Wisata Kerja Baik
             </h1>
             <p className="text-lg text-gray-700 mb-8 max-w-2xl">
-              Jelajahi keindahan destinasi wisata Provinsi Jawa Timur. Dari pegunungan hingga pantai, 
+              Jelajahi keindahan destinasi wisata Provinsi Kerja Baik. Dari pegunungan hingga pantai, 
               temukan pengalaman tak terlupakan di Bumi Arek.
             </p>
           </motion.div>

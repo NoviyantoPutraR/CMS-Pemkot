@@ -22,7 +22,7 @@ import { halamanService } from '../../../services/halamanService'
 import { useDebounce } from '../../../hooks/useDebounce'
 import { useToast } from '../../../hooks/useToast'
 import Loading from '../../../components/shared/Loading'
-import { Edit, FileText, AlertCircle, RefreshCw, Plus, Search, Trash2 } from 'lucide-react'
+import { Edit, FileText, AlertCircle, RefreshCw, Search, Trash2 } from 'lucide-react'
 import { formatDate } from '../../../utils/formatters'
 
 export default function HalamanList() {
@@ -123,19 +123,11 @@ export default function HalamanList() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-3xl font-bold">Manajemen Halaman</CardTitle>
-              <CardDescription className="mt-2">
-                Kelola halaman statis
-              </CardDescription>
-            </div>
-            <Link to="/admin/halaman/tambah">
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                Tambah Halaman
-              </Button>
-            </Link>
+          <div>
+            <CardTitle className="text-3xl font-bold">Manajemen Halaman</CardTitle>
+            <CardDescription className="mt-2">
+              Kelola halaman statis
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
@@ -164,17 +156,9 @@ export default function HalamanList() {
                       : 'Belum ada halaman yang tersedia'}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    {!debouncedSearch && 'Mulai dengan menambahkan halaman pertama Anda.'}
+                    {!debouncedSearch && 'Tidak ada halaman yang tersedia.'}
                   </p>
                 </div>
-                {!debouncedSearch && (
-                  <Link to="/admin/halaman/tambah">
-                    <Button>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Tambah Halaman Pertama
-                    </Button>
-                  </Link>
-                )}
               </div>
             </div>
           ) : (

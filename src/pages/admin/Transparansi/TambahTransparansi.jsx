@@ -162,14 +162,12 @@ export default function TambahTransparansi() {
                 type="number"
                 {...register('tahun', { valueAsNumber: true })}
                 placeholder="2021"
-                min="2021"
-                max="2026"
               />
               {errors.tahun && (
                 <p className="text-sm text-destructive">{errors.tahun.message}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Pilih tahun antara 2021-2026
+                Masukkan tahun anggaran
               </p>
             </div>
 
