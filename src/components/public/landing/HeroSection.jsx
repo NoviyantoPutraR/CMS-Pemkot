@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import GalleryContainer from './Gallery'
+import SearchAutocomplete from '../SearchAutocomplete'
 import { pengaturanSitusService } from '../../../services/pengaturanSitusService'
 
 export default function HeroSection() {
+  const navigate = useNavigate()
+  const [searchQuery, setSearchQuery] = useState('')
   const [heroData, setHeroData] = useState({
     nama_situs: '',
     deskripsi_situs: '',
@@ -122,47 +126,49 @@ export default function HeroSection() {
             
             {/* Search Box */}
             <motion.div 
-              className="group relative w-full max-w-lg bg-white rounded-full"
+              className="relative w-full max-w-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
             >
-              <svg 
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 fill-[#9e9ea7] z-10" 
-                aria-hidden="true" 
-                viewBox="0 0 24 24"
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (searchQuery.trim()) {
+                    navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+                  }
+                }}
+                className="relative"
               >
-                <g>
-                  <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
-                </g>
-              </svg>
-              <input 
-                type="text" 
-                name="query" 
-                id="query"
-                placeholder="Apa yang Anda cari di Jawa Timur?" 
-                className="rounded-full w-full h-14 bg-[#f3f3f4] py-2 pl-10 pr-28 outline-none border-2 border-transparent transition-all duration-300 ease-in-out placeholder:text-[#9e9ea7] hover:bg-white hover:border-[#2563EB] hover:shadow-[0_0_0_4px_rgba(37,99,235,0.1)] focus:bg-white focus:border-[#2563EB] focus:shadow-[0_0_0_4px_rgba(37,99,235,0.1)]" 
-              />
-              <button 
-                type="submit" 
-                className="group button absolute right-2.5 top-2.5 h-9 sm:h-10 px-3 sm:px-5 text-sm sm:text-base font-medium rounded-full overflow-hidden inline-flex items-center text-[#1d1d1f] bg-[rgba(255,208,116,1)] border-2 border-[rgba(255,208,116,1)]"
-              >
-                <span className="button-bg block absolute top-0 left-0 w-full h-full rounded-full overflow-hidden transition-transform duration-[1800ms] ease-[cubic-bezier(0.19,1,0.22,1)]">
-                  <span className="button-bg-layers block absolute left-1/2 -translate-x-1/2 -top-[60%] aspect-square" style={{ width: 'max(200%, 10rem)' }}>
-                    <span className="button-bg-layer-1 block absolute top-0 left-0 w-full h-full rounded-full bg-[rgba(163,116,255,1)] scale-0 transition-transform duration-[1300ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-100"></span>
-                    <span className="button-bg-layer-2 block absolute top-0 left-0 w-full h-full rounded-full bg-[rgba(23,241,209,1)] scale-0 transition-transform duration-[1300ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-100" style={{ transitionDelay: '100ms' }}></span>
-                    <span className="button-bg-layer-3 block absolute top-0 left-0 w-full h-full rounded-full bg-[rgba(255,208,116,1)] scale-0 transition-transform duration-[1300ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-100" style={{ transitionDelay: '200ms' }}></span>
+                <SearchAutocomplete
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  onSearch={(query) => navigate(`/search?q=${encodeURIComponent(query)}`)}
+                  placeholder="Apa yang Anda cari di Jawa Timur?"
+                  className="w-full"
+                  showButton={true}
+                />
+                <button 
+                  type="submit" 
+                  className="group button absolute right-2.5 top-2.5 h-9 sm:h-10 px-3 sm:px-5 text-sm sm:text-base font-medium rounded-full overflow-hidden inline-flex items-center text-[#1d1d1f] bg-[rgba(255,208,116,1)] border-2 border-[rgba(255,208,116,1)] z-20"
+                >
+                  <span className="button-bg block absolute top-0 left-0 w-full h-full rounded-full overflow-hidden transition-transform duration-[1800ms] ease-[cubic-bezier(0.19,1,0.22,1)]">
+                    <span className="button-bg-layers block absolute left-1/2 -translate-x-1/2 -top-[60%] aspect-square" style={{ width: 'max(200%, 10rem)' }}>
+                      <span className="button-bg-layer-1 block absolute top-0 left-0 w-full h-full rounded-full bg-[rgba(163,116,255,1)] scale-0 transition-transform duration-[1300ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-100"></span>
+                      <span className="button-bg-layer-2 block absolute top-0 left-0 w-full h-full rounded-full bg-[rgba(23,241,209,1)] scale-0 transition-transform duration-[1300ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-100" style={{ transitionDelay: '100ms' }}></span>
+                      <span className="button-bg-layer-3 block absolute top-0 left-0 w-full h-full rounded-full bg-[rgba(255,208,116,1)] scale-0 transition-transform duration-[1300ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-100" style={{ transitionDelay: '200ms' }}></span>
+                    </span>
                   </span>
-                </span>
-                <span className="button-inner relative inline-flex items-center pointer-events-none z-10">
-                  <span className="button-inner-static block transition-[transform,opacity] duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] opacity-100 group-hover:opacity-0 group-hover:-translate-y-[70%]">
-                    Cari Sekarang
+                  <span className="button-inner relative inline-flex items-center pointer-events-none z-10">
+                    <span className="button-inner-static block transition-[transform,opacity] duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] opacity-100 group-hover:opacity-0 group-hover:-translate-y-[70%]">
+                      Cari Sekarang
+                    </span>
+                    <span className="button-inner-hover absolute top-0 left-0 block opacity-0 translate-y-[70%] transition-[transform,opacity] duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:opacity-100 group-hover:translate-y-0 text-white">
+                      Cari Sekarang
+                    </span>
                   </span>
-                  <span className="button-inner-hover absolute top-0 left-0 block opacity-0 translate-y-[70%] transition-[transform,opacity] duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:opacity-100 group-hover:translate-y-0 text-white">
-                    Cari Sekarang
-                  </span>
-                </span>
-              </button>
+                </button>
+              </form>
             </motion.div>
           </div>
 

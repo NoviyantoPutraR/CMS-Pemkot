@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Download } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, FileSpreadsheet } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { transparansiAnggaranService } from '../../../services/transparansiAnggaranService'
 
@@ -301,8 +301,8 @@ export default function TransparencySection() {
                     <div className="bg-white rounded-xl overflow-hidden shadow-lg h-full border border-gray-100 flex flex-col transition-all duration-300 hover:translate-y-[-5px] hover:shadow-xl">
                       <div className="p-6 flex-1 flex flex-col">
                         <div className="flex items-start space-x-3 mb-4">
-                          <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <span className="text-red-600">📄</span>
+                          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <FileSpreadsheet className="w-5 h-5 text-green-600" strokeWidth={2} />
                           </div>
                           <div className="flex-1">
                             <h3 className="font-semibold text-sm mb-1 line-clamp-3">{report.title}</h3>

@@ -1,18 +1,24 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
+import { ClipboardList, BookOpen } from 'lucide-react'
 
 export default function QuickAccessSection() {
   const quickAccessItems = [
     {
-      icon: '🔥',
+      icon: ClipboardList,
       title: 'Layanan Aplikasi dan Pengaduan Online Rakyat',
       description: 'Sampaikan aspirasi Anda atau dapatkan pelayanan publik lebih baik, sehingga resolusi mendapat solusi.',
       bgColor: 'bg-red-100',
+      iconColor: 'text-red-600',
+      link: '/layanan',
     },
     {
-      icon: '🔍',
+      icon: BookOpen,
       title: 'Cari data tentang Jawa Timur Langsung',
-      description: 'Temukan data yang lengkap & terpercaya dari Jawa Timur dengan cepat, mudah, dan akurat.',
+      description: 'Jelajahi artikel informatif dan wawasan mendalam tentang Jawa Timur untuk memperluas pengetahuan Anda.',
       bgColor: 'bg-yellow-100',
+      iconColor: 'text-yellow-600',
+      link: '/artikel',
     },
   ]
 
@@ -59,12 +65,12 @@ export default function QuickAccessSection() {
             >
               <div className="flex items-center space-x-4 h-full">
                 <div className={`w-16 h-16 ${item.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                  <span className="text-3xl">{item.icon}</span>
+                  <item.icon className={`w-8 h-8 ${item.iconColor}`} strokeWidth={2} />
                 </div>
                 <div className="flex flex-col flex-1">
                   <h3 className="font-bold text-lg mb-2 min-h-[3.5rem]">{item.title}</h3>
                   <p className="text-sm text-gray-600 mb-4 flex-1">{item.description}</p>
-                  <a href="#" className="text-sm text-blue-600 font-medium">Selengkapnya →</a>
+                  <Link to={item.link} className="text-sm text-blue-600 font-medium">Selengkapnya →</Link>
                 </div>
               </div>
             </motion.div>

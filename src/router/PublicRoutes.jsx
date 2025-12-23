@@ -17,6 +17,7 @@ import VideoList from '../pages/public/VideoList'
 import PengumumanList from '../pages/public/PengumumanList'
 import PerangkatDaerahList from '../pages/public/PerangkatDaerahList'
 import TransparansiAnggaranList from '../pages/public/TransparansiAnggaranList'
+import SearchResults from '../pages/public/SearchResults'
 
 export default function PublicRoutes() {
   return (
@@ -39,6 +40,7 @@ export default function PublicRoutes() {
           <Route path="/pengumuman" element={<PengumumanList />} />
           <Route path="/perangkat-daerah" element={<PerangkatDaerahList />} />
           <Route path="/transparansi-anggaran" element={<TransparansiAnggaranList />} />
+          <Route path="/search" element={<SearchResults />} />
         </Routes>
       </PublicLayout>
     </LightModeWrapper>

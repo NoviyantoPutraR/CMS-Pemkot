@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import { layananService } from '../../services/layananService'
 import LayananCard from '../../components/public/LayananCard'
 import LayananHeroSection from '../../components/public/sections/LayananHeroSection'
@@ -11,6 +11,7 @@ import { useDebounce } from '../../hooks/useDebounce'
 
 export default function LayananList() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
   const [layanan, setLayanan] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -19,6 +20,11 @@ export default function LayananList() {
   const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1)
   const [totalPages, setTotalPages] = useState(1)
   const debouncedSearch = useDebounce(search, 500)
+
+  // Scroll to top when component mounts or route changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [location.pathname])
 
   // Load stats untuk hero section
   useEffect(() => {

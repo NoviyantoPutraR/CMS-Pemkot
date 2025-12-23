@@ -1,4 +1,28 @@
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver'
+import { 
+  Users, 
+  Briefcase, 
+  Receipt, 
+  TrendingUp, 
+  Archive, 
+  ClipboardCheck, 
+  Settings, 
+  Megaphone,
+  Calendar,
+  Target,
+  Building2,
+  BarChart3,
+  Globe,
+  FileEdit,
+  Star,
+  Award,
+  Mountain,
+  Waves,
+  Flame,
+  Trees,
+  Landmark,
+  Snowflake
+} from 'lucide-react'
 
 export default function ServicesGrid({ activeTab }) {
   // Photos from HeroSection
@@ -28,49 +52,49 @@ export default function ServicesGrid({ activeTab }) {
   const allData = {
     layanan: [
     {
-      icon: '👥',
+      icon: Users,
       title: 'Layanan Kependudukan',
       description: 'Layanan informasi seputar kepedudukan administrasi',
       bgColor: 'bg-red-100',
     },
     {
-      icon: '💼',
+      icon: Briefcase,
       title: 'Bursa Kerja',
       description: 'Layanan informasi seputar lowongan pekerjaan yang sedang dibuka',
       bgColor: 'bg-green-100',
     },
     {
-      icon: '📄',
+      icon: Receipt,
       title: 'E-Samsat',
       description: 'Layanan informasi tentang elektronik samsat kendaraan bermotor',
       bgColor: 'bg-blue-100',
     },
     {
-      icon: '💰',
+      icon: TrendingUp,
       title: 'Investasi',
       description: 'Layanan Untuk potensi investasi Penanaman Modal Bidang Bisnis Investasi',
       bgColor: 'bg-yellow-100',
     },
     {
-      icon: '🏥',
+      icon: Archive,
       title: 'Kearsiapan',
       description: 'Informasi dokumen arsip untuk persiapan dalam menjaring kesempatan',
       bgColor: 'bg-red-100',
     },
     {
-      icon: '📋',
+      icon: ClipboardCheck,
       title: 'Perijinan',
       description: 'Layanan informasi seputar persetujuan perijinan yang berdedak diprivatskan',
       bgColor: 'bg-green-100',
     },
     {
-      icon: '🔧',
+      icon: Settings,
       title: 'LPSE Jatim',
       description: 'Layanan informasi tentang Elektronik Pengaduan Barang',
       bgColor: 'bg-blue-100',
     },
     {
-      icon: '📢',
+      icon: Megaphone,
       title: 'Pengaduan',
       description: 'Layanan pengaduan keluhan untuk penyuluhan dari pengaduan',
       bgColor: 'bg-yellow-100',
@@ -78,49 +102,49 @@ export default function ServicesGrid({ activeTab }) {
     ],
     agenda: [
       {
-        icon: '📅',
+        icon: Calendar,
         title: 'Rapat Koordinasi',
         description: 'Agenda rapat koordinasi antar dinas untuk pembahasan program kerja',
         bgColor: 'bg-blue-100',
       },
       {
-        icon: '🎯',
+        icon: Target,
         title: 'Pelatihan SDM',
         description: 'Program pelatihan sumber daya manusia untuk meningkatkan kompetensi',
         bgColor: 'bg-purple-100',
       },
       {
-        icon: '🏛️',
+        icon: Building2,
         title: 'Sidang Paripurna',
         description: 'Agenda sidang paripurna DPRD Provinsi Jawa Timur',
         bgColor: 'bg-indigo-100',
       },
       {
-        icon: '📊',
+        icon: BarChart3,
         title: 'Evaluasi Program',
         description: 'Kegiatan evaluasi program pembangunan daerah',
         bgColor: 'bg-cyan-100',
       },
       {
-        icon: '🤝',
+        icon: Globe,
         title: 'Kunjungan Kerja',
         description: 'Agenda kunjungan kerja ke berbagai daerah di Jawa Timur',
         bgColor: 'bg-teal-100',
       },
       {
-        icon: '📝',
+        icon: FileEdit,
         title: 'Workshop Digital',
         description: 'Workshop peningkatan kapasitas digitalisasi pelayanan publik',
         bgColor: 'bg-pink-100',
       },
       {
-        icon: '🎪',
+        icon: Star,
         title: 'Festival Budaya',
         description: 'Agenda festival budaya Jawa Timur tahunan',
         bgColor: 'bg-orange-100',
       },
       {
-        icon: '🏆',
+        icon: Award,
         title: 'Penghargaan',
         description: 'Acara penganugerahan penghargaan kepada pegawai berprestasi',
         bgColor: 'bg-amber-100',
@@ -128,49 +152,49 @@ export default function ServicesGrid({ activeTab }) {
     ],
     wisata: [
       {
-        icon: '🏔️',
+        icon: Mountain,
         title: 'Gunung Bromo',
         description: 'Destinasi wisata alam dengan pemandangan sunrise yang menakjubkan',
         bgColor: 'bg-amber-100',
       },
       {
-        icon: '🏖️',
+        icon: Waves,
         title: 'Pantai Pasir Putih',
         description: 'Pantai dengan pasir putih dan air laut yang jernih di Malang',
         bgColor: 'bg-cyan-100',
       },
       {
-        icon: '🏛️',
+        icon: Building2,
         title: 'Candi Penataran',
         description: 'Candi Hindu terbesar di Jawa Timur dengan arsitektur yang megah',
         bgColor: 'bg-stone-100',
       },
       {
-        icon: '🌋',
+        icon: Flame,
         title: 'Kawah Ijen',
         description: 'Wisata alam dengan blue fire dan danau kawah yang unik',
         bgColor: 'bg-emerald-100',
       },
       {
-        icon: '🏞️',
+        icon: Trees,
         title: 'Taman Nasional Baluran',
         description: 'Taman nasional dengan savana dan satwa liar endemik',
         bgColor: 'bg-lime-100',
       },
       {
-        icon: '🏯',
+        icon: Landmark,
         title: 'Kota Tua Surabaya',
         description: 'Wisata sejarah dengan bangunan kolonial yang bersejarah',
         bgColor: 'bg-rose-100',
       },
       {
-        icon: '🌊',
+        icon: Waves,
         title: 'Air Terjun Tumpak Sewu',
         description: 'Air terjun dengan pemandangan yang spektakuler di Lumajang',
         bgColor: 'bg-sky-100',
       },
       {
-        icon: '🏜️',
+        icon: Snowflake,
         title: 'Gumuk Pasir Parangtritis',
         description: 'Gumuk pasir unik yang menjadi ikon wisata Banyuwangi',
         bgColor: 'bg-yellow-100',
@@ -273,7 +297,7 @@ function ServiceCard({ item, index }) {
     >
       <div className="text-black h-full flex flex-col gap-1.5 justify-center items-center text-center">
         <div className={`w-12 h-12 ${item.bgColor} rounded-lg flex items-center justify-center mb-1.5`}>
-          <span className="text-xl">{item.icon}</span>
+          {item.icon && <item.icon className="w-6 h-6 text-gray-700" />}
         </div>
         <p className="text-lg font-bold">{item.title}</p>
         <p className="text-xs text-[rgb(134,134,134)]">{item.description}</p>

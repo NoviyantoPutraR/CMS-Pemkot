@@ -2,40 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion, useInView } from 'framer-motion'
-
-// Sample news data (hardcoded for now)
-const newsData = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "Indeks SPBE Capai 3.62, Pemprov Jatim Terus Giatkan Pelayanan Publik yang Cepat, Efisien, Berbasis Digital",
-    date: "12 Februari 2025",
-    link: "#"
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "Gubernur Khofifah Ajak Masyarakat Manfaatkan Program Konversi Sepeda Motor Listrik",
-    date: "11 Februari 2025",
-    link: "#"
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "Pemprov Jatim Luncurkan Program Digitalisasi Pelayanan Publik",
-    date: "10 Februari 2025",
-    link: "#"
-  },
-  {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "Inovasi Teknologi untuk Meningkatkan Kualitas Hidup Masyarakat Jatim",
-    date: "9 Februari 2025",
-    link: "#"
-  }
-]
+import { beritaService } from '../../../services/beritaService'
+import { formatDate } from '../../../utils/formatters'
 
 export default function HighlightNewsSection() {
+  const [newsData, setNewsData] = useState([])
+  const [loading, setLoading] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [visibleCards, setVisibleCards] = useState(3)
   const trackRef = useRef(null)
@@ -48,6 +20,31 @@ export default function HighlightNewsSection() {
     once: true,
     amount: 0.2 
   })
+
+  // Load berita dari database
+  useEffect(() => {
+    const loadBerita = async () => {
+      try {
+        setLoading(true)
+        const data = await beritaService.getLatest(6)
+        // Map data dari database ke format yang diharapkan komponen
+        const mappedData = data.map((berita) => ({
+          id: berita.id,
+          image: berita.thumbnail_url || "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          title: berita.judul,
+          date: formatDate(berita.dibuat_pada),
+          link: `/berita/${berita.slug}`
+        }))
+        setNewsData(mappedData)
+      } catch (error) {
+        console.error('Error loading berita:', error)
+        setNewsData([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadBerita()
+  }, [])
   
   // Animation variants
   const leftPanelVariants = {
@@ -107,9 +104,11 @@ export default function HighlightNewsSection() {
 
   // Auto slide function
   const startAutoSlide = () => {
+    if (newsData.length === 0) return
     autoSlideIntervalRef.current = setInterval(() => {
       setCurrentIndex((prev) => {
         const maxIndex = Math.max(0, newsData.length - visibleCards)
+        if (maxIndex === 0) return 0
         return (prev + 1) % (maxIndex + 1)
       })
     }, 5000)
@@ -125,13 +124,15 @@ export default function HighlightNewsSection() {
 
   // Initialize auto slide
   useEffect(() => {
-    startAutoSlide()
+    if (newsData.length > 0) {
+      startAutoSlide()
+    }
     return () => {
       if (autoSlideIntervalRef.current) {
         clearInterval(autoSlideIntervalRef.current)
       }
     }
-  }, [visibleCards])
+  }, [visibleCards, newsData.length])
 
   // Pause on hover
   useEffect(() => {
@@ -298,38 +299,51 @@ export default function HighlightNewsSection() {
 
               {/* Carousel Track */}
               <div className="overflow-hidden relative flex-1 py-6 px-3 pb-8">
-                <div
-                  id="testimonial-track"
-                  ref={trackRef}
-                  className="flex gap-4 h-full"
-                >
-                  {newsData.map((news, index) => (
-                    <div
-                      key={news.id}
-                      className="testimonial-card testimonial-card-wrapper flex-shrink-0 w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.67rem)] px-0 animate-fade"
-                    >
-                      <div className="card-content bg-white rounded-xl overflow-hidden shadow-lg h-full border border-gray-100 flex flex-col">
-                        <img
-                          src={news.image}
-                          alt={news.title}
-                          className="w-full h-40 object-cover"
-                        />
-                        <div className="p-4 flex-1 flex flex-col">
-                          <h4 className="font-semibold text-sm mb-2 line-clamp-3">
-                            {news.title}
-                          </h4>
-                          <p className="text-xs text-gray-500 mb-2">{news.date}</p>
-                          <a
-                            href={news.link}
-                            className="text-xs text-blue-600 font-medium hover:text-blue-800 mt-auto"
-                          >
-                            Baca Selengkapnya →
-                          </a>
+                {loading ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-gray-500">Memuat berita...</div>
+                  </div>
+                ) : newsData.length === 0 ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-gray-500">Tidak ada berita tersedia</div>
+                  </div>
+                ) : (
+                  <div
+                    id="testimonial-track"
+                    ref={trackRef}
+                    className="flex gap-4 h-full"
+                  >
+                    {newsData.map((news, index) => (
+                      <div
+                        key={news.id}
+                        className="testimonial-card testimonial-card-wrapper flex-shrink-0 w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.67rem)] px-0 animate-fade"
+                      >
+                        <div className="card-content bg-white rounded-xl overflow-hidden shadow-lg h-full border border-gray-100 flex flex-col">
+                          <img
+                            src={news.image}
+                            alt={news.title}
+                            className="w-full h-40 object-cover"
+                            onError={(e) => {
+                              e.target.src = "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            }}
+                          />
+                          <div className="p-4 flex-1 flex flex-col">
+                            <h4 className="font-semibold text-sm mb-2 line-clamp-3">
+                              {news.title}
+                            </h4>
+                            <p className="text-xs text-gray-500 mb-2">{news.date}</p>
+                            <Link
+                              to={news.link}
+                              className="text-xs text-blue-600 font-medium hover:text-blue-800 mt-auto"
+                            >
+                              Baca Selengkapnya →
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Indicators */}

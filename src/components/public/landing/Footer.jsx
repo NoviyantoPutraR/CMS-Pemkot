@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { Mail, Phone } from 'lucide-react'
 import { pengaturanSitusService } from '../../../services/pengaturanSitusService'
 import { layananService } from '../../../services/layananService'
 import { transparansiAnggaranService } from '../../../services/transparansiAnggaranService'
+import { sosialMediaService } from '../../../services/sosialMediaService'
 
 export default function Footer() {
   const [footerData, setFooterData] = useState({
@@ -14,6 +16,7 @@ export default function Footer() {
   })
   const [layananList, setLayananList] = useState([])
   const [transparansiList, setTransparansiList] = useState([])
+  const [socialMediaList, setSocialMediaList] = useState([])
 
   useEffect(() => {
     const loadFooterData = async () => {
@@ -54,6 +57,19 @@ export default function Footer() {
       }
     }
     loadTransparansi()
+  }, [])
+
+  useEffect(() => {
+    const loadSocialMedia = async () => {
+      try {
+        const data = await sosialMediaService.getAll()
+        const activeSocialMedia = data.filter(item => item.aktif === true)
+        setSocialMediaList(activeSocialMedia)
+      } catch (error) {
+        console.error('Error loading social media:', error)
+      }
+    }
+    loadSocialMedia()
   }, [])
 
   return (
@@ -99,12 +115,18 @@ export default function Footer() {
               <ul className="mt-2 space-y-2">
                 {footerData.email && (
                   <li>
-                    <p className="transition-colors duration-300 text-blue-50">📧 {footerData.email}</p>
+                    <p className="transition-colors duration-300 text-blue-50 flex items-center gap-2">
+                      <Mail className="w-4 h-4 flex-shrink-0" />
+                      {footerData.email}
+                    </p>
                   </li>
                 )}
                 {footerData.telepon && (
                   <li>
-                    <p className="transition-colors duration-300 text-blue-50">📞 {footerData.telepon}</p>
+                    <p className="transition-colors duration-300 text-blue-50 flex items-center gap-2">
+                      <Phone className="w-4 h-4 flex-shrink-0" />
+                      {footerData.telepon}
+                    </p>
                   </li>
                 )}
               </ul>
@@ -174,28 +196,41 @@ export default function Footer() {
             © Copyright {new Date().getFullYear()} {footerData.nama_situs || 'Portal Resmi'}. All rights reserved.
           </p>
           <div className="flex items-center mt-4 space-x-4 sm:mt-0">
-            <a href="/" className="transition-colors duration-300 text-blue-100 hover:text-blue-400">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5">
-                <path
-                  d="M24,4.6c-0.9,0.4-1.8,0.7-2.8,0.8c1-0.6,1.8-1.6,2.2-2.7c-1,0.6-2,1-3.1,1.2c-0.9-1-2.2-1.6-3.6-1.6 c-2.7,0-4.9,2.2-4.9,4.9c0,0.4,0,0.8,0.1,1.1C7.7,8.1,4.1,6.1,1.7,3.1C1.2,3.9,1,4.7,1,5.6c0,1.7,0.9,3.2,2.2,4.1 C2.4,9.7,1.6,9.5,1,9.1c0,0,0,0,0,0.1c0,2.4,1.7,4.4,3.9,4.8c-0.4,0.1-0.8,0.2-1.3,0.2c-0.3,0-0.6,0-0.9-0.1c0.6,2,2.4,3.4,4.6,3.4 c-1.7,1.3-3.8,2.1-6.1,2.1c-0.4,0-0.8,0-1.2-0.1c2.2,1.4,4.8,2.2,7.5,2.2c9.1,0,14-7.5,14-14c0-0.2,0-0.4,0-0.6 C22.5,6.4,23.3,5.5,24,4.6z"
-                ></path>
-              </svg>
-            </a>
-            <a href="/" className="transition-colors duration-300 text-blue-100 hover:text-blue-400">
-              <svg viewBox="0 0 30 30" fill="currentColor" className="h-6">
-                <circle cx="15" cy="15" r="4"></circle>
-                <path
-                  d="M19.999,3h-10C6.14,3,3,6.141,3,10.001v10C3,23.86,6.141,27,10.001,27h10C23.86,27,27,23.859,27,19.999v-10   C27,6.14,23.859,3,19.999,3z M15,21c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S18.309,21,15,21z M22,9c-0.552,0-1-0.448-1-1   c0-0.552,0.448-1,1-1s1,0.448,1,1C23,8.552,22.552,9,22,9z"
-                ></path>
-              </svg>
-            </a>
-            <a href="/" className="transition-colors duration-300 text-blue-100 hover:text-blue-400">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5">
-                <path
-                  d="M22,0H2C0.895,0,0,0.895,0,2v20c0,1.105,0.895,2,2,2h11v-9h-3v-4h3V8.413c0-3.1,1.893-4.788,4.659-4.788 c1.325,0,2.463,0.099,2.795,0.143v3.24l-1.918,0.001c-1.504,0-1.795,0.715-1.795,1.763V11h4.44l-1,4h-3.44v9H22c1.105,0,2-0.895,2-2 V2C24,0.895,23.105,0,22,0z"
-                ></path>
-              </svg>
-            </a>
+            {socialMediaList.map((socialMedia) => (
+              <a
+                key={socialMedia.id}
+                href={socialMedia.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors duration-300 text-blue-100 hover:text-blue-400"
+                aria-label={socialMedia.platform}
+              >
+                {socialMedia.platform === 'twitter' ? (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                ) : socialMedia.platform === 'instagram' ? (
+                  <svg viewBox="0 0 30 30" fill="currentColor" className="h-6">
+                    <circle cx="15" cy="15" r="4"></circle>
+                    <path d="M19.999,3h-10C6.14,3,3,6.141,3,10.001v10C3,23.86,6.141,27,10.001,27h10C23.86,27,27,23.859,27,19.999v-10 C27,6.14,23.859,3,19.999,3z M15,21c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S18.309,21,15,21z M22,9c-0.552,0-1-0.448-1-1 c0-0.552,0.448-1,1-1s1,0.448,1,1C23,8.552,22.552,9,22,9z" />
+                  </svg>
+                ) : socialMedia.platform === 'facebook' ? (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5">
+                    <path d="M22,0H2C0.895,0,0,0.895,0,2v20c0,1.105,0.895,2,2,2h11v-9h-3v-4h3V8.413c0-3.1,1.893-4.788,4.659-4.788 c1.325,0,2.463,0.099,2.795,0.143v3.24l-1.918,0.001c-1.504,0-1.795,0.715-1.795,1.763V11h4.44l-1,4h-3.44v9H22c1.105,0,2-0.895,2-2 V2C24,0.895,23.105,0,22,0z" />
+                  </svg>
+                ) : socialMedia.platform === 'youtube' ? (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                  </svg>
+                ) : socialMedia.platform === 'tiktok' ? (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                  </svg>
+                ) : socialMedia.ikon_url ? (
+                  <img src={socialMedia.ikon_url} alt={socialMedia.platform} className="h-5 w-5" />
+                ) : null}
+              </a>
+            ))}
           </div>
         </div>
       </div>

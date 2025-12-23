@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import { artikelService } from '../../services/artikelService'
 import ArtikelCard from '../../components/public/ArtikelCard'
 import ArtikelHeroSection from '../../components/public/sections/ArtikelHeroSection'
@@ -11,6 +11,7 @@ import { useDebounce } from '../../hooks/useDebounce'
 
 export default function ArtikelList() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
   const [artikel, setArtikel] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -19,6 +20,11 @@ export default function ArtikelList() {
   const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1)
   const [totalPages, setTotalPages] = useState(1)
   const debouncedSearch = useDebounce(search, 500)
+
+  // Scroll to top when component mounts or route changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [location.pathname])
 
   // Load stats untuk hero section
   useEffect(() => {
