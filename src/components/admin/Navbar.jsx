@@ -34,10 +34,10 @@ export default function Navbar({ onMenuClick, showLogoutConfirm, setShowLogoutCo
     <nav className="bg-background border-b border-border sticky top-0 z-30">
       <div className="h-[68px] px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          {/* Hamburger menu button untuk mobile */}
+          {/* Hamburger menu button untuk semua ukuran layar */}
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
+            className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             aria-label="Open sidebar"
           >
             <Menu className="w-5 h-5 text-foreground" />

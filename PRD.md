@@ -1,11 +1,17 @@
 # Product Requirement Document (PRD)
 ## CMS Website Pemerintah Kota
 
-**Versi**: 2.2 (Updated setelah Database Cleanup)  
+**Versi**: 2.3 (Updated setelah Restriksi Hak Akses Penulis)  
 **Tanggal Update**: 2024  
 **Status**: Active Development
 
 ### Changelog
+
+**Versi 2.3 - Restriksi Hak Akses Penulis:**
+- ✅ Pembatasan hak akses penulis hanya ke berita dan artikel
+- ✅ Pemindahan agenda_kota, wisata, video, pengumuman, sosial_media ke admin_skpd_options
+- ✅ Penghapusan otomatis hak akses penulis yang sudah ada untuk 5 halaman tersebut
+- ✅ Update seed data migration untuk kategori hak akses baru
 
 **Versi 2.2 - Database Cleanup & Role-Permission System:**
 - ✅ Penghapusan kolom `nama_skpd` dari tabel `pengguna`
@@ -315,8 +321,8 @@ Database dirancang dengan prinsip normalisasi 5NF, ACID compliance, dan penamaan
 
 **Deskripsi**: Tabel master untuk hak akses halaman. Menggunakan sistem role-based permission dengan 3 kategori:
 - **superadmin_only**: Hanya dapat diakses superadmin (dashboard, manajemen_pengguna)
-- **admin_skpd_options**: Dapat diakses Admin SKPD (layanan, perangkat_daerah, transparansi, halaman, pengaturan)
-- **penulis_options**: Dapat diakses Penulis (berita, artikel, agenda_kota, wisata, video, pengumuman, sosial_media)
+- **admin_skpd_options**: Dapat diakses Admin SKPD (layanan, perangkat_daerah, transparansi, halaman, pengaturan, agenda_kota, wisata, video, pengumuman, sosial_media)
+- **penulis_options**: Dapat diakses Penulis (berita, artikel)
 
 **Catatan**: Data di tabel ini adalah seed data dan tidak dapat diubah melalui aplikasi (read-only untuk authenticated users).
 

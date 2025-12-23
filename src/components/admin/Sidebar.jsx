@@ -16,8 +16,6 @@ import {
   Share2,
   Settings,
   X,
-  PanelLeftClose,
-  PanelRightClose,
   UserCircle
 } from 'lucide-react'
 import useAuthStore from '../../store/useAuthStore'
@@ -63,10 +61,10 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
 
   return (
     <>
-      {/* Overlay backdrop untuk mobile */}
+      {/* Overlay backdrop untuk semua ukuran layar */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 lg:hidden transition-opacity"
+          className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 transition-opacity duration-300 ease-in-out"
           onClick={onClose}
         />
       )}
@@ -75,9 +73,8 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
         fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border z-40
         flex flex-col
         transition-all duration-300 ease-in-out
-        lg:translate-x-0
-        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${isCollapsed && isOpen ? 'lg:w-20' : 'lg:w-64'}
         w-64
         ${showLogoutConfirm ? 'opacity-50' : 'opacity-100'}
       `}>
@@ -89,27 +86,14 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
             isCollapsed ? 'lg:opacity-0 lg:w-0' : 'opacity-100 w-auto'
           }`}>
             <h1 className="text-lg font-semibold text-sidebar-foreground">
-              CMS Admin
+              Admin Panel
             </h1>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Toggle Collapse Button - Desktop Only */}
-            <button
-              onClick={onToggleCollapse}
-              className="hidden lg:flex items-center justify-center p-2 rounded-lg hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200"
-              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {isCollapsed ? (
-                <PanelRightClose className="w-5 h-5 text-sidebar-foreground" />
-              ) : (
-                <PanelLeftClose className="w-5 h-5 text-sidebar-foreground" />
-              )}
-            </button>
-            {/* Close Button - Mobile Only */}
+            {/* Close Button - Semua ukuran layar */}
             <button
               onClick={onClose}
-              className="lg:hidden p-1 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200"
+              className="p-1 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200"
               aria-label="Close sidebar"
             >
               <X className="w-5 h-5 text-sidebar-foreground" />
@@ -134,10 +118,8 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                 key={item.path}
                 to={item.path}
                 onClick={() => {
-                  // Close sidebar on mobile when clicking a link
-                  if (window.innerWidth < 1024) {
-                    onClose()
-                  }
+                  // Close sidebar when clicking a link
+                  onClose()
                 }}
                 className={`
                   group relative flex items-center rounded-lg transition-all duration-300 ease-in-out
@@ -174,9 +156,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
             <Link
               to={`/admin/pengguna/edit/${profile?.id}`}
               onClick={() => {
-                if (window.innerWidth < 1024) {
-                  onClose()
-                }
+                onClose()
               }}
               className={`
                 group relative flex items-center rounded-lg transition-all duration-300 ease-in-out

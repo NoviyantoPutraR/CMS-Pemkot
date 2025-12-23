@@ -79,18 +79,18 @@ INSERT INTO hak_akses (kode_halaman, nama_halaman, deskripsi, kategori) VALUES
   ('perangkat_daerah', 'Perangkat Daerah', 'Kelola perangkat daerah', 'admin_skpd_options'),
   ('transparansi', 'Transparansi Anggaran', 'Kelola transparansi anggaran', 'admin_skpd_options'),
   ('halaman', 'Halaman Statis', 'Kelola halaman statis', 'admin_skpd_options'),
-  ('pengaturan', 'Pengaturan Situs', 'Kelola pengaturan situs', 'admin_skpd_options')
+  ('pengaturan', 'Pengaturan Situs', 'Kelola pengaturan situs', 'admin_skpd_options'),
+  ('agenda_kota', 'Agenda Kota', 'Kelola agenda kegiatan kota', 'admin_skpd_options'),
+  ('wisata', 'Wisata', 'Kelola destinasi wisata', 'admin_skpd_options'),
+  ('video', 'Video', 'Kelola video informasi', 'admin_skpd_options'),
+  ('pengumuman', 'Pengumuman', 'Kelola pengumuman resmi', 'admin_skpd_options'),
+  ('sosial_media', 'Sosial Media', 'Kelola sosial media', 'admin_skpd_options')
 ON CONFLICT (kode_halaman) DO NOTHING;
 
 -- Kategori: penulis_options (Halaman yang bisa diakses Penulis)
 INSERT INTO hak_akses (kode_halaman, nama_halaman, deskripsi, kategori) VALUES
   ('berita', 'Berita', 'Kelola berita', 'penulis_options'),
-  ('artikel', 'Artikel', 'Kelola artikel', 'penulis_options'),
-  ('agenda_kota', 'Agenda Kota', 'Kelola agenda kegiatan kota', 'penulis_options'),
-  ('wisata', 'Wisata', 'Kelola destinasi wisata', 'penulis_options'),
-  ('video', 'Video', 'Kelola video informasi', 'penulis_options'),
-  ('pengumuman', 'Pengumuman', 'Kelola pengumuman resmi', 'penulis_options'),
-  ('sosial_media', 'Sosial Media', 'Kelola sosial media', 'penulis_options')
+  ('artikel', 'Artikel', 'Kelola artikel', 'penulis_options')
 ON CONFLICT (kode_halaman) DO NOTHING;
 
 -- ============================================
