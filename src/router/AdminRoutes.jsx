@@ -5,6 +5,7 @@ import Login from '../pages/admin/Login'
 import { BYPASS_AUTH } from '../utils/authConfig'
 import PermissionGuard from '../components/admin/PermissionGuard'
 import { PAGE_CODES } from '../utils/constants'
+import LightModeWrapper from '../components/shared/LightModeWrapper'
 
 // Lazy load admin components untuk code splitting
 const AdminLayout = lazy(() => import('../layouts/AdminLayout'))
@@ -114,7 +115,9 @@ export default function AdminRoutes() {
           BYPASS_AUTH || isAuthenticated ? (
             <Navigate to="/admin" replace />
           ) : (
-            <Login />
+            <LightModeWrapper>
+              <Login />
+            </LightModeWrapper>
           )
         }
       />

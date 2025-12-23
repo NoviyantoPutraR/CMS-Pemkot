@@ -4,13 +4,13 @@ import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../ui/card'
 import { LogOut, User, Menu, Moon, Sun, AlertTriangle, Shield, UserCog, FileEdit } from 'lucide-react'
-import { useTheme } from '../../hooks/useTheme'
+import { useAdminTheme } from '../../hooks/useAdminTheme'
 import { ROLES, ROLE_LABELS } from '../../utils/constants'
 
 export default function Navbar({ onMenuClick, showLogoutConfirm, setShowLogoutConfirm }) {
   const { profile, signOut } = useAuthStore()
   const navigate = useNavigate()
-  const { isDark, toggleTheme } = useTheme()
+  const { isDark, toggleTheme } = useAdminTheme()
 
   const handleLogout = async () => {
     await signOut()

@@ -5,6 +5,7 @@ import Navbar from '../components/admin/Navbar'
 import Breadcrumb from '../components/shared/Breadcrumb'
 import { generateBreadcrumbFromRoute } from '../utils/breadcrumbHelper'
 import useAuthStore from '../store/useAuthStore'
+import { useAdminTheme } from '../hooks/useAdminTheme'
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -12,6 +13,9 @@ export default function AdminLayout({ children }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const location = useLocation()
   const { user } = useAuthStore()
+  
+  // Initialize admin theme - this ensures admin theme is applied when entering admin panel
+  useAdminTheme()
   
   // Check if current path is user's own profile page
   const profilePath = `/admin/pengguna/edit/${user?.id}`
