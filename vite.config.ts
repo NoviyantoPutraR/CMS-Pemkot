@@ -17,43 +17,62 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Core React libraries - critical, load first
-          if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+          // CRITICAL: React dan react-dom HARUS di chunk yang sama
+          // Jangan pernah memisahkan mereka
+          if (id.includes('node_modules/react/') || 
+              id.includes('node_modules/react-dom/') ||
+              id.includes('node_modules/react-router/') ||
+              id.includes('node_modules/react-router-dom/')) {
             return 'vendor-react'
           }
+          
           // Supabase - separate chunk for API calls
-          if (id.includes('@supabase')) {
+          if (id.includes('node_modules/@supabase')) {
             return 'vendor-supabase'
           }
+          
           // Animation libraries - heavy, lazy load
-          if (id.includes('framer-motion') || id.includes('gsap')) {
+          if (id.includes('node_modules/framer-motion') || id.includes('node_modules/gsap')) {
             return 'vendor-animations'
           }
+          
           // Rich text editor - heavy, only load when needed
-          if (id.includes('react-quill')) {
+          if (id.includes('node_modules/react-quill')) {
             return 'vendor-editor'
           }
+          
           // Form libraries
-          if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('zod')) {
+          if (id.includes('node_modules/react-hook-form') || 
+              id.includes('node_modules/@hookform') || 
+              id.includes('node_modules/zod')) {
             return 'vendor-forms'
           }
+          
           // UI utilities
-          if (id.includes('lucide-react') || id.includes('class-variance-authority') || id.includes('clsx') || id.includes('tailwind-merge')) {
+          if (id.includes('node_modules/lucide-react') || 
+              id.includes('node_modules/class-variance-authority') || 
+              id.includes('node_modules/clsx') || 
+              id.includes('node_modules/tailwind-merge')) {
             return 'vendor-ui'
           }
+          
           // State management
-          if (id.includes('zustand')) {
+          if (id.includes('node_modules/zustand')) {
             return 'vendor-state'
           }
+          
           // Charts library
-          if (id.includes('recharts')) {
+          if (id.includes('node_modules/recharts')) {
             return 'vendor-charts'
           }
-          // Other node_modules - return undefined untuk default chunking
+          
+          // Other node_modules - let Vite handle default chunking
+          // Jangan force ke vendor-other karena bisa memisahkan dependencies
           if (id.includes('node_modules')) {
-            return 'vendor-other'
+            return undefined
           }
-          // Return undefined untuk source files (akan di-handle oleh default chunking)
+          
+          // Return undefined untuk source files
           return undefined
         },
       },
