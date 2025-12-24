@@ -17,50 +17,56 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // CRITICAL: React dan semua React-dependent libraries HARUS di chunk yang sama
-          // Ini mencegah error "Cannot read properties of undefined (reading 'forwardRef')"
+          // CRITICAL: React dan SEMUA React-dependent libraries HARUS di chunk yang sama
+          // Ini mencegah error "Cannot set properties of undefined" dan "Cannot read properties of undefined"
+          // Semua library yang menggunakan React (forwardRef, createElement, dll) harus di chunk yang sama
           if (id.includes('node_modules/react/') || 
               id.includes('node_modules/react-dom/') ||
               id.includes('node_modules/react-router/') ||
               id.includes('node_modules/react-router-dom/') ||
-              // React-dependent UI libraries - HARUS di chunk yang sama dengan React
+              // React-dependent UI libraries
               id.includes('node_modules/lucide-react') ||
               id.includes('node_modules/class-variance-authority') ||
               id.includes('node_modules/clsx') ||
-              id.includes('node_modules/tailwind-merge')) {
+              id.includes('node_modules/tailwind-merge') ||
+              // React-dependent form libraries
+              id.includes('node_modules/react-hook-form') ||
+              id.includes('node_modules/@hookform') ||
+              // React-dependent chart library
+              id.includes('node_modules/recharts') ||
+              // React-dependent animation library (used in many components)
+              id.includes('node_modules/framer-motion') ||
+              // React-dependent rich text editor
+              id.includes('node_modules/react-quill') ||
+              // React icons
+              id.includes('node_modules/react-icons')) {
             return 'vendor-react'
           }
           
-          // Supabase - separate chunk for API calls
+          // Supabase - separate chunk (tidak dependen pada React)
           if (id.includes('node_modules/@supabase')) {
             return 'vendor-supabase'
           }
           
-          // Animation libraries - heavy, lazy load (framer-motion depends on React but can be lazy loaded)
-          if (id.includes('node_modules/framer-motion') || id.includes('node_modules/gsap')) {
+          // GSAP - animation library yang tidak dependen pada React
+          if (id.includes('node_modules/gsap')) {
             return 'vendor-animations'
           }
           
-          // Rich text editor - heavy, only load when needed (react-quill depends on React)
-          if (id.includes('node_modules/react-quill')) {
-            return 'vendor-editor'
+          // Zod - validation library (tidak dependen pada React, tapi sering digunakan dengan react-hook-form)
+          // Masukkan ke vendor-react untuk menghindari masalah
+          if (id.includes('node_modules/zod')) {
+            return 'vendor-react'
           }
           
-          // Form libraries (react-hook-form depends on React)
-          if (id.includes('node_modules/react-hook-form') || 
-              id.includes('node_modules/@hookform') || 
-              id.includes('node_modules/zod')) {
-            return 'vendor-forms'
-          }
-          
-          // State management
+          // State management (Zustand tidak dependen pada React secara langsung, tapi sering digunakan dengan React)
           if (id.includes('node_modules/zustand')) {
-            return 'vendor-state'
+            return 'vendor-react'
           }
           
-          // Charts library (recharts depends on React)
-          if (id.includes('node_modules/recharts')) {
-            return 'vendor-charts'
+          // Sonner - toast library (React-dependent)
+          if (id.includes('node_modules/sonner')) {
+            return 'vendor-react'
           }
           
           // Other node_modules - let Vite handle default chunking
