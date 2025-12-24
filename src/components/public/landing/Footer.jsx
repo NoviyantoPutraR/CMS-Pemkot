@@ -82,12 +82,7 @@ export default function Footer() {
           {/* Logo & Description */}
           <div className="md:max-w-md lg:col-span-2">
             <a href="/" aria-label="Go home" title="Company" className="inline-flex items-center">
-              <svg className="w-8 text-blue-400" viewBox="0 0 24 24" strokeLinejoin="round" strokeWidth="2" strokeLinecap="round" strokeMiterlimit="10" stroke="currentColor" fill="none">
-                <rect x="3" y="1" width="7" height="12"></rect>
-                <rect x="3" y="17" width="7" height="6"></rect>
-                <rect x="14" y="1" width="7" height="6"></rect>
-                <rect x="14" y="11" width="7" height="12"></rect>
-              </svg>
+              <img src="/logo.png" alt="Logo" className="h-10 w-auto object-contain" />
               {footerData.nama_situs && (
                 <span className="ml-2 text-xl font-bold tracking-wide text-gray-100 uppercase">{footerData.nama_situs}</span>
               )}
