@@ -74,8 +74,7 @@ export const kategoriSchema = z.object({
 export const layananSchema = z.object({
   judul: z
     .string()
-    .min(10, 'Judul harus minimal 10 karakter')
-    .max(200, 'Judul maksimal 200 karakter'),
+    .min(1, 'Judul harus diisi'),
   slug: z
     .string()
     .min(3, 'Slug harus minimal 3 karakter')

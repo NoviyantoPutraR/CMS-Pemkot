@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver'
 import { agendaKotaService } from '../../../services/agendaKotaService'
 import { wisataService } from '../../../services/wisataService'
+import { layananService } from '../../../services/layananService'
 import AgendaServiceCard from './AgendaServiceCard'
 import Loading from '../../shared/Loading'
-import { truncate } from '../../../utils/formatters'
+import { truncate, stripHtml } from '../../../utils/formatters'
 import { 
   Users, 
   Briefcase, 
@@ -38,6 +40,9 @@ export default function ServicesGrid({ activeTab }) {
   const [wisataData, setWisataData] = useState([])
   const [wisataLoading, setWisataLoading] = useState(false)
   const [wisataError, setWisataError] = useState(null)
+  const [layananData, setLayananData] = useState([])
+  const [layananLoading, setLayananLoading] = useState(false)
+  const [layananError, setLayananError] = useState(null)
   // Default image fallback
   const defaultWisataImage = 'https://images.unsplash.com/photo-1505993597083-3bd19fb75e57?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 
@@ -99,113 +104,38 @@ export default function ServicesGrid({ activeTab }) {
     }
   }, [activeTab])
 
-  const allData = {
-    layanan: [
-    {
-      icon: Users,
-      title: 'Layanan Kependudukan',
-      description: 'Layanan informasi seputar kepedudukan administrasi',
-      bgColor: 'bg-red-100',
-    },
-    {
-      icon: Briefcase,
-      title: 'Bursa Kerja',
-      description: 'Layanan informasi seputar lowongan pekerjaan yang sedang dibuka',
-      bgColor: 'bg-green-100',
-    },
-    {
-      icon: Receipt,
-      title: 'E-Samsat',
-      description: 'Layanan informasi tentang elektronik samsat kendaraan bermotor',
-      bgColor: 'bg-blue-100',
-    },
-    {
-      icon: TrendingUp,
-      title: 'Investasi',
-      description: 'Layanan Untuk potensi investasi Penanaman Modal Bidang Bisnis Investasi',
-      bgColor: 'bg-yellow-100',
-    },
-    {
-      icon: Archive,
-      title: 'Kearsiapan',
-      description: 'Informasi dokumen arsip untuk persiapan dalam menjaring kesempatan',
-      bgColor: 'bg-red-100',
-    },
-    {
-      icon: ClipboardCheck,
-      title: 'Perijinan',
-      description: 'Layanan informasi seputar persetujuan perijinan yang berdedak diprivatskan',
-      bgColor: 'bg-green-100',
-    },
-    {
-      icon: Settings,
-      title: 'LPSE Jatim',
-      description: 'Layanan informasi tentang Elektronik Pengaduan Barang',
-      bgColor: 'bg-blue-100',
-    },
-    {
-      icon: Megaphone,
-      title: 'Pengaduan',
-      description: 'Layanan pengaduan keluhan untuk penyuluhan dari pengaduan',
-      bgColor: 'bg-yellow-100',
-    },
-    ],
-    wisata: [
-      {
-        icon: Mountain,
-        title: 'Gunung Bromo',
-        description: 'Destinasi wisata alam dengan pemandangan sunrise yang menakjubkan',
-        bgColor: 'bg-amber-100',
-      },
-      {
-        icon: Waves,
-        title: 'Pantai Pasir Putih',
-        description: 'Pantai dengan pasir putih dan air laut yang jernih di Malang',
-        bgColor: 'bg-cyan-100',
-      },
-      {
-        icon: Building2,
-        title: 'Candi Penataran',
-        description: 'Candi Hindu terbesar di Jawa Timur dengan arsitektur yang megah',
-        bgColor: 'bg-stone-100',
-      },
-      {
-        icon: Flame,
-        title: 'Kawah Ijen',
-        description: 'Wisata alam dengan blue fire dan danau kawah yang unik',
-        bgColor: 'bg-emerald-100',
-      },
-      {
-        icon: Trees,
-        title: 'Taman Nasional Baluran',
-        description: 'Taman nasional dengan savana dan satwa liar endemik',
-        bgColor: 'bg-lime-100',
-      },
-      {
-        icon: Landmark,
-        title: 'Kota Tua Surabaya',
-        description: 'Wisata sejarah dengan bangunan kolonial yang bersejarah',
-        bgColor: 'bg-rose-100',
-      },
-      {
-        icon: Waves,
-        title: 'Air Terjun Tumpak Sewu',
-        description: 'Air terjun dengan pemandangan yang spektakuler di Lumajang',
-        bgColor: 'bg-sky-100',
-      },
-      {
-        icon: Snowflake,
-        title: 'Gumuk Pasir Parangtritis',
-        description: 'Gumuk pasir unik yang menjadi ikon wisata Banyuwangi',
-        bgColor: 'bg-yellow-100',
-      },
-    ],
-  }
+  // Fetch layanan data when activeTab is 'layanan' or default
+  useEffect(() => {
+    if (activeTab === 'layanan' || !activeTab || activeTab === '') {
+      const fetchLayanan = async () => {
+        try {
+          setLayananLoading(true)
+          setLayananError(null)
+          const result = await layananService.getAll({
+            page: 1,
+            limit: 8,
+            publishedOnly: true,
+            sortBy: 'terbaru'
+          })
+          setLayananData(result.data || [])
+        } catch (error) {
+          console.error('Error fetching layanan:', error)
+          setLayananError(error.message || 'Gagal memuat data layanan')
+          setLayananData([])
+        } finally {
+          setLayananLoading(false)
+        }
+      }
+      fetchLayanan()
+    } else {
+      // Clear layanan data when switching tabs
+      setLayananData([])
+    }
+  }, [activeTab])
 
-  const currentData = allData[activeTab] || allData.layanan
   const isWisata = activeTab === 'wisata'
   const isAgenda = activeTab === 'agenda'
-  const displayData = isWisata ? currentData.slice(0, 4) : currentData
+  const isLayanan = activeTab === 'layanan' || !activeTab || activeTab === ''
 
   return (
     <div className="relative overflow-visible py-12">
@@ -332,11 +262,36 @@ export default function ServicesGrid({ activeTab }) {
           </div>
         )}
 
-        {/* Other Tabs Grid */}
-        {!isAgenda && !isWisata && (
+        {/* Layanan Loading State */}
+        {isLayanan && layananLoading && (
+          <div className="flex justify-center items-center py-20">
+            <Loading />
+          </div>
+        )}
+
+        {/* Layanan Error State */}
+        {isLayanan && !layananLoading && layananError && (
+          <div className="text-center py-20">
+            <Settings className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-600 text-lg mb-2">Gagal memuat data layanan</p>
+            <p className="text-gray-500 text-sm">{layananError}</p>
+          </div>
+        )}
+
+        {/* Layanan Empty State */}
+        {isLayanan && !layananLoading && !layananError && layananData.length === 0 && (
+          <div className="text-center py-20">
+            <Settings className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-600 text-lg">Belum ada layanan tersedia</p>
+            <p className="text-gray-500 text-sm mt-2">Layanan akan ditampilkan di sini setelah dipublikasikan</p>
+          </div>
+        )}
+
+        {/* Layanan Grid */}
+        {isLayanan && !layananLoading && layananData.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {displayData.map((item, index) => (
-              <ServiceCard key={index} item={item} index={index} />
+            {layananData.map((layanan, index) => (
+              <ServiceCard key={layanan.id} layanan={layanan} index={index} />
             ))}
           </div>
         )}
@@ -346,30 +301,105 @@ export default function ServicesGrid({ activeTab }) {
   )
 }
 
-function ServiceCard({ item, index }) {
+function ServiceCard({ layanan, index }) {
   const [cardRef, isVisible] = useIntersectionObserver()
+  const [iconError, setIconError] = useState(false)
+  
+  // Get description from meta_description or strip HTML from konten
+  const description = layanan.meta_description 
+    ? truncate(layanan.meta_description, 100)
+    : truncate(stripHtml(layanan.konten || ''), 100)
+  
+  // Gradient colors for icon background (rotating based on index)
+  const gradientColors = [
+    'from-blue-500/10 via-blue-400/10 to-cyan-500/10',
+    'from-emerald-500/10 via-green-400/10 to-teal-500/10',
+    'from-purple-500/10 via-pink-400/10 to-rose-500/10',
+    'from-amber-500/10 via-orange-400/10 to-yellow-500/10',
+    'from-indigo-500/10 via-blue-400/10 to-purple-500/10',
+    'from-red-500/10 via-rose-400/10 to-pink-500/10',
+    'from-cyan-500/10 via-blue-400/10 to-indigo-500/10',
+    'from-green-500/10 via-emerald-400/10 to-teal-500/10',
+  ]
+  const gradientClass = gradientColors[index % gradientColors.length]
+  
+  // Default icon fallback
+  const DefaultIcon = Settings
+
+  // Get navigation link
+  const linkTo = layanan.slug ? `/layanan/${layanan.slug}` : `/layanan/${layanan.id}`
+  
+  // Determine if we should show icon image or fallback
+  const showIconImage = layanan.icon_url && !iconError
 
   return (
-    <div 
+    <motion.div
       ref={cardRef}
-      className="group relative w-full aspect-[160/192] rounded-[20px] bg-[#f5f5f5] p-5 border-2 border-[#c3c6ce] transition-all duration-500 ease-out overflow-visible hover:border-[#008bf8] hover:shadow-[0_4px_18px_0_rgba(0,0,0,0.25)]"
-      style={{
-        opacity: isVisible ? 1 : 0,
-        filter: isVisible ? 'blur(0px)' : 'blur(10px)',
-        transition: 'opacity 0.65s ease-out, filter 0.65s ease-out',
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+      transition={{ 
+        duration: 0.6, 
+        delay: index * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94]
       }}
     >
-      <div className="text-black h-full flex flex-col gap-1.5 justify-center items-center text-center">
-        <div className={`w-12 h-12 ${item.bgColor} rounded-lg flex items-center justify-center mb-1.5`}>
-          {item.icon && <item.icon className="w-6 h-6 text-gray-700" />}
+      <Link
+        to={linkTo}
+        className="group relative block w-full aspect-[160/192] rounded-[20px] overflow-hidden"
+      >
+        {/* Card Container with Premium Design */}
+        <div className="relative h-full w-full bg-gradient-to-br from-white via-gray-50/50 to-white border border-gray-200/60 backdrop-blur-sm transition-all duration-500 ease-out hover:border-blue-300/60 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-2">
+          {/* Gradient Overlay on Hover */}
+          <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+          
+          {/* Content Container */}
+          <div className="relative h-full flex flex-col items-center justify-center text-center p-6 z-10">
+            {/* Icon Container */}
+            <motion.div
+              className={`relative w-16 h-16 rounded-2xl bg-gradient-to-br ${gradientClass} flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-500`}
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              {showIconImage ? (
+                <img
+                  src={layanan.icon_url}
+                  alt={layanan.judul}
+                  className="w-10 h-10 object-contain"
+                  onError={() => setIconError(true)}
+                />
+              ) : (
+                <DefaultIcon className="w-8 h-8 text-gray-700" />
+              )}
+            </motion.div>
+
+            {/* Title */}
+            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
+              {layanan.judul}
+            </h3>
+
+            {/* Description */}
+            <p className="text-xs text-gray-600 leading-relaxed line-clamp-3 mb-4">
+              {description || 'Tidak ada deskripsi tersedia'}
+            </p>
+          </div>
+
+          {/* Button - Slide Up on Hover */}
+          <motion.div
+            className="absolute left-1/2 bottom-0 w-[70%] -translate-x-1/2 z-20"
+            initial={{ y: '100%', opacity: 0 }}
+            whileHover={{ y: '50%', opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
+            <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-sm font-medium py-2.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              Selengkapnya
+            </div>
+          </motion.div>
+
+          {/* Shine Effect on Hover */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
         </div>
-        <p className="text-lg font-bold">{item.title}</p>
-        <p className="text-xs text-[rgb(134,134,134)]">{item.description}</p>
-      </div>
-      <button className="absolute left-1/2 bottom-0 w-[60%] rounded-2xl border-none bg-[#008bf8] text-white text-sm py-1.5 px-3 transition-all duration-300 ease-out translate-x-[-50%] translate-y-[125%] opacity-0 group-hover:translate-y-[50%] group-hover:opacity-100">
-        Selengkapnya
-      </button>
-    </div>
+      </Link>
+    </motion.div>
   )
 }
 
