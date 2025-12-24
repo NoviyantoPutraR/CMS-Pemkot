@@ -402,6 +402,10 @@ const Gallery: React.FC<IGalleryProps> = ({ photo }) => {
             ref={photoRef}
             src={photo.urls.regular}
             alt={photo.actor}
+            width={photo.width}
+            height={photo.height}
+            loading="eager"
+            fetchpriority="high"
             style={photoStyles}
           />
         </div>

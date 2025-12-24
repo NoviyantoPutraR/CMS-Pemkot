@@ -241,6 +241,9 @@ export default function ServicesGrid({ activeTab }) {
                 <img 
                   src={item.gambar_url || defaultWisataImage} 
                   alt={item.nama}
+                  width={400}
+                  height={300}
+                  loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"
                   onError={(e) => {
                     e.target.src = defaultWisataImage
@@ -364,6 +367,9 @@ function ServiceCard({ layanan, index }) {
                 <img
                   src={layanan.icon_url}
                   alt={layanan.judul}
+                  width={64}
+                  height={64}
+                  loading="lazy"
                   className="w-10 h-10 object-contain"
                   onError={() => setIconError(true)}
                 />

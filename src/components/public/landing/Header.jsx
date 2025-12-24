@@ -95,7 +95,7 @@ export default function Header() {
               onClick={handleHeroClick}
               className="flex items-center space-x-3 group cursor-pointer"
             >
-              <img src="/logo.png" alt="Logo" className="h-10 w-auto object-contain rounded-lg" />
+              <img src="/logo.png" alt="Logo" width={120} height={40} className="h-10 w-auto object-contain rounded-lg" />
               <div>
                 <h1 className="text-lg font-bold text-black mb-0">
                   Portal Resmi Prov Kerja Baik 
@@ -180,6 +180,11 @@ export default function Header() {
                           Berita
                         </Link>
                       )}
+                    </li>
+                    <li>
+                      <Link to="/artikel" className="block px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors">
+                        Artikel
+                      </Link>
                     </li>
                     <li>
                       <Link to="/agenda" className="block px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors">
@@ -299,6 +304,9 @@ export default function Header() {
                         Berita
                       </Link>
                     )}
+                    <Link to="/artikel" className="block text-gray-600 hover:text-blue-600 py-1 transition-colors">
+                      Artikel
+                    </Link>
                     <Link to="/agenda" className="block text-gray-600 hover:text-blue-600 py-1 transition-colors">
                       Agenda Kota
                     </Link>

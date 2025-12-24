@@ -59,6 +59,9 @@ function FeatureCard({ item }) {
             <img
               src={item.icon}
               alt={item.title}
+              width={64}
+              height={64}
+              loading="lazy"
               className="w-12 h-12 md:w-16 md:h-16 object-contain"
             />
           ) : (

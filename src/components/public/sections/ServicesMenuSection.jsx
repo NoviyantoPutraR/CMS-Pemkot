@@ -65,6 +65,9 @@ function ServiceItem({ item, number }) {
               <img
                 src={item.icon_url}
                 alt={item.nama}
+                width={48}
+                height={48}
+                loading="lazy"
                 className="w-full h-full object-contain"
               />
             </div>

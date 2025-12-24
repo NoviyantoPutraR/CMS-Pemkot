@@ -72,6 +72,9 @@ function NewsCard({ item, type }) {
           <img
             src={item.thumbnail_url}
             alt={item.judul}
+            width={400}
+            height={192}
+            loading="lazy"
             className="w-full h-full object-cover"
           />
           {/* Category Badge - Top of image */}

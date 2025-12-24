@@ -22,6 +22,9 @@ export default function WisataCard({ wisata, index = 0 }) {
             <img
               src={wisata.gambar_url}
               alt={wisata.nama}
+              width={400}
+              height={225}
+              loading="lazy"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>

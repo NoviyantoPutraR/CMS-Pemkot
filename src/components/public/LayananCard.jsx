@@ -23,6 +23,9 @@ export default function LayananCard({ layanan, index = 0 }) {
             <img
               src={layanan.icon_url}
               alt={layanan.judul}
+              width={80}
+              height={80}
+              loading="lazy"
               className="w-20 h-20 object-contain"
             />
           </div>

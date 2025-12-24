@@ -2,9 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
-// Import test utilities (akan auto-run di development)
-import './utils/testSupabaseConnection.js'
-import './utils/testNetworkConnection.js'
+// Import test utilities hanya di development
+if (import.meta.env.DEV) {
+  import('./utils/testSupabaseConnection.js')
+  import('./utils/testNetworkConnection.js')
+}
 
 // Initialize theme from localStorage before rendering
 const initializeTheme = () => {

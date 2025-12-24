@@ -322,6 +322,9 @@ export default function HighlightNewsSection() {
                           <img
                             src={news.image}
                             alt={news.title}
+                            width={400}
+                            height={160}
+                            loading="lazy"
                             className="w-full h-40 object-cover"
                             onError={(e) => {
                               e.target.src = "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"

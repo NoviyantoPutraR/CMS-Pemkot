@@ -24,6 +24,9 @@ export default function FeaturedNewsSection({ berita }) {
                 <img
                   src={berita.thumbnail_url}
                   alt={berita.judul}
+                  width={800}
+                  height={600}
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {/* Overlay gradient tipis */}

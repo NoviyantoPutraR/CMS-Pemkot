@@ -17,6 +17,9 @@ export default function ArtikelCard({ artikel }) {
           <img
             src={artikel.thumbnail_url}
             alt={artikel.judul}
+            width={400}
+            height={225}
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {/* Badge kategori kecil di atas gambar */}

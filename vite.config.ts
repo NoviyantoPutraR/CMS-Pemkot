@@ -16,26 +16,52 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Core vendor libraries
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // UI components
-          'vendor-ui': ['lucide-react', 'class-variance-authority', 'clsx', 'tailwind-merge'],
+        manualChunks: (id) => {
+          // Core React libraries - critical, load first
+          if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+            return 'vendor-react'
+          }
+          // Supabase - separate chunk for API calls
+          if (id.includes('@supabase')) {
+            return 'vendor-supabase'
+          }
+          // Animation libraries - heavy, lazy load
+          if (id.includes('framer-motion') || id.includes('gsap')) {
+            return 'vendor-animations'
+          }
+          // Rich text editor - heavy, only load when needed
+          if (id.includes('react-quill')) {
+            return 'vendor-editor'
+          }
           // Form libraries
-          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          // Rich text editor (heavy)
-          'vendor-editor': ['react-quill'],
-          // Animation libraries (heavy)
-          'vendor-animations': ['framer-motion', 'gsap'],
-          // Supabase
-          'vendor-supabase': ['@supabase/supabase-js'],
+          if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('zod')) {
+            return 'vendor-forms'
+          }
+          // UI utilities
+          if (id.includes('lucide-react') || id.includes('class-variance-authority') || id.includes('clsx') || id.includes('tailwind-merge')) {
+            return 'vendor-ui'
+          }
           // State management
-          'vendor-state': ['zustand'],
+          if (id.includes('zustand')) {
+            return 'vendor-state'
+          }
+          // Charts library
+          if (id.includes('recharts')) {
+            return 'vendor-charts'
+          }
+          // Other node_modules
+          if (id.includes('node_modules')) {
+            return 'vendor-other'
+          }
         },
       },
     },
     // Optimize chunk size
     chunkSizeWarningLimit: 600,
+    // Enable minification
+    minify: 'esbuild',
+    // Optimize asset handling
+    assetsInlineLimit: 4096, // Inline small assets (< 4KB)
   },
 })
 

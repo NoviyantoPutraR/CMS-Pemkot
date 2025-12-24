@@ -33,11 +33,20 @@
     <meta name="theme-color" content="#ffffff" />
     <meta name="format-detection" content="telephone=no" />
     
-    <!-- Fonts -->
+    <!-- Resource Hints - Preconnect untuk external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <!-- Supabase preconnect - akan diupdate secara dinamis jika diperlukan -->
+    <link rel="dns-prefetch" href="https://supabase.co" />
+    <link rel="dns-prefetch" href="https://*.supabase.co" />
+    
+    <!-- Fonts - Optimized dengan font-display: swap -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-    </style>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" as="style" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="app"></div>

@@ -12,6 +12,9 @@ export default function VisionSection() {
             <motion.img 
               src="https://images.unsplash.com/photo-1764173039192-2bbd508d5211?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
               alt="Leader 1" 
+              width={128}
+              height={128}
+              loading="lazy"
               className="w-32 h-32 rounded-full object-cover shadow-lg self-start -mt-4" 
               initial={{ opacity: 0, x: 36 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -21,6 +24,9 @@ export default function VisionSection() {
             <motion.img 
               src="https://plus.unsplash.com/premium_photo-1763265293425-f7ad17012b13?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
               alt="Leader 2" 
+              width={128}
+              height={128}
+              loading="lazy"
               className="w-32 h-32 rounded-full object-cover shadow-lg" 
               initial={{ opacity: 0, x: 36 }}
               whileInView={{ opacity: 1, x: 0 }}

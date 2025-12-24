@@ -75,6 +75,9 @@ export default function BeritaDetail() {
               <img
                 src={berita.thumbnail_url}
                 alt={berita.judul}
+                width={1200}
+                height={675}
+                fetchpriority="high"
                 className="w-full h-96 object-cover rounded-lg mb-6"
               />
             )}

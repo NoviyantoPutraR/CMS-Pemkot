@@ -58,6 +58,9 @@ export default function LayananDetail() {
                 <img
                   src={layanan.icon_url}
                   alt={layanan.judul}
+                  width={128}
+                  height={128}
+                  loading="lazy"
                   className="w-32 h-32 object-cover"
                 />
               </div>

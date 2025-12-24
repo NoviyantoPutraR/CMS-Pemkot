@@ -17,6 +17,9 @@ export default function PerangkatDaerahCard({ perangkat, index }) {
               <img
                 src={perangkat.foto_url}
                 alt={perangkat.nama_perangkat}
+                width={64}
+                height={64}
+                loading="lazy"
                 className="w-16 h-16 rounded-lg object-cover border border-gray-200"
               />
             </div>

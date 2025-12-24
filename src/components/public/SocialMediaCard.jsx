@@ -113,6 +113,9 @@ export default function SocialMediaCard({ platform, url, ikon_url, index = 0 }) 
             <img
               src={ikon_url}
               alt={platformLabel}
+              width={56}
+              height={56}
+              loading="lazy"
               className="w-12 h-12 lg:w-14 lg:h-14 object-contain relative z-10 filter brightness-0 invert"
             />
           ) : IconComponent ? (

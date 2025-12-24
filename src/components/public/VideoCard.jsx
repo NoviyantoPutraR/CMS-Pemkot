@@ -25,6 +25,9 @@ export default function VideoCard({ video, index = 0 }) {
             <img
               src={video.thumbnail_url}
               alt={video.judul}
+              width={400}
+              height={225}
+              loading="lazy"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (

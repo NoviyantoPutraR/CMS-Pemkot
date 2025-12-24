@@ -82,7 +82,7 @@ export default function Footer() {
           {/* Logo & Description */}
           <div className="md:max-w-md lg:col-span-2">
             <a href="/" aria-label="Go home" title="Company" className="inline-flex items-center">
-              <img src="/logo.png" alt="Logo" className="h-10 w-auto object-contain" />
+              <img src="/logo.png" alt="Logo" width={120} height={40} className="h-10 w-auto object-contain" />
               {footerData.nama_situs && (
                 <span className="ml-2 text-xl font-bold tracking-wide text-gray-100 uppercase">{footerData.nama_situs}</span>
               )}
@@ -222,7 +222,7 @@ export default function Footer() {
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                   </svg>
                 ) : socialMedia.ikon_url ? (
-                  <img src={socialMedia.ikon_url} alt={socialMedia.platform} className="h-5 w-5" />
+                  <img src={socialMedia.ikon_url} alt={socialMedia.platform} width={20} height={20} loading="lazy" className="h-5 w-5" />
                 ) : null}
               </a>
             ))}
