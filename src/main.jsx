@@ -4,8 +4,13 @@ import App from './App.jsx'
 import './index.css'
 // Import test utilities hanya di development
 if (import.meta.env.DEV) {
-  import('./utils/testSupabaseConnection.js')
-  import('./utils/testNetworkConnection.js')
+  // Dynamic import untuk test utilities (tidak blocking)
+  Promise.all([
+    import('./utils/testSupabaseConnection.js'),
+    import('./utils/testNetworkConnection.js')
+  ]).catch(() => {
+    // Ignore errors in development
+  })
 }
 
 // Initialize theme from localStorage before rendering

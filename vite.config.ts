@@ -49,10 +49,12 @@ export default defineConfig({
           if (id.includes('recharts')) {
             return 'vendor-charts'
           }
-          // Other node_modules
+          // Other node_modules - return undefined untuk default chunking
           if (id.includes('node_modules')) {
             return 'vendor-other'
           }
+          // Return undefined untuk source files (akan di-handle oleh default chunking)
+          return undefined
         },
       },
     },
