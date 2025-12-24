@@ -1,4 +1,11 @@
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver'
+import { agendaKotaService } from '../../../services/agendaKotaService'
+import { wisataService } from '../../../services/wisataService'
+import AgendaServiceCard from './AgendaServiceCard'
+import Loading from '../../shared/Loading'
+import { truncate } from '../../../utils/formatters'
 import { 
   Users, 
   Briefcase, 
@@ -25,29 +32,72 @@ import {
 } from 'lucide-react'
 
 export default function ServicesGrid({ activeTab }) {
-  // Photos from HeroSection
-  const heroPhotos = [
-    {
-      id: '1',
-      url: 'https://images.unsplash.com/photo-1764418658842-997924ee31cc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      title: 'Jawa Timur'
-    },
-    {
-      id: '2',
-      url: 'https://images.unsplash.com/photo-1505993597083-3bd19fb75e57?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      title: 'Gunung Bromo'
-    },
-    {
-      id: '3',
-      url: 'https://images.unsplash.com/photo-1532081192133-b6d660228cc4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      title: 'Tumpak Sewu'
-    },
-    {
-      id: '4',
-      url: 'https://images.unsplash.com/photo-1672557680301-095dfa1b223e?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      title: 'Monumen Kota Malang'
+  const [agendaData, setAgendaData] = useState([])
+  const [agendaLoading, setAgendaLoading] = useState(false)
+  const [agendaError, setAgendaError] = useState(null)
+  const [wisataData, setWisataData] = useState([])
+  const [wisataLoading, setWisataLoading] = useState(false)
+  const [wisataError, setWisataError] = useState(null)
+  // Default image fallback
+  const defaultWisataImage = 'https://images.unsplash.com/photo-1505993597083-3bd19fb75e57?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+
+  // Fetch agenda data when activeTab is 'agenda'
+  useEffect(() => {
+    if (activeTab === 'agenda') {
+      const fetchAgenda = async () => {
+        try {
+          setAgendaLoading(true)
+          setAgendaError(null)
+          const result = await agendaKotaService.getAll({
+            page: 1,
+            limit: 8,
+            publishedOnly: true,
+            sortOrder: 'asc'
+          })
+          setAgendaData(result.data || [])
+        } catch (error) {
+          console.error('Error fetching agenda:', error)
+          setAgendaError(error.message || 'Gagal memuat data agenda')
+          setAgendaData([])
+        } finally {
+          setAgendaLoading(false)
+        }
+      }
+      fetchAgenda()
+    } else {
+      // Clear agenda data when switching tabs
+      setAgendaData([])
     }
-  ]
+  }, [activeTab])
+
+  // Fetch wisata data when activeTab is 'wisata'
+  useEffect(() => {
+    if (activeTab === 'wisata') {
+      const fetchWisata = async () => {
+        try {
+          setWisataLoading(true)
+          setWisataError(null)
+          const result = await wisataService.getAll({
+            page: 1,
+            limit: 4,
+            publishedOnly: true,
+            sortBy: 'terbaru'
+          })
+          setWisataData(result.data || [])
+        } catch (error) {
+          console.error('Error fetching wisata:', error)
+          setWisataError(error.message || 'Gagal memuat data wisata')
+          setWisataData([])
+        } finally {
+          setWisataLoading(false)
+        }
+      }
+      fetchWisata()
+    } else {
+      // Clear wisata data when switching tabs
+      setWisataData([])
+    }
+  }, [activeTab])
 
   const allData = {
     layanan: [
@@ -99,56 +149,6 @@ export default function ServicesGrid({ activeTab }) {
       description: 'Layanan pengaduan keluhan untuk penyuluhan dari pengaduan',
       bgColor: 'bg-yellow-100',
     },
-    ],
-    agenda: [
-      {
-        icon: Calendar,
-        title: 'Rapat Koordinasi',
-        description: 'Agenda rapat koordinasi antar dinas untuk pembahasan program kerja',
-        bgColor: 'bg-blue-100',
-      },
-      {
-        icon: Target,
-        title: 'Pelatihan SDM',
-        description: 'Program pelatihan sumber daya manusia untuk meningkatkan kompetensi',
-        bgColor: 'bg-purple-100',
-      },
-      {
-        icon: Building2,
-        title: 'Sidang Paripurna',
-        description: 'Agenda sidang paripurna DPRD Provinsi Jawa Timur',
-        bgColor: 'bg-indigo-100',
-      },
-      {
-        icon: BarChart3,
-        title: 'Evaluasi Program',
-        description: 'Kegiatan evaluasi program pembangunan daerah',
-        bgColor: 'bg-cyan-100',
-      },
-      {
-        icon: Globe,
-        title: 'Kunjungan Kerja',
-        description: 'Agenda kunjungan kerja ke berbagai daerah di Jawa Timur',
-        bgColor: 'bg-teal-100',
-      },
-      {
-        icon: FileEdit,
-        title: 'Workshop Digital',
-        description: 'Workshop peningkatan kapasitas digitalisasi pelayanan publik',
-        bgColor: 'bg-pink-100',
-      },
-      {
-        icon: Star,
-        title: 'Festival Budaya',
-        description: 'Agenda festival budaya Jawa Timur tahunan',
-        bgColor: 'bg-orange-100',
-      },
-      {
-        icon: Award,
-        title: 'Penghargaan',
-        description: 'Acara penganugerahan penghargaan kepada pegawai berprestasi',
-        bgColor: 'bg-amber-100',
-      },
     ],
     wisata: [
       {
@@ -204,6 +204,7 @@ export default function ServicesGrid({ activeTab }) {
 
   const currentData = allData[activeTab] || allData.layanan
   const isWisata = activeTab === 'wisata'
+  const isAgenda = activeTab === 'agenda'
   const displayData = isWisata ? currentData.slice(0, 4) : currentData
 
   return (
@@ -221,61 +222,124 @@ export default function ServicesGrid({ activeTab }) {
       </div>
       <div className="relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {displayData.map((item, index) => {
-            if (isWisata) {
-              const photo = heroPhotos[index]
-              return (
+        {/* Agenda Loading State */}
+        {isAgenda && agendaLoading && (
+          <div className="flex justify-center items-center py-20">
+            <Loading />
+          </div>
+        )}
+
+        {/* Agenda Error State */}
+        {isAgenda && !agendaLoading && agendaError && (
+          <div className="text-center py-20">
+            <p className="text-gray-600 text-lg mb-2">Gagal memuat data agenda</p>
+            <p className="text-gray-500 text-sm">{agendaError}</p>
+          </div>
+        )}
+
+        {/* Agenda Empty State */}
+        {isAgenda && !agendaLoading && !agendaError && agendaData.length === 0 && (
+          <div className="text-center py-20">
+            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-600 text-lg">Belum ada agenda tersedia</p>
+            <p className="text-gray-500 text-sm mt-2">Agenda akan ditampilkan di sini setelah dipublikasikan</p>
+          </div>
+        )}
+
+        {/* Agenda Grid */}
+        {isAgenda && !agendaLoading && agendaData.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {agendaData.map((agenda, index) => (
+              <AgendaServiceCard key={agenda.id} agenda={agenda} index={index} />
+            ))}
+          </div>
+        )}
+
+        {/* Wisata Loading State */}
+        {isWisata && wisataLoading && (
+          <div className="flex justify-center items-center py-20">
+            <Loading />
+          </div>
+        )}
+
+        {/* Wisata Error State */}
+        {isWisata && !wisataLoading && wisataError && (
+          <div className="text-center py-20">
+            <p className="text-gray-600 text-lg mb-2">Gagal memuat data wisata</p>
+            <p className="text-gray-500 text-sm">{wisataError}</p>
+          </div>
+        )}
+
+        {/* Wisata Empty State */}
+        {isWisata && !wisataLoading && !wisataError && wisataData.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-gray-600 text-lg">Belum ada wisata tersedia</p>
+            <p className="text-gray-500 text-sm mt-2">Wisata akan ditampilkan di sini setelah dipublikasikan</p>
+          </div>
+        )}
+
+        {/* Wisata Grid */}
+        {isWisata && !wisataLoading && wisataData.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {wisataData.slice(0, 4).map((item, index) => (
+              <Link
+                key={item.id}
+                to={`/wisata/${item.slug}`}
+                className="group relative w-full h-[200px] bg-[#f2f2f2] rounded-[10px] flex items-center justify-center overflow-hidden cursor-pointer"
+                style={{
+                  perspective: '1000px',
+                  boxShadow: '0 0 0 5px rgba(255, 255, 255, 0.5)',
+                  transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.05)'
+                  e.currentTarget.style.boxShadow = '0 8px 16px rgba(255, 255, 255, 0.2)'
+                  const content = e.currentTarget.querySelector('.card-content-wisata')
+                  if (content) {
+                    content.style.transform = 'rotateX(0deg)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                  e.currentTarget.style.boxShadow = '0 0 0 5px rgba(255, 255, 255, 0.5)'
+                  const content = e.currentTarget.querySelector('.card-content-wisata')
+                  if (content) {
+                    content.style.transform = 'rotateX(-90deg)'
+                  }
+                }}
+              >
+                <img 
+                  src={item.gambar_url || defaultWisataImage} 
+                  alt={item.nama}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = defaultWisataImage
+                  }}
+                />
                 <div 
-                  key={index} 
-                  className="group relative w-full h-[200px] bg-[#f2f2f2] rounded-[10px] flex items-center justify-center overflow-hidden"
+                  className="card-content-wisata absolute top-0 left-0 w-full h-full p-5 bg-white box-border z-10"
                   style={{
-                    perspective: '1000px',
-                    boxShadow: '0 0 0 5px rgba(255, 255, 255, 0.5)',
+                    transform: 'rotateX(-90deg)',
+                    transformOrigin: 'bottom',
                     transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)'
-                    e.currentTarget.style.boxShadow = '0 8px 16px rgba(255, 255, 255, 0.2)'
-                    const content = e.currentTarget.querySelector('.card-content-wisata')
-                    if (content) {
-                      content.style.transform = 'rotateX(0deg)'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)'
-                    e.currentTarget.style.boxShadow = '0 0 0 5px rgba(255, 255, 255, 0.5)'
-                    const content = e.currentTarget.querySelector('.card-content-wisata')
-                    if (content) {
-                      content.style.transform = 'rotateX(-90deg)'
-                    }
-                  }}
                 >
-                  <img 
-                    src={photo.url} 
-                    alt={photo.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div 
-                    className="card-content-wisata absolute top-0 left-0 w-full h-full p-5 bg-white box-border z-10"
-                    style={{
-                      transform: 'rotateX(-90deg)',
-                      transformOrigin: 'bottom',
-                      transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                    }}
-                  >
-                    <p className="m-0 text-2xl text-[#333] font-bold">Card Title</p>
-                    <p className="mt-2.5 text-sm text-[#777] leading-[1.4]">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
-                  </div>
+                  <p className="m-0 text-2xl text-[#333] font-bold line-clamp-2">{item.nama}</p>
+                  <p className="mt-2.5 text-sm text-[#777] leading-[1.4] line-clamp-4">{truncate(item.deskripsi || '', 150)}</p>
                 </div>
-              )
-            }
-            
-            return (
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* Other Tabs Grid */}
+        {!isAgenda && !isWisata && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {displayData.map((item, index) => (
               <ServiceCard key={index} item={item} index={index} />
-            )
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
       </div>
     </div>

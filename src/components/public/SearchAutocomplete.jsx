@@ -8,7 +8,7 @@ export default function SearchAutocomplete({
   value, 
   onChange, 
   onSearch,
-  placeholder = "Apa yang Anda cari di Jawa Timur?",
+  placeholder = "Apa yang Anda cari di Kerja Baik?",
   className = "",
   showButton = false
 }) {

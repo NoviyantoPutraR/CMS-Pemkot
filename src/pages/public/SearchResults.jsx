@@ -104,7 +104,7 @@ export default function SearchResults() {
                 value={searchQuery}
                 onChange={setSearchQuery}
                 onSearch={handleSearch}
-                placeholder="Apa yang Anda cari di Jawa Timur?"
+                placeholder="Apa yang Anda cari di Kerja Baik?"
               />
             </div>
           </div>

@@ -9,6 +9,7 @@ import ArtikelDetail from '../pages/public/ArtikelDetail'
 import LayananList from '../pages/public/LayananList'
 import LayananDetail from '../pages/public/LayananDetail'
 import WisataList from '../pages/public/WisataList'
+import WisataDetail from '../pages/public/WisataDetail'
 import Tentang from '../pages/public/Tentang'
 import VisiMisi from '../pages/public/VisiMisi'
 import SosialMedia from '../pages/public/SosialMedia'
@@ -32,6 +33,7 @@ export default function PublicRoutes() {
           <Route path="/layanan" element={<LayananList />} />
           <Route path="/layanan/:id" element={<LayananDetail />} />
           <Route path="/wisata" element={<WisataList />} />
+          <Route path="/wisata/:slug" element={<WisataDetail />} />
           <Route path="/tentang" element={<Tentang />} />
           <Route path="/visi-misi" element={<VisiMisi />} />
           <Route path="/sosial-media" element={<SosialMedia />} />

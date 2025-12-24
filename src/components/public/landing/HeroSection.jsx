@@ -144,7 +144,7 @@ export default function HeroSection() {
                   value={searchQuery}
                   onChange={setSearchQuery}
                   onSearch={(query) => navigate(`/search?q=${encodeURIComponent(query)}`)}
-                  placeholder="Apa yang Anda cari di Jawa Timur?"
+                  placeholder="Apa yang Anda cari di Kerja Baik?"
                   className="w-full"
                   showButton={true}
                 />
