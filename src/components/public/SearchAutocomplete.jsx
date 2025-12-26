@@ -157,7 +157,7 @@ export default function SearchAutocomplete({
     <div ref={containerRef} className={`relative ${className}`}>
       {/* Input dengan icon */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 sm:text-gray-400 z-10 pointer-events-none" />
         <input
           ref={inputRef}
           type="text"
@@ -173,7 +173,7 @@ export default function SearchAutocomplete({
           }}
           onKeyDown={handleKeyDown}
           placeholder={isMobile ? '' : placeholder}
-          className={`w-full h-14 bg-[#f3f3f4] py-2 pl-10 rounded-full outline-none border-2 border-transparent transition-all duration-300 ease-in-out placeholder:text-[#9e9ea7] hover:bg-white hover:border-[#2563EB] hover:shadow-[0_0_0_4px_rgba(37,99,235,0.1)] focus:bg-white focus:border-[#2563EB] focus:shadow-[0_0_0_4px_rgba(37,99,235,0.1)] ${
+          className={`w-full h-14 bg-white sm:bg-[#f3f3f4] text-gray-900 py-2 pl-10 rounded-full outline-none border-2 border-gray-300 sm:border-transparent shadow-md sm:shadow-none transition-all duration-300 ease-in-out placeholder:text-[#9e9ea7] hover:bg-white hover:border-[#2563EB] hover:shadow-[0_0_0_4px_rgba(37,99,235,0.1)] focus:bg-white focus:border-[#2563EB] focus:shadow-[0_0_0_4px_rgba(37,99,235,0.1)] ${
             showButton ? 'pr-28' : 'pr-4'
           }`}
         />

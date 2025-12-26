@@ -110,7 +110,7 @@ export default function HeroSection() {
             )}
             {heroData.deskripsi_situs && (
               <motion.p 
-                className="font-poppins text-base mb-6 text-gray-600"
+                className="font-poppins text-base mb-6 text-gray-800 sm:text-gray-600"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
@@ -150,7 +150,7 @@ export default function HeroSection() {
                 />
                 <button 
                   type="submit" 
-                  className="group button absolute right-2.5 top-2.5 h-9 sm:h-10 px-3 sm:px-5 text-sm sm:text-base font-medium rounded-full overflow-hidden inline-flex items-center text-[#1d1d1f] bg-[rgba(255,208,116,1)] border-2 border-[rgba(255,208,116,1)] z-20"
+                  className="group button absolute right-2.5 top-2.5 h-9 sm:h-10 px-3 sm:px-5 text-sm sm:text-base font-medium rounded-full overflow-hidden inline-flex items-center text-[#1d1d1f] bg-[rgba(255,208,116,1)] border-2 border-[rgba(255,208,116,1)] shadow-md sm:shadow-none z-20"
                 >
                   <span className="button-bg block absolute top-0 left-0 w-full h-full rounded-full overflow-hidden transition-transform duration-[1800ms] ease-[cubic-bezier(0.19,1,0.22,1)]">
                     <span className="button-bg-layers block absolute left-1/2 -translate-x-1/2 -top-[60%] aspect-square" style={{ width: 'max(200%, 10rem)' }}>
