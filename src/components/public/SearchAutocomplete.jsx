@@ -17,9 +17,21 @@ export default function SearchAutocomplete({
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [loading, setLoading] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const inputRef = useRef(null)
   const containerRef = useRef(null)
   const debouncedValue = useDebounce(value, 300)
+
+  // Detect mobile screen size (< 640px)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Load suggestions saat user mengetik
   useEffect(() => {
@@ -160,7 +172,7 @@ export default function SearchAutocomplete({
             }
           }}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={isMobile ? '' : placeholder}
           className={`w-full h-14 bg-[#f3f3f4] py-2 pl-10 rounded-full outline-none border-2 border-transparent transition-all duration-300 ease-in-out placeholder:text-[#9e9ea7] hover:bg-white hover:border-[#2563EB] hover:shadow-[0_0_0_4px_rgba(37,99,235,0.1)] focus:bg-white focus:border-[#2563EB] focus:shadow-[0_0_0_4px_rgba(37,99,235,0.1)] ${
             showButton ? 'pr-28' : 'pr-4'
           }`}
