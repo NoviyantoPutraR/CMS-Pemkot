@@ -102,31 +102,31 @@ export default function Footer() {
           </div>
           
           {/* Links Section */}
-          <div className="grid grid-cols-1 gap-5 row-gap-8 lg:col-span-4 md:grid-cols-3 sm:grid-cols-2">
-            <div>
+          <div className="grid grid-cols-1 gap-5 row-gap-8 lg:col-span-4 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2">
+            <div className="min-w-0">
               <p className="font-semibold tracking-wide text-blue-400">
                 Kontak
               </p>
               <ul className="mt-2 space-y-2">
                 {footerData.email && (
                   <li>
-                    <p className="transition-colors duration-300 text-blue-50 flex items-center gap-2">
+                    <p className="transition-colors duration-300 text-blue-50 flex items-center gap-2 break-words">
                       <Mail className="w-4 h-4 flex-shrink-0" />
-                      {footerData.email}
+                      <span className="break-all">{footerData.email}</span>
                     </p>
                   </li>
                 )}
                 {footerData.telepon && (
                   <li>
-                    <p className="transition-colors duration-300 text-blue-50 flex items-center gap-2">
+                    <p className="transition-colors duration-300 text-blue-50 flex items-center gap-2 break-words">
                       <Phone className="w-4 h-4 flex-shrink-0" />
-                      {footerData.telepon}
+                      <span className="break-all">{footerData.telepon}</span>
                     </p>
                   </li>
                 )}
               </ul>
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="font-semibold tracking-wide text-blue-400">
                 Layanan
               </p>
@@ -154,7 +154,7 @@ export default function Footer() {
                 )}
               </ul>
             </div>
-            <div>
+            <div className="min-w-0 md:col-span-2 lg:col-span-1">
               <p className="font-semibold tracking-wide text-blue-400">
                 Transparansi
               </p>
