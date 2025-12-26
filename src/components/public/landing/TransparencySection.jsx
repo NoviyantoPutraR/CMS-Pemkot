@@ -176,7 +176,7 @@ export default function TransparencySection() {
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 lg:gap-0 mb-8">
           <div className="text-white">
             <motion.h2 
               className="text-3xl font-bold mb-3"
@@ -201,6 +201,7 @@ export default function TransparencySection() {
             </motion.p>
           </div>
           <motion.div
+            className="flex-shrink-0"
             initial={{ opacity: 0, x: -16 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -208,50 +209,11 @@ export default function TransparencySection() {
           >
             <Link
               to="/transparansi-anggaran"
-              className="fancy-button bg-blue-600 text-white px-6 py-3 rounded-full text-sm font-medium relative inline-block"
+              className="bg-blue-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-blue-700 inline-block whitespace-nowrap"
             >
               Lihat Semua Laporan ↗
             </Link>
           </motion.div>
-          <style>{`
-            .fancy-button {
-              background-image: linear-gradient(to bottom right, #3B82F6, #1E40AF);
-              border: none;
-              box-shadow: 0px 4px 0px #1E40AF;
-              transition: all 0.2s ease-in-out;
-              cursor: pointer;
-            }
-            .fancy-button:hover {
-              transform: translateY(-2px);
-              box-shadow: 0px 6px 0px #1E40AF;
-            }
-            .fancy-button:active {
-              transform: translateY(0px);
-              box-shadow: none;
-              background-image: linear-gradient(to bottom right, #1E40AF, #3B82F6);
-            }
-            .fancy-button:before,
-            .fancy-button:after {
-              content: "";
-              position: absolute;
-              width: 0;
-              height: 0;
-            }
-            .fancy-button:before {
-              top: -3px;
-              left: -3px;
-              border-radius: 40px;
-              border-top: 3px solid #fff;
-              border-left: 3px solid #fff;
-            }
-            .fancy-button:after {
-              bottom: -3px;
-              right: -3px;
-              border-radius: 40px;
-              border-bottom: 3px solid #fff;
-              border-right: 3px solid #fff;
-            }
-          `}</style>
         </div>
 
         {/* Carousel Container */}

@@ -380,7 +380,7 @@ function ServiceCard({ layanan, index }) {
             </motion.div>
 
             {/* Title */}
-            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
+            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300 leading-snug lg:line-clamp-2">
               {layanan.judul}
             </h3>
 

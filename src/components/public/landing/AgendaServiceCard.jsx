@@ -110,7 +110,7 @@ export default function AgendaServiceCard({ agenda, index = 0 }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-blue-700 transition-colors duration-300">
+        <h3 className="text-base font-bold text-gray-900 mb-2 leading-snug lg:line-clamp-2 group-hover:text-blue-700 transition-colors duration-300">
           {agenda.judul}
         </h3>
 
