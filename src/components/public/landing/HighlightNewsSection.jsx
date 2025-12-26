@@ -96,7 +96,7 @@ export default function HighlightNewsSection() {
     if (trackRef.current && trackRef.current.children.length > 0) {
       const firstCard = trackRef.current.children[0]
       const cardWidth = firstCard.offsetWidth
-      const gap = 16 // 1rem = 16px (gap-4)
+      const gap = 24 // 1.5rem = 24px (gap-6)
       const offset = -currentIndex * (cardWidth + gap)
       trackRef.current.style.transform = `translateX(${offset}px)`
     }
@@ -257,19 +257,19 @@ export default function HighlightNewsSection() {
         {/* Overlay gradasi smooth untuk menyambung natural */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-transparent pointer-events-none"></div>
         <div className="max-w-full pl-0 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-0 items-stretch" ref={sectionRef}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch" ref={sectionRef}>
             {/* Left Panel - Full height */}
             <motion.div 
-              className="lg:col-span-3 bg-blue-700 p-6 text-white min-h-[350px] flex flex-col justify-center items-center text-center news-panel-bg"
+              className="lg:col-span-3 bg-blue-700 text-white min-h-[350px] flex flex-col justify-center items-center text-center news-panel-bg py-12 px-4 sm:px-6 lg:p-6"
               variants={leftPanelVariants}
               initial="hidden"
               animate={isInView ? "visible" : "hidden"}
             >
-              <h3 className="text-2xl font-bold mb-3">Highlight Berita Terkini</h3>
-              <p className="text-sm text-blue-100 mb-4">Update Berita Seputar Provinsi Kerja Baik</p>
+              <h3 className="heading-subsection text-white mb-3 w-full">Highlight Berita Terkini</h3>
+              <p className="text-body-sm text-blue-100 mb-6 w-full">Update Berita Seputar Provinsi Kerja Baik</p>
               <Link 
                 to="/berita"
-                className="inline-block bg-yellow-400 text-blue-900 px-6 py-2 rounded-full text-sm font-semibold hover:bg-yellow-300 transition-colors"
+                className="btn-secondary"
               >
                 Lihat Berita Lainnya
               </Link>
@@ -283,90 +283,97 @@ export default function HighlightNewsSection() {
               initial="hidden"
               animate={isInView ? "visible" : "hidden"}
             >
-              {/* Navigation Arrows */}
-              <button
-                onClick={prevSlide}
-                className="nav-button absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-gray-700 hover:text-white"
-              >
-                <ChevronLeft className="text-xl" />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="nav-button absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-gray-700 hover:text-white"
-              >
-                <ChevronRight className="text-xl" />
-              </button>
+            {/* Navigation Arrows */}
+            {indicatorCount > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="nav-button flex absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-md items-center justify-center text-gray-700 hover:text-white"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="text-lg sm:text-xl" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="nav-button flex absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-md items-center justify-center text-gray-700 hover:text-white"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="text-lg sm:text-xl" />
+                </button>
+              </>
+            )}
 
-              {/* Carousel Track */}
-              <div className="overflow-hidden relative flex-1 py-6 px-3 pb-8">
-                {loading ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-gray-500">Memuat berita...</div>
-                  </div>
-                ) : newsData.length === 0 ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-gray-500">Tidak ada berita tersedia</div>
-                  </div>
-                ) : (
-                  <div
-                    id="testimonial-track"
-                    ref={trackRef}
-                    className="flex gap-4 h-full"
-                  >
-                    {newsData.map((news, index) => (
-                      <div
-                        key={news.id}
-                        className="testimonial-card testimonial-card-wrapper flex-shrink-0 w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.67rem)] px-0 animate-fade"
-                      >
-                        <div className="card-content bg-white rounded-xl overflow-hidden shadow-lg h-full border border-gray-100 flex flex-col">
-                          <img
-                            src={news.image}
-                            alt={news.title}
-                            width={400}
-                            height={160}
-                            loading="lazy"
-                            className="w-full h-40 object-cover"
-                            onError={(e) => {
-                              e.target.src = "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                            }}
-                          />
-                          <div className="p-4 flex-1 flex flex-col">
-                            <h4 className="font-semibold text-sm mb-2 line-clamp-3">
-                              {news.title}
-                            </h4>
-                            <p className="text-xs text-gray-500 mb-2">{news.date}</p>
-                            <Link
-                              to={news.link}
-                              className="text-xs text-blue-600 font-medium hover:text-blue-800 mt-auto"
-                            >
-                              Baca Selengkapnya →
-                            </Link>
-                          </div>
+            {/* Carousel Track */}
+            <div className="overflow-hidden relative flex-1 py-6 px-3 pb-8">
+              {loading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-gray-500">Memuat berita...</div>
+                </div>
+              ) : newsData.length === 0 ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-gray-500">Tidak ada berita tersedia</div>
+                </div>
+              ) : (
+                <div
+                  id="testimonial-track"
+                  ref={trackRef}
+                  className="flex gap-6 h-full"
+                >
+                  {newsData.map((news, index) => (
+                    <div
+                      key={news.id}
+                      className="testimonial-card testimonial-card-wrapper flex-shrink-0 w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] px-0 animate-fade"
+                    >
+                      <div className="card-content bg-white rounded-xl overflow-hidden shadow-lg h-full border border-gray-100 flex flex-col">
+                        <img
+                          src={news.image}
+                          alt={news.title}
+                          width={400}
+                          height={160}
+                          loading="lazy"
+                          className="w-full h-40 object-cover"
+                          onError={(e) => {
+                            e.target.src = "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                          }}
+                        />
+                        <div className="p-4 flex-1 flex flex-col">
+                          <h4 className="heading-card mb-2 line-clamp-3">
+                            {news.title}
+                          </h4>
+                          <p className="text-body-xs text-gray-500 mb-2">{news.date}</p>
+                          <Link
+                            to={news.link}
+                            className="btn-text-link text-xs mt-auto"
+                          >
+                            Baca Selengkapnya →
+                          </Link>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Indicators */}
-              {indicatorCount > 1 && (
-                <div className="flex justify-center mt-6 space-x-3">
-                  {Array.from({ length: indicatorCount }).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`indicator-dot w-3 h-3 rounded-full transition-all duration-300 ${
-                        index === currentIndex
-                          ? 'active-dot bg-indigo-600'
-                          : 'bg-gray-300'
-                      }`}
-                    />
+                    </div>
                   ))}
                 </div>
               )}
-            </motion.div>
-          </div>
+            </div>
+
+            {/* Indicators */}
+            {indicatorCount > 1 && (
+              <div className="flex justify-center mt-6 space-x-3">
+                {Array.from({ length: indicatorCount }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`indicator-dot w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentIndex
+                        ? 'active-dot bg-indigo-600'
+                        : 'bg-gray-300'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </div>
         </div>
       </div>
       </div>

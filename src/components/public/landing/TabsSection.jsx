@@ -98,6 +98,26 @@ export default function TabsSection({ activeTab, onTabChange }) {
           color: #2563EB;
           box-shadow: inset 0px -20px 0px -15px #2563EB;
         }
+        
+        @media (max-width: 639px) {
+          .btn-group {
+            display: flex;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          .btn-group::-webkit-scrollbar {
+            display: none;
+          }
+          .btn-group__item {
+            min-width: auto;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+          }
+        }
       `}</style>
       <div className="py-4" ref={sectionRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

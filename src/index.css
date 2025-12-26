@@ -135,3 +135,80 @@
   font-optical-sizing: auto;
   font-style: normal;
 }
+
+/* ============================================
+   Landing Page Design Standards
+   Global utility classes untuk konsistensi
+   ============================================ */
+
+@layer components {
+  /* Section Container Standard */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Section Padding Standard */
+  .section-padding {
+    @apply py-12 sm:py-16 lg:py-20;
+  }
+
+  /* Hero Section Padding (lebih besar untuk impact) */
+  .hero-padding {
+    @apply pt-16 pb-12 sm:pt-20 sm:pb-16 lg:pt-24 lg:pb-20;
+  }
+
+  /* Typography Standards */
+  .heading-hero {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight;
+  }
+
+  .heading-section {
+    @apply text-2xl lg:text-3xl font-bold leading-tight;
+  }
+
+  .heading-subsection {
+    @apply text-xl lg:text-2xl font-semibold leading-snug;
+  }
+
+  .heading-card {
+    @apply text-lg font-semibold leading-snug;
+  }
+
+  .text-body {
+    @apply text-base font-normal leading-relaxed;
+  }
+
+  .text-body-sm {
+    @apply text-sm font-normal leading-relaxed;
+  }
+
+  .text-body-xs {
+    @apply text-xs font-normal leading-relaxed;
+  }
+
+  /* Button Standards */
+  .btn-primary {
+    @apply bg-blue-600 text-white px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-blue-700;
+  }
+
+  .btn-secondary {
+    @apply bg-yellow-400 text-blue-900 px-6 py-2 rounded-full text-sm font-semibold transition-colors duration-200 hover:bg-yellow-300;
+  }
+
+  .btn-text-link {
+    @apply text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors duration-200;
+  }
+
+  /* Grid Standards */
+  .grid-cards {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6;
+  }
+
+  .grid-content-split {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
+  }
+
+  .grid-complex {
+    @apply grid grid-cols-1 lg:grid-cols-12 gap-6;
+  }
+}

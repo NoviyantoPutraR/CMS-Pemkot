@@ -292,7 +292,7 @@ export default function ServicesGrid({ activeTab }) {
 
         {/* Layanan Grid */}
         {isLayanan && !layananLoading && layananData.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-4 overflow-visible">
             {layananData.map((layanan, index) => (
               <ServiceCard key={layanan.id} layanan={layanan} index={index} />
             ))}
@@ -345,13 +345,14 @@ function ServiceCard({ layanan, index }) {
         delay: index * 0.1,
         ease: [0.25, 0.46, 0.45, 0.94]
       }}
+      className="overflow-visible"
     >
       <Link
         to={linkTo}
-        className="group relative block w-full aspect-[160/192] rounded-[20px] overflow-hidden"
+        className="group relative block w-full aspect-[160/192] rounded-[20px] overflow-visible"
       >
         {/* Card Container with Premium Design */}
-        <div className="relative h-full w-full bg-gradient-to-br from-white via-gray-50/50 to-white border border-gray-200/60 backdrop-blur-sm transition-all duration-500 ease-out hover:border-blue-300/60 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-2">
+        <div className="relative h-full w-full bg-gradient-to-br from-white via-gray-50/50 to-white border border-gray-200/60 backdrop-blur-sm transition-all duration-500 ease-out hover:border-blue-300/60 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-2 rounded-[20px] overflow-hidden">
           {/* Gradient Overlay on Hover */}
           <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
           
