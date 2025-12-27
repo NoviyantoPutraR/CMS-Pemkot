@@ -97,23 +97,23 @@ export default function Header() {
             >
               <img src="/logo.png" alt="Logo" width={120} height={40} className="h-10 w-auto object-contain rounded-lg" />
               <div>
-                <h1 className="text-lg font-bold text-black mb-0">
+                <h1 className="text-base md:text-sm lg:text-lg font-bold text-black mb-0">
                   Portal Resmi Prov Kerja Baik 
                 </h1>
-                <p className="text-xs text-black mb-0">Prov Kerja Baik Bangkit</p>
+                <p className="text-xs md:text-[10px] lg:text-xs text-black mb-0">Prov Kerja Baik Bangkit</p>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-4 md:space-x-4 lg:space-x-8">
               <div 
                 className="relative group"
                 onMouseEnter={() => setProfilDropdownOpen(true)}
                 onMouseLeave={() => setProfilDropdownOpen(false)}
               >
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative flex items-center gap-1">
+                <a href="#" className="text-sm md:text-xs lg:text-sm text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative flex items-center gap-1">
                   Profil
-                  <ChevronDown className="w-3 h-3" />
+                  <ChevronDown className="w-3 h-3 md:w-2.5 md:h-2.5 lg:w-3 lg:h-3" />
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
                 </a>
                 <div className={`absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 min-w-[200px] ${profilDropdownOpen ? 'block' : 'hidden'} md:block md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300`}>
@@ -150,7 +150,7 @@ export default function Header() {
                   </ul>
                 </div>
               </div>
-              <Link to="/layanan" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group">
+              <Link to="/layanan" className="text-sm md:text-xs lg:text-sm text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group">
                 Layanan Publik
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </Link>
@@ -159,9 +159,9 @@ export default function Header() {
                 onMouseEnter={() => setBeritaDropdownOpen(true)}
                 onMouseLeave={() => setBeritaDropdownOpen(false)}
               >
-                <a href="#berita" onClick={handleBeritaClick} className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative flex items-center gap-1">
+                <a href="#berita" onClick={handleBeritaClick} className="text-sm md:text-xs lg:text-sm text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative flex items-center gap-1">
                   Berita
-                  <ChevronDown className="w-3 h-3" />
+                  <ChevronDown className="w-3 h-3 md:w-2.5 md:h-2.5 lg:w-3 lg:h-3" />
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
                 </a>
                 <div className={`absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 min-w-[200px] ${beritaDropdownOpen ? 'block' : 'hidden'} md:block md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300`}>
@@ -203,18 +203,18 @@ export default function Header() {
                 <a 
                   href="#transparansi" 
                   onClick={handleTransparansiClick}
-                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+                  className="text-sm md:text-xs lg:text-sm text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
                 >
                   Transparansi
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
                 </a>
               ) : (
-                <Link to="/transparansi-anggaran" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group">
+                <Link to="/transparansi-anggaran" className="text-sm md:text-xs lg:text-sm text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group">
                   Transparansi
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               )}
-              <Link to="/sosial-media" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group">
+              <Link to="/sosial-media" className="text-sm md:text-xs lg:text-sm text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group">
                 Sosial Media
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </Link>

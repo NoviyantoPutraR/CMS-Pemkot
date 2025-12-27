@@ -127,6 +127,59 @@ text-lg font-semibold leading-snug
 
 **Utility Class:** `.heading-card`
 
+### Header Logo Title
+
+**Pattern:**
+```css
+text-base md:text-sm lg:text-lg font-bold
+```
+
+- **Mobile**: `text-base` (1rem / 16px)
+- **Tablet (md)**: `text-sm` (0.875rem / 14px) - lebih kecil untuk tablet
+- **Desktop (lg)**: `text-lg` (1.125rem / 18px)
+- **Weight**: `font-bold` (700)
+
+**Subtitle Pattern:**
+```css
+text-xs md:text-[10px] lg:text-xs
+```
+
+- **Mobile**: `text-xs` (0.75rem / 12px)
+- **Tablet (md)**: `text-[10px]` (0.625rem / 10px) - lebih kecil untuk tablet
+- **Desktop (lg)**: `text-xs` (0.75rem / 12px)
+
+**Utility Class:** `.heading-header-logo`
+
+**Utility Class:** `.heading-header-logo`
+
+**Catatan:** Header menggunakan ukuran font yang lebih kecil di tablet untuk menghindari font terlalu besar dan menjaga proporsi yang rapi.
+
+### Header Navigation Menu
+
+**Pattern:**
+```css
+text-sm md:text-xs lg:text-sm font-medium
+```
+
+- **Mobile**: `text-sm` (0.875rem / 14px)
+- **Tablet (md)**: `text-xs` (0.75rem / 12px) - lebih kecil untuk tablet
+- **Desktop (lg)**: `text-sm` (0.875rem / 14px)
+- **Weight**: `font-medium` (500)
+- **Spacing**: `space-x-4 md:space-x-4 lg:space-x-8` (lebih rapat di tablet)
+
+**Icon Size Pattern:**
+```css
+w-3 h-3 md:w-2.5 md:h-2.5 lg:w-3 lg:h-3
+```
+
+- **Mobile**: `w-3 h-3` (0.75rem / 12px)
+- **Tablet (md)**: `w-2.5 h-2.5` (0.625rem / 10px) - lebih kecil untuk tablet
+- **Desktop (lg)**: `w-3 h-3` (0.75rem / 12px)
+
+**Utility Class:** `.nav-menu-item`
+
+**Catatan:** Menu navigation menggunakan ukuran font dan spacing yang lebih kecil di tablet untuk menjaga proporsi dan menghindari overflow.
+
 ### Body Text
 
 **Base:**
@@ -367,6 +420,8 @@ Semua utility classes tersedia di `src/index.css` dalam `@layer components`.
 - `.heading-section` - Section heading (H2)
 - `.heading-subsection` - Subsection heading (H3)
 - `.heading-card` - Card title (H4)
+- `.heading-header-logo` - Header logo title (responsive untuk tablet)
+- `.nav-menu-item` - Header navigation menu item (responsive untuk tablet)
 - `.text-body` - Body text base
 - `.text-body-sm` - Body text small
 - `.text-body-xs` - Body text extra small
