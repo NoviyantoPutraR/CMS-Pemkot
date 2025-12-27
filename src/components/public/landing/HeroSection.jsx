@@ -30,52 +30,52 @@ export default function HeroSection() {
       actor: 'Jawa Timur',
       color: '#333',
       urls: {
-        full: 'https://images.unsplash.com/photo-1764418658842-997924ee31cc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        regular: 'https://images.unsplash.com/photo-1764418658842-997924ee31cc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        small: 'https://images.unsplash.com/photo-1764418658842-997924ee31cc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        thumbnail: 'https://images.unsplash.com/photo-1764418658842-997924ee31cc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        full: '/jatim.jpg',
+        regular: '/jatim.jpg',
+        small: '/jatim.jpg',
+        thumbnail: '/jatim.jpg'
       },
-      width: 1170,
-      height: 780
+      width: 1600,
+      height: 900
     },
     {
       id: '2',
       actor: 'Gunung Bromo',
       color: '#333',
       urls: {
-        full: 'https://images.unsplash.com/photo-1505993597083-3bd19fb75e57?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        regular: 'https://images.unsplash.com/photo-1505993597083-3bd19fb75e57?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        small: 'https://images.unsplash.com/photo-1505993597083-3bd19fb75e57?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        thumbnail: 'https://images.unsplash.com/photo-1505993597083-3bd19fb75e57?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        full: '/bromo.jpg',
+        regular: '/bromo.jpg',
+        small: '/bromo.jpg',
+        thumbnail: '/bromo.jpg'
       },
-      width: 1175,
-      height: 784
+      width: 1600,
+      height: 900
     },
     {
       id: '3',
-      actor: 'Tumpak Sewu',
+      actor: 'Pulau Bawean',
       color: '#333',
       urls: {
-        full: 'https://images.unsplash.com/photo-1532081192133-b6d660228cc4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        regular: 'https://images.unsplash.com/photo-1532081192133-b6d660228cc4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        small: 'https://images.unsplash.com/photo-1532081192133-b6d660228cc4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        thumbnail: 'https://images.unsplash.com/photo-1532081192133-b6d660228cc4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        full: '/PulauBawean.jpg',
+        regular: '/PulauBawean.jpg',
+        small: '/PulauBawean.jpg',
+        thumbnail: '/PulauBawean.jpg'
       },
-      width: 687,
-      height: 1030
+      width: 600,
+      height: 800
     },
     {
       id: '4',
-      actor: 'Monumen Kota Malang',
+      actor: 'Pantai Jonggring Saloko',
       color: '#333',
       urls: {
-        full: 'https://images.unsplash.com/photo-1672557680301-095dfa1b223e?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        regular: 'https://images.unsplash.com/photo-1672557680301-095dfa1b223e?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        small: 'https://images.unsplash.com/photo-1672557680301-095dfa1b223e?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        thumbnail: 'https://images.unsplash.com/photo-1672557680301-095dfa1b223e?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        full: '/pantai.jpg',
+        regular: '/pantai.jpg',
+        small: '/pantai.jpg',
+        thumbnail: '/pantai.jpg'
       },
-      width: 1173,
-      height: 782
+      width: 1600,
+      height: 900
     }
   ]
 
