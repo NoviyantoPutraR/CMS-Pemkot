@@ -10,8 +10,8 @@ export default function VisionSection() {
           {/* Images di pojok kiri */}
           <div className="flex items-center space-x-4 flex-shrink-0 justify-center lg:justify-start">
             <motion.img 
-              src="https://images.unsplash.com/photo-1764173039192-2bbd508d5211?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-              alt="Leader 1" 
+              src="/visi.jpg" 
+              alt="Visi" 
               width={128}
               height={128}
               loading="lazy"
@@ -22,8 +22,8 @@ export default function VisionSection() {
               transition={{ duration: 0.6, ease: "easeOut" }}
             />
             <motion.img 
-              src="https://plus.unsplash.com/premium_photo-1763265293425-f7ad17012b13?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-              alt="Leader 2" 
+              src="/misi.jpg" 
+              alt="Misi" 
               width={128}
               height={128}
               loading="lazy"
