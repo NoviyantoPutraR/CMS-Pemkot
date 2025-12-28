@@ -2,12 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion, useInView } from 'framer-motion'
-import { beritaService } from '../../../services/beritaService'
 import { formatDate } from '../../../utils/formatters'
 
-export default function HighlightNewsSection() {
-  const [newsData, setNewsData] = useState([])
-  const [loading, setLoading] = useState(true)
+export default function HighlightNewsSection({ newsData: rawNewsData = [], loading = false }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [visibleCards, setVisibleCards] = useState(3)
   const trackRef = useRef(null)
@@ -21,30 +18,14 @@ export default function HighlightNewsSection() {
     amount: 0.2 
   })
 
-  // Load berita dari database
-  useEffect(() => {
-    const loadBerita = async () => {
-      try {
-        setLoading(true)
-        const data = await beritaService.getLatest(6)
-        // Map data dari database ke format yang diharapkan komponen
-        const mappedData = data.map((berita) => ({
-          id: berita.id,
-          image: berita.thumbnail_url || "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          title: berita.judul,
-          date: formatDate(berita.dibuat_pada),
-          link: `/berita/${berita.slug}`
-        }))
-        setNewsData(mappedData)
-      } catch (error) {
-        console.error('Error loading berita:', error)
-        setNewsData([])
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadBerita()
-  }, [])
+  // Map data dari database ke format yang diharapkan komponen
+  const newsData = rawNewsData.map((berita) => ({
+    id: berita.id,
+    image: berita.thumbnail_url || "https://images.unsplash.com/photo-1761839257661-c2392c65ea72?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    title: berita.judul,
+    date: formatDate(berita.dibuat_pada),
+    link: `/berita/${berita.slug}`
+  }))
   
   // Animation variants
   const leftPanelVariants = {
@@ -306,8 +287,22 @@ export default function HighlightNewsSection() {
             {/* Carousel Track */}
             <div className="overflow-hidden relative flex-1 py-6 px-3 pb-8">
               {loading ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-gray-500">Memuat berita...</div>
+                <div className="flex gap-6 h-full">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="flex-shrink-0 w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] px-0"
+                    >
+                      <div className="bg-white rounded-xl overflow-hidden shadow-lg h-full border border-gray-100 flex flex-col animate-pulse">
+                        <div className="w-full h-40 bg-gray-200" />
+                        <div className="p-4 flex-1 flex flex-col">
+                          <div className="h-6 bg-gray-200 rounded mb-2" />
+                          <div className="h-4 bg-gray-200 rounded w-24 mb-2" />
+                          <div className="h-4 bg-gray-200 rounded w-32 mt-auto" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : newsData.length === 0 ? (
                 <div className="flex items-center justify-center h-full">

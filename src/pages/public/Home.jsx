@@ -9,10 +9,49 @@ import TransparencySection from '../../components/public/landing/TransparencySec
 import VisionSection from '../../components/public/landing/VisionSection'
 import QuickAccessSection from '../../components/public/landing/QuickAccessSection'
 import Footer from '../../components/public/landing/Footer'
+import { pengaturanSitusService } from '../../services/pengaturanSitusService'
+import { beritaService } from '../../services/beritaService'
 
 export default function Home() {
   const location = useLocation()
   const [activeTab, setActiveTab] = useState('layanan')
+  
+  // State untuk homepage data (loaded in parallel)
+  const [heroData, setHeroData] = useState({
+    nama_situs: '',
+    deskripsi_situs: '',
+  })
+  const [newsData, setNewsData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  // Parallelize API calls untuk faster LCP
+  useEffect(() => {
+    const loadHomepageData = async () => {
+      try {
+        setLoading(true)
+        // Load hero data dan berita data secara parallel
+        const [heroDataResult, newsDataResult] = await Promise.all([
+          pengaturanSitusService.getHeroData().catch((error) => {
+            console.error('Error loading hero data:', error)
+            return { nama_situs: '', deskripsi_situs: '' }
+          }),
+          beritaService.getLatest(6).catch((error) => {
+            console.error('Error loading berita:', error)
+            return []
+          }),
+        ])
+        
+        setHeroData(heroDataResult)
+        setNewsData(newsDataResult)
+      } catch (error) {
+        console.error('Error loading homepage data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadHomepageData()
+  }, [])
 
   // Scroll to hero when navigating from other pages
   useEffect(() => {
@@ -50,10 +89,10 @@ export default function Home() {
       </div>
       <div className="relative z-10">
       <Header />
-      <HeroSection />
+      <HeroSection heroData={heroData} loading={loading} />
       <section className="relative overflow-visible">
         <div className="relative z-10">
-          <HighlightNewsSection />
+          <HighlightNewsSection newsData={newsData} loading={loading} />
           <TabsSection activeTab={activeTab} onTabChange={setActiveTab} />
           <ServicesGrid activeTab={activeTab} />
         </div>

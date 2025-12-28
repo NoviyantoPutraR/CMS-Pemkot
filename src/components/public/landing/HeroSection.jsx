@@ -1,29 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import GalleryContainer from './Gallery'
 import SearchAutocomplete from '../SearchAutocomplete'
-import { pengaturanSitusService } from '../../../services/pengaturanSitusService'
 
-export default function HeroSection() {
+export default function HeroSection({ heroData = { nama_situs: '', deskripsi_situs: '' }, loading = false }) {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
-  const [heroData, setHeroData] = useState({
-    nama_situs: '',
-    deskripsi_situs: '',
-  })
-
-  useEffect(() => {
-    const loadHeroData = async () => {
-      try {
-        const data = await pengaturanSitusService.getHeroData()
-        setHeroData(data)
-      } catch (error) {
-        console.error('Error loading hero data:', error)
-      }
-    }
-    loadHeroData()
-  }, [])
   const photos = [
     {
       id: '1',
@@ -93,35 +76,44 @@ export default function HeroSection() {
             >
               Selamat Datang Di
             </motion.p>
-            {heroData.nama_situs && (
-              <motion.h2 
-                className="font-poppins text-4xl lg:text-5xl font-bold mb-4 leading-tight text-black"
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-              >
-                {heroData.nama_situs.split('\n').map((line, index) => (
-                  <span key={index}>
-                    {line}
-                    {index < heroData.nama_situs.split('\n').length - 1 && <br />}
-                  </span>
-                ))}
-              </motion.h2>
-            )}
-            {heroData.deskripsi_situs && (
-              <motion.p 
-                className="font-poppins text-base mb-6 text-gray-800 sm:text-gray-600"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-              >
-                {heroData.deskripsi_situs.split('\n').map((line, index) => (
-                  <span key={index}>
-                    {line}
-                    {index < heroData.deskripsi_situs.split('\n').length - 1 && <br />}
-                  </span>
-                ))}
-              </motion.p>
+            {loading ? (
+              <>
+                <div className="h-12 lg:h-16 bg-gray-200 rounded-lg mb-4 animate-pulse" />
+                <div className="h-6 bg-gray-200 rounded-lg mb-6 animate-pulse" />
+              </>
+            ) : (
+              <>
+                {heroData.nama_situs && (
+                  <motion.h2 
+                    className="font-poppins text-4xl lg:text-5xl font-bold mb-4 leading-tight text-black"
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+                  >
+                    {heroData.nama_situs.split('\n').map((line, index) => (
+                      <span key={index}>
+                        {line}
+                        {index < heroData.nama_situs.split('\n').length - 1 && <br />}
+                      </span>
+                    ))}
+                  </motion.h2>
+                )}
+                {heroData.deskripsi_situs && (
+                  <motion.p 
+                    className="font-poppins text-base mb-6 text-gray-800 sm:text-gray-600"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                  >
+                    {heroData.deskripsi_situs.split('\n').map((line, index) => (
+                      <span key={index}>
+                        {line}
+                        {index < heroData.deskripsi_situs.split('\n').length - 1 && <br />}
+                      </span>
+                    ))}
+                  </motion.p>
+                )}
+              </>
             )}
             
             {/* Search Box */}
