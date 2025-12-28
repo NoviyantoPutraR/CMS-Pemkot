@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import GalleryContainer from './Gallery'
 import SearchAutocomplete from '../SearchAutocomplete'
@@ -68,14 +67,9 @@ export default function HeroSection({ heroData = { nama_situs: '', deskripsi_sit
         <div className="grid lg:grid-cols-2 gap-8 items-center rounded-lg p-8 bg-white shadow-lg">
           {/* Hero Content */}
           <div className="text-gray-900">
-            <motion.p 
-              className="font-poppins text-lg font-bold mb-2"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
+            <p className="font-poppins text-lg font-bold mb-2 hero-animate-1">
               Selamat Datang Di
-            </motion.p>
+            </p>
             {loading ? (
               <>
                 <div className="h-12 lg:h-16 bg-gray-200 rounded-lg mb-4 animate-pulse" />
@@ -84,45 +78,30 @@ export default function HeroSection({ heroData = { nama_situs: '', deskripsi_sit
             ) : (
               <>
                 {heroData.nama_situs && (
-                  <motion.h2 
-                    className="font-poppins text-4xl lg:text-5xl font-bold mb-4 leading-tight text-black"
-                    initial={{ opacity: 0, y: 24 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-                  >
+                  <h2 className="font-poppins text-4xl lg:text-5xl font-bold mb-4 leading-tight text-black hero-animate-2">
                     {heroData.nama_situs.split('\n').map((line, index) => (
                       <span key={index}>
                         {line}
                         {index < heroData.nama_situs.split('\n').length - 1 && <br />}
                       </span>
                     ))}
-                  </motion.h2>
+                  </h2>
                 )}
                 {heroData.deskripsi_situs && (
-                  <motion.p 
-                    className="font-poppins text-base mb-6 text-gray-800 sm:text-gray-600"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                  >
+                  <p className="font-poppins text-base mb-6 text-gray-800 sm:text-gray-600 hero-animate-3">
                     {heroData.deskripsi_situs.split('\n').map((line, index) => (
                       <span key={index}>
                         {line}
                         {index < heroData.deskripsi_situs.split('\n').length - 1 && <br />}
                       </span>
                     ))}
-                  </motion.p>
+                  </p>
                 )}
               </>
             )}
             
             {/* Search Box */}
-            <motion.div 
-              className="relative w-full max-w-lg"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-            >
+            <div className="relative w-full max-w-lg hero-animate-4">
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
@@ -161,7 +140,7 @@ export default function HeroSection({ heroData = { nama_situs: '', deskripsi_sit
                   </span>
                 </button>
               </form>
-            </motion.div>
+            </div>
           </div>
 
           {/* Hero Image with Gallery Animation */}

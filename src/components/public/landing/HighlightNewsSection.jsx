@@ -1,22 +1,41 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { motion, useInView } from 'framer-motion'
 import { formatDate } from '../../../utils/formatters'
 
 export default function HighlightNewsSection({ newsData: rawNewsData = [], loading = false }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [visibleCards, setVisibleCards] = useState(3)
+  const [framerMotion, setFramerMotion] = useState(null)
+  const [isInView, setIsInView] = useState(false)
   const trackRef = useRef(null)
   const autoSlideIntervalRef = useRef(null)
   const carouselRef = useRef(null)
   const sectionRef = useRef(null)
   
-  // Intersection Observer for scroll animation
-  const isInView = useInView(sectionRef, { 
-    once: true,
-    amount: 0.2 
-  })
+  // Lazy load Framer Motion saat component mount
+  useEffect(() => {
+    import('framer-motion').then((mod) => {
+      setFramerMotion(mod)
+    })
+  }, [])
+
+  // Intersection Observer untuk scroll animation (native, tidak perlu Framer Motion)
+  useEffect(() => {
+    if (!sectionRef.current) return
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true)
+        }
+      },
+      { threshold: 0.2, once: true }
+    )
+    
+    observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   // Map data dari database ke format yang diharapkan komponen
   const newsData = rawNewsData.map((berita) => ({
@@ -27,24 +46,27 @@ export default function HighlightNewsSection({ newsData: rawNewsData = [], loadi
     link: `/berita/${berita.slug}`
   }))
   
-  // Animation variants
-  const leftPanelVariants = {
+  // Animation variants (hanya digunakan jika Framer Motion sudah loaded)
+  const leftPanelVariants = framerMotion ? {
     hidden: { opacity: 0, x: -40 },
     visible: { 
       opacity: 1, 
       x: 0,
       transition: { duration: 0.6, ease: "easeOut" }
     }
-  }
+  } : null
   
-  const cardsVariants = {
+  const cardsVariants = framerMotion ? {
     hidden: { opacity: 0, y: 40 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: { duration: 0.6, delay: 0.2, ease: "easeOut" }
     }
-  }
+  } : null
+
+  // Fallback: gunakan regular div jika Framer Motion belum loaded
+  const MotionDiv = framerMotion ? framerMotion.motion.div : 'div'
 
   // Calculate visible cards based on screen size
   useEffect(() => {
@@ -240,11 +262,11 @@ export default function HighlightNewsSection({ newsData: rawNewsData = [], loadi
         <div className="max-w-full pl-0 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch" ref={sectionRef}>
             {/* Left Panel - Full height */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-3 bg-blue-700 text-white min-h-[350px] flex flex-col justify-center items-center text-center news-panel-bg py-12 px-4 sm:px-6 lg:p-6"
               variants={leftPanelVariants}
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
+              initial={framerMotion ? "hidden" : undefined}
+              animate={framerMotion && isInView ? "visible" : undefined}
             >
               <h3 className="heading-subsection text-white mb-3 w-full">Highlight Berita Terkini</h3>
               <p className="text-body-sm text-blue-100 mb-6 w-full">Update Berita Seputar Provinsi Kerja Baik</p>
@@ -254,15 +276,15 @@ export default function HighlightNewsSection({ newsData: rawNewsData = [], loadi
               >
                 Lihat Berita Lainnya
               </Link>
-            </motion.div>
+            </MotionDiv>
 
             {/* Carousel Container */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-9 relative min-h-[350px] flex flex-col px-4 sm:px-6 lg:px-8 py-6" 
               ref={carouselRef}
               variants={cardsVariants}
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
+              initial={framerMotion ? "hidden" : undefined}
+              animate={framerMotion && isInView ? "visible" : undefined}
             >
             {/* Navigation Arrows */}
             {indicatorCount > 1 && (
@@ -367,7 +389,7 @@ export default function HighlightNewsSection({ newsData: rawNewsData = [], loadi
                 ))}
               </div>
             )}
-          </motion.div>
+          </MotionDiv>
         </div>
         </div>
       </div>

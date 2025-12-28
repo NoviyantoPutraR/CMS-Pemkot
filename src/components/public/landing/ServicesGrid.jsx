@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver'
 import { agendaKotaService } from '../../../services/agendaKotaService'
 import { wisataService } from '../../../services/wisataService'
@@ -307,6 +306,16 @@ export default function ServicesGrid({ activeTab }) {
 function ServiceCard({ layanan, index }) {
   const [cardRef, isVisible] = useIntersectionObserver()
   const [iconError, setIconError] = useState(false)
+  const [framerMotion, setFramerMotion] = useState(null)
+  
+  // Lazy load Framer Motion saat card masuk viewport
+  useEffect(() => {
+    if (isVisible && !framerMotion) {
+      import('framer-motion').then((mod) => {
+        setFramerMotion(mod)
+      })
+    }
+  }, [isVisible, framerMotion])
   
   // Get description from meta_description or strip HTML from konten
   const description = layanan.meta_description 
@@ -335,16 +344,20 @@ function ServiceCard({ layanan, index }) {
   // Determine if we should show icon image or fallback
   const showIconImage = layanan.icon_url && !iconError
 
+  // Fallback: gunakan regular div jika Framer Motion belum loaded
+  const MotionDiv = framerMotion ? framerMotion.motion.div : 'div'
+  const MotionDivInner = framerMotion ? framerMotion.motion.div : 'div'
+
   return (
-    <motion.div
+    <MotionDiv
       ref={cardRef}
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
-      transition={{ 
+      initial={framerMotion ? { opacity: 0, y: 30, scale: 0.95 } : undefined}
+      animate={framerMotion && isVisible ? { opacity: 1, y: 0, scale: 1 } : undefined}
+      transition={framerMotion ? { 
         duration: 0.6, 
         delay: index * 0.1,
         ease: [0.25, 0.46, 0.45, 0.94]
-      }}
+      } : undefined}
       className="overflow-visible"
     >
       <Link
@@ -359,10 +372,10 @@ function ServiceCard({ layanan, index }) {
           {/* Content Container */}
           <div className="relative h-full flex flex-col items-center justify-center text-center p-6 z-10">
             {/* Icon Container */}
-            <motion.div
+            <MotionDivInner
               className={`relative w-16 h-16 rounded-2xl bg-gradient-to-br ${gradientClass} flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-500`}
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              whileHover={framerMotion ? { scale: 1.1, rotate: 5 } : undefined}
+              transition={framerMotion ? { type: "spring", stiffness: 300, damping: 20 } : undefined}
             >
               {showIconImage ? (
                 <img
@@ -377,7 +390,7 @@ function ServiceCard({ layanan, index }) {
               ) : (
                 <DefaultIcon className="w-8 h-8 text-gray-700" />
               )}
-            </motion.div>
+            </MotionDivInner>
 
             {/* Title */}
             <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300 leading-snug lg:line-clamp-2">
@@ -391,22 +404,22 @@ function ServiceCard({ layanan, index }) {
           </div>
 
           {/* Button - Slide Up on Hover */}
-          <motion.div
+          <MotionDivInner
             className="absolute left-1/2 bottom-0 w-[70%] -translate-x-1/2 z-20"
-            initial={{ y: '100%', opacity: 0 }}
-            whileHover={{ y: '50%', opacity: 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            initial={framerMotion ? { y: '100%', opacity: 0 } : undefined}
+            whileHover={framerMotion ? { y: '50%', opacity: 1 } : undefined}
+            transition={framerMotion ? { type: "spring", stiffness: 300, damping: 25 } : undefined}
           >
             <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-sm font-medium py-2.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center">
               Selengkapnya
             </div>
-          </motion.div>
+          </MotionDivInner>
 
           {/* Shine Effect on Hover */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
         </div>
       </Link>
-    </motion.div>
+    </MotionDiv>
   )
 }
 
