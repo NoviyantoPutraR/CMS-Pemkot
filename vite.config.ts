@@ -17,16 +17,12 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Admin-only libraries - hanya di-load untuk admin routes (lazy loaded)
-          // React Quill dan Recharts hanya digunakan di admin panel
-          if (id.includes('node_modules/react-quill') ||
-              id.includes('node_modules/recharts')) {
-            return 'vendor-admin'
-          }
-          
-          // React Core + Critical Utilities - harus di chunk yang sama
-          // Zustand digunakan di awal (useAuthStore), jadi harus di-load bersama React
-          // clsx, tailwind-merge, CVA digunakan oleh banyak React components
+          // React Core + Critical Utilities + Admin React Libraries
+          // Semua React-dependent libraries HARUS di chunk yang sama untuk menghindari
+          // "Cannot set properties of undefined" errors saat chunks terpisah
+          // React Quill dan Recharts di sini karena mereka membutuhkan React
+          // Meskipun di vendor-react-core, mereka tetap tidak di-load untuk public pages
+          // karena admin routes sudah lazy loaded dan mereka hanya di-import di admin components
           if (id.includes('node_modules/react/') || 
               id.includes('node_modules/react-dom/') ||
               id.includes('node_modules/react-router/') ||
@@ -34,7 +30,9 @@ export default defineConfig({
               id.includes('node_modules/zustand') ||
               id.includes('node_modules/clsx') ||
               id.includes('node_modules/tailwind-merge') ||
-              id.includes('node_modules/class-variance-authority')) {
+              id.includes('node_modules/class-variance-authority') ||
+              id.includes('node_modules/react-quill') ||
+              id.includes('node_modules/recharts')) {
             return 'vendor-react-core'
           }
           
