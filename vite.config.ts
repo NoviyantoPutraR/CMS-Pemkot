@@ -17,30 +17,45 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // CRITICAL: React dan SEMUA React-dependent libraries HARUS di chunk yang sama
-          // Ini mencegah error "Cannot set properties of undefined" dan "Cannot read properties of undefined"
-          // Semua library yang menggunakan React (forwardRef, createElement, dll) harus di chunk yang sama
+          // Admin-only libraries - hanya di-load untuk admin routes (lazy loaded)
+          // React Quill dan Recharts hanya digunakan di admin panel
+          if (id.includes('node_modules/react-quill') ||
+              id.includes('node_modules/recharts')) {
+            return 'vendor-admin'
+          }
+          
+          // React Core - critical, selalu dibutuhkan (React, React DOM, React Router)
+          // Harus di chunk yang sama untuk menghindari multiple React instances
           if (id.includes('node_modules/react/') || 
               id.includes('node_modules/react-dom/') ||
               id.includes('node_modules/react-router/') ||
-              id.includes('node_modules/react-router-dom/') ||
-              // React-dependent UI libraries
+              id.includes('node_modules/react-router-dom/')) {
+            return 'vendor-react-core'
+          }
+          
+          // React UI Libraries - untuk animations dan icons
+          // Framer Motion digunakan di public pages juga, tapi bisa di-lazy load nanti
+          if (id.includes('node_modules/framer-motion') ||
               id.includes('node_modules/lucide-react') ||
-              id.includes('node_modules/class-variance-authority') ||
-              id.includes('node_modules/clsx') ||
-              id.includes('node_modules/tailwind-merge') ||
-              // React-dependent form libraries
-              id.includes('node_modules/react-hook-form') ||
-              id.includes('node_modules/@hookform') ||
-              // React-dependent chart library
-              id.includes('node_modules/recharts') ||
-              // React-dependent animation library (used in many components)
-              id.includes('node_modules/framer-motion') ||
-              // React-dependent rich text editor
-              id.includes('node_modules/react-quill') ||
-              // React icons
               id.includes('node_modules/react-icons')) {
-            return 'vendor-react'
+            return 'vendor-react-ui'
+          }
+          
+          // React Form Libraries - untuk form handling
+          // React Hook Form dan Zod sering digunakan bersama
+          if (id.includes('node_modules/react-hook-form') ||
+              id.includes('node_modules/@hookform') ||
+              id.includes('node_modules/zod')) {
+            return 'vendor-forms'
+          }
+          
+          // React Utilities - helper libraries
+          if (id.includes('node_modules/clsx') ||
+              id.includes('node_modules/tailwind-merge') ||
+              id.includes('node_modules/class-variance-authority') ||
+              id.includes('node_modules/sonner') ||
+              id.includes('node_modules/zustand')) {
+            return 'vendor-utils'
           }
           
           // Supabase - separate chunk (tidak dependen pada React)
@@ -51,22 +66,6 @@ export default defineConfig({
           // GSAP - animation library yang tidak dependen pada React
           if (id.includes('node_modules/gsap')) {
             return 'vendor-animations'
-          }
-          
-          // Zod - validation library (tidak dependen pada React, tapi sering digunakan dengan react-hook-form)
-          // Masukkan ke vendor-react untuk menghindari masalah
-          if (id.includes('node_modules/zod')) {
-            return 'vendor-react'
-          }
-          
-          // State management (Zustand tidak dependen pada React secara langsung, tapi sering digunakan dengan React)
-          if (id.includes('node_modules/zustand')) {
-            return 'vendor-react'
-          }
-          
-          // Sonner - toast library (React-dependent)
-          if (id.includes('node_modules/sonner')) {
-            return 'vendor-react'
           }
           
           // Other node_modules - let Vite handle default chunking
