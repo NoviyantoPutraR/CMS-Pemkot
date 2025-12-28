@@ -24,12 +24,17 @@ export default defineConfig({
             return 'vendor-admin'
           }
           
-          // React Core - critical, selalu dibutuhkan (React, React DOM, React Router)
-          // Harus di chunk yang sama untuk menghindari multiple React instances
+          // React Core + Critical Utilities - harus di chunk yang sama
+          // Zustand digunakan di awal (useAuthStore), jadi harus di-load bersama React
+          // clsx, tailwind-merge, CVA digunakan oleh banyak React components
           if (id.includes('node_modules/react/') || 
               id.includes('node_modules/react-dom/') ||
               id.includes('node_modules/react-router/') ||
-              id.includes('node_modules/react-router-dom/')) {
+              id.includes('node_modules/react-router-dom/') ||
+              id.includes('node_modules/zustand') ||
+              id.includes('node_modules/clsx') ||
+              id.includes('node_modules/tailwind-merge') ||
+              id.includes('node_modules/class-variance-authority')) {
             return 'vendor-react-core'
           }
           
@@ -49,12 +54,9 @@ export default defineConfig({
             return 'vendor-forms'
           }
           
-          // React Utilities - helper libraries
-          if (id.includes('node_modules/clsx') ||
-              id.includes('node_modules/tailwind-merge') ||
-              id.includes('node_modules/class-variance-authority') ||
-              id.includes('node_modules/sonner') ||
-              id.includes('node_modules/zustand')) {
+          // Non-critical Utilities - bisa di-load terpisah
+          // Sonner (toast) tidak critical untuk initial load
+          if (id.includes('node_modules/sonner')) {
             return 'vendor-utils'
           }
           
@@ -85,6 +87,11 @@ export default defineConfig({
     minify: 'esbuild',
     // Optimize asset handling
     assetsInlineLimit: 4096, // Inline small assets (< 4KB)
+    // CommonJS options untuk menghindari circular dependency issues
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true,
+    },
   },
 })
 
