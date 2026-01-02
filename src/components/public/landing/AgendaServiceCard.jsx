@@ -96,7 +96,7 @@ export default function AgendaServiceCard({ agenda, index = 0 }) {
       <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-60 group-hover:opacity-80 transition-opacity duration-500`} />
       
       {/* Content */}
-      <div className="relative h-full flex flex-col p-5 z-10">
+      <div className="relative h-full flex flex-col p-3 md:p-5 z-10">
         {/* Icon & Status Badge */}
         <div className="flex items-start justify-between mb-3">
           <div className="w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-300">
@@ -110,7 +110,7 @@ export default function AgendaServiceCard({ agenda, index = 0 }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-base font-bold text-gray-900 mb-2 leading-snug lg:line-clamp-2 group-hover:text-blue-700 transition-colors duration-300">
+        <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2 leading-snug lg:line-clamp-2 group-hover:text-blue-700 transition-colors duration-300">
           {agenda.judul}
         </h3>
 
